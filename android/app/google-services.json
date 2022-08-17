@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "577078177166-uoqb0r6jvhtobtnlgdfaf7bib0q2uqd8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.easy_shopping",
+            "certificate_hash": "5c6e96799575fbdf243e4855c28c1865877bca25"
+          }
+        },
+        {
           "client_id": "577078177166-fmfopuel70ocv1mibktmcm1bkibisji1.apps.googleusercontent.com",
           "client_type": 3
         }
