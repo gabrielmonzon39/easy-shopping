@@ -1,3 +1,5 @@
+import 'package:easy_shopping/model/firebase.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -106,15 +108,22 @@ class _OnboardState extends State<Onboard> with SingleTickerProviderStateMixin {
             bottom: 20,
             child: GestureDetector(
               onTap: () async {
-                final provider =
+                GoogleSignInProvider.provider =
                     Provider.of<GoogleSignInProvider>(context, listen: false);
-                await provider.googleLogin();
-                // ignore: use_build_context_synchronously
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return Mainscreen(
-                      name: provider.user.displayName,
-                      email: provider.user.email);
-                }));
+                await GoogleSignInProvider.provider!.googleLogin();
+                final FirebaseAuth auth = FirebaseAuth.instance;
+                final User? user = auth.currentUser;
+                final uid = user!.uid;
+                FirebaseFS.addUser(uid, "user");
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Mainscreen(
+                          name: GoogleSignInProvider.provider!.user.displayName,
+                          email: GoogleSignInProvider.provider!.user.email,
+                          photo: GoogleSignInProvider.provider!.user.photoUrl,
+                          uid: uid),
+                    ));
               },
               child: FadingSlidingWidget(
                 animationController: _animationController,

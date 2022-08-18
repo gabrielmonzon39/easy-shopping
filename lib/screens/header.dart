@@ -20,9 +20,7 @@ class Header extends StatelessWidget {
               color: secondaryColor,
               size: 30,
             ),
-            onPressed: () => {
-              Navigator.pop(context),
-            },
+            onPressed: () => {},
           ),
           Text(
             "Easy Shopping",

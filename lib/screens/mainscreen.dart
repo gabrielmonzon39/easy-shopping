@@ -1,16 +1,22 @@
 import 'package:easy_shopping/constants.dart';
+import 'package:easy_shopping/model/firebase.dart';
 import 'package:easy_shopping/screens/header.dart';
+import 'package:easy_shopping/screens/nav_bar.dart';
 import 'package:easy_shopping/widgets/top_container.dart';
 import 'package:flutter/material.dart';
 
 class Mainscreen extends StatelessWidget {
   var name;
   var email;
+  var photo;
+  var uid;
 
   Mainscreen({
     Key? key,
     @required this.name,
     @required this.email,
+    @required this.photo,
+    @required this.uid,
   }) : super(key: key);
 
   Text subheading(String title) {
@@ -36,12 +42,29 @@ class Mainscreen extends StatelessWidget {
     );
   }
 
+  Future<Widget> message() async {
+    bool valid = await FirebaseFS.isAssociatedUser(uid);
+    if (valid) {
+      return Text('Si hay datos');
+    }
+    return Text("No hay datos");
+  }
+
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
     return Scaffold(
-        backgroundColor: secondaryColor,
-        body: SafeArea(
+      appBar: AppBar(
+        title: const Text('Easy Shopping'),
+        backgroundColor: primaryColor,
+      ),
+      drawer: NavBar(
+        name: name,
+        email: email,
+        photo: photo,
+      ),
+      backgroundColor: Colors.white,
+      //body: message(),
+      /*body: SafeArea(
           child: Column(
             children: [
               const Header(),
@@ -71,6 +94,7 @@ class Mainscreen extends StatelessWidget {
               )
             ],
           ),
-        ));
+        )*/
+    );
   }
 }
