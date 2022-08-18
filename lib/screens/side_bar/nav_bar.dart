@@ -26,7 +26,7 @@ class NavBar extends StatelessWidget {
           UserAccountsDrawerHeader(
             accountName: Text(name),
             accountEmail: Text(email),
-            currentAccountPicture: CircleAvatar(
+            currentAccountPicture: const CircleAvatar(
               backgroundColor: ternaryColor,
               radius: 35.0,
               backgroundImage: AssetImage(
@@ -38,48 +38,49 @@ class NavBar extends StatelessWidget {
             ),
           ),
           ListTile(
-            leading: Icon(Icons.groups),
-            title: Text('Familiares y amigos'),
+            leading: const Icon(Icons.groups),
+            title: const Text('Familiares y amigos'),
             onTap: () {},
           ),
           const Divider(),
           ListTile(
-            leading: Icon(Icons.store),
-            title: Text('Tiendas y servicios'),
+            leading: const Icon(Icons.store),
+            title: const Text('Tiendas y servicios'),
             onTap: () {},
           ),
           const Divider(),
           ListTile(
-            leading: Icon(Icons.notifications),
-            title: Text('Notificaciones'),
+            leading: const Icon(Icons.notifications),
+            title: const Text('Notificaciones'),
             onTap: () {},
           ),
           const Divider(),
           ListTile(
-            leading: Icon(Icons.shopping_cart),
-            title: Text('Historial de pedidos'),
+            leading: const Icon(Icons.shopping_cart),
+            title: const Text('Historial de pedidos'),
             onTap: () {},
           ),
           const Divider(),
           ListTile(
-            leading: Icon(Icons.menu_book),
-            title: Text('Historial de reservaciones'),
+            leading: const Icon(Icons.menu_book),
+            title: const Text('Historial de reservaciones'),
             onTap: () {},
           ),
           const Divider(),
           ListTile(
-            leading: Icon(Icons.vpn_key),
-            title: Text('Token'),
+            leading: const Icon(Icons.vpn_key),
+            title: const Text('Token'),
             onTap: () {
               //FirebaseFS.addData();
             },
           ),
           const Divider(),
           ListTile(
-            leading: Icon(Icons.logout),
-            title: Text('Cerrar sesión'),
+            leading: const Icon(Icons.logout),
+            title: const Text('Cerrar sesión'),
             onTap: () async {
               await GoogleSignInProvider.provider!.googleSignOut();
+              // ignore: use_build_context_synchronously
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => MyApp()),

@@ -1,8 +1,6 @@
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
-import 'package:easy_shopping/screens/header.dart';
-import 'package:easy_shopping/screens/nav_bar.dart';
-import 'package:easy_shopping/widgets/top_container.dart';
+import 'package:easy_shopping/screens/side_bar/nav_bar.dart';
 import 'package:flutter/material.dart';
 
 class Mainscreen extends StatelessWidget {
