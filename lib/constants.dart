@@ -10,3 +10,5 @@ const txtColor = Color(0x00000000);
 const primaryColorDarkM = Color(0xFF2697FF);
 const secondaryColorDarkM = Color(0xFF2A2D3E);
 const bgColorDarkM = Color(0xFF212332);
+
+const defaultPadding = 16.0;

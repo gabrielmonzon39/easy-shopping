@@ -113,8 +113,12 @@ class _OnboardState extends State<Onboard> with SingleTickerProviderStateMixin {
                 await GoogleSignInProvider.provider!.googleLogin();
                 final FirebaseAuth auth = FirebaseAuth.instance;
                 final User? user = auth.currentUser;
-                final uid = user!.uid;
-                FirebaseFS.addUser(uid, "user");
+                if (user == null || GoogleSignInProvider.provider == null) {
+                  return;
+                }
+                uid = user.uid;
+                currentRoll = await FirebaseFS.getRole();
+                // ignore: use_build_context_synchronously
                 Navigator.push(
                     context,
                     MaterialPageRoute(

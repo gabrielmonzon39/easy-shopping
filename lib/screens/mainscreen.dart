@@ -1,8 +1,11 @@
+// ignore_for_file: prefer_typing_uninitialized_variables
+
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
 import 'package:easy_shopping/screens/side_bar/nav_bar.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class Mainscreen extends StatelessWidget {
   var name;
   var email;
@@ -40,59 +43,105 @@ class Mainscreen extends StatelessWidget {
     );
   }
 
-  Future<Widget> message() async {
+  Future<bool> message() async {
     bool valid = await FirebaseFS.isAssociatedUser(uid);
-    if (valid) {
-      return Text('Si hay datos');
-    }
-    return Text("No hay datos");
+    return valid;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Easy Shopping'),
-        backgroundColor: primaryColor,
-      ),
-      drawer: NavBar(
-        name: name,
-        email: email,
-        photo: photo,
-      ),
-      backgroundColor: Colors.white,
-      //body: message(),
-      /*body: SafeArea(
-          child: Column(
-            children: [
-              const Header(),
-              const SizedBox(
-                height: 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  const CircleAvatar(
-                    backgroundColor: ternaryColor,
-                    radius: 35.0,
-                    backgroundImage: AssetImage(
-                      'assets/images/avatar.png',
-                    ),
-                  ),
-                  Text(
-                    name,
-                    textAlign: TextAlign.start,
-                    style: const TextStyle(
-                      fontSize: 18.0,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                ],
-              )
-            ],
+        appBar: AppBar(
+          title: const Text('Easy Shopping'),
+          backgroundColor: primaryColor,
+        ),
+        drawer: NavBar(
+          name: name,
+          email: email,
+          photo: photo,
+        ),
+        backgroundColor: Colors.white,
+        //body: message(),
+        body: SafeArea(
+            child: Container(
+          width: double.infinity,
+          margin:
+              const EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
+          padding: const EdgeInsets.all(defaultPadding),
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
-        )*/
-    );
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(
+                  height: 20,
+                ),
+                ////////////////////////////////////////////////////////////////
+                FutureBuilder<bool>(
+                    future: message(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                      if (!snapshot.hasData) {
+                        // not loaded
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        // some error
+                        return Column(children: const [
+                          Text(
+                            "Lo sentimos, ha ocurrido un error",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 100,
+                          ),
+                          Icon(
+                            Icons.close,
+                            size: 100,
+                          ),
+                        ]);
+                      } else {
+                        // loaded
+                        bool? valid = snapshot.data;
+                        if (valid!) {
+                          return Column(children: const [
+                            Text("Sí hay datos"),
+                            Icon(Icons.check),
+                          ]);
+                        }
+                      }
+                      return Center(
+                          child: Column(children: const [
+                        SizedBox(
+                          height: 100,
+                        ),
+                        Text(
+                          "¡Ups! Parece que no se encuentra registrado. Vaya a la sección de Tokens para registrarse y continuar usando nuestros servicios.",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 100,
+                        ),
+                        Icon(
+                          Icons.sentiment_very_dissatisfied,
+                          size: 100,
+                        ),
+                      ]));
+                    }),
+                ////////////////////////////////////////////////////////////////
+              ],
+            ),
+          ),
+        )));
   }
 }
