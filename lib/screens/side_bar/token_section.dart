@@ -1,7 +1,7 @@
 import 'package:easy_shopping/auth/google_sign_in_provider.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
-import 'package:easy_shopping/screens/mainscreen.dart';
+import 'package:easy_shopping/screens/main_screens/mainscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 

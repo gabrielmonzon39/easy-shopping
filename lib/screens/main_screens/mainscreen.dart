@@ -2,6 +2,7 @@
 
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
+import 'package:easy_shopping/screens/main_screens/store_manager.dart';
 import 'package:easy_shopping/screens/side_bar/nav_bar.dart';
 import 'package:flutter/material.dart';
 
@@ -111,10 +112,26 @@ class Mainscreen extends StatelessWidget {
                         // loaded
                         bool? valid = snapshot.data;
                         if (valid!) {
-                          return Column(children: const [
-                            Text("Sí hay datos"),
-                            Icon(Icons.check),
-                          ]);
+                          switch (currentRoll) {
+                            case USER:
+                              return const Text("Esta es la vista de usuario.");
+                            case STORE_MANAGER:
+                              return StoreManagerMainScreen();
+                            case PROJECT_MANAGER:
+                              return const Text(
+                                  "Esta es la vista de project manager.");
+                            case DELIVERY_MAN:
+                              return const Text(
+                                  "Esta es la vista de delivery man.");
+                            case PROVIDER:
+                              return const Text(
+                                  "Esta es la vista de provider.");
+                            case SUPER_ADMIN:
+                              return const Text(
+                                  "Esta es la vista de super admin.");
+                            case NONE:
+                              return const Text("Ha ocurrido un error.");
+                          }
                         }
                       }
                       return Center(

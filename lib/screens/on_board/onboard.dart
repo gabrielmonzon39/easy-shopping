@@ -7,7 +7,7 @@ import 'package:easy_shopping/model/onboard_page_item.dart';
 import 'package:easy_shopping/components/fading_sliding_widget.dart';
 import 'package:easy_shopping/screens/on_board/welcome_page.dart';
 import 'package:easy_shopping/screens/on_board/onboard_page.dart';
-import 'package:easy_shopping/screens/mainscreen.dart';
+import 'package:easy_shopping/screens/main_screens/mainscreen.dart';
 import 'package:easy_shopping/auth/google_sign_in_provider.dart';
 
 class Onboard extends StatefulWidget {

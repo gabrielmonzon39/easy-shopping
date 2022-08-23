@@ -8,6 +8,7 @@ const String STORE_MANAGER = "store_manager";
 const String PROJECT_MANAGER = "project_manager";
 const String DELIVERY_MAN = "delivery_man";
 const String PROVIDER = "provider";
+const String SUPER_ADMIN = "admin";
 
 String currentRoll = "none";
 String? uid;
@@ -125,20 +126,42 @@ class FirebaseFS {
         .doc(token)
         .update({'remaining': remaining});
 
-    // change roll to USER
+    // change roll
     String role = tokenDetail.get('role');
     FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
         .update({'role': role});
+
     currentRoll = role;
 
-    // associate user to the house provided by the token
-    String homeId = tokenDetail.get("home_id");
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .update({'home_id': homeId});
+    switch (currentRoll) {
+      case USER:
+        // associate user to the house provided by the token
+        String homeId = tokenDetail.get("home_id");
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(uid)
+            .update({'home_id': homeId});
+        break;
+      case STORE_MANAGER:
+        // associate user to the store provided by the token
+        String storeId = tokenDetail.get("store_id");
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(uid)
+            .update({'store_id': storeId});
+        break;
+      case PROJECT_MANAGER:
+
+      case DELIVERY_MAN:
+
+      case PROVIDER:
+
+      case SUPER_ADMIN:
+
+      case NONE:
+    }
 
     return true;
   }
