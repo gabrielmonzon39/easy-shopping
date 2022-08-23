@@ -117,16 +117,19 @@ class _OnboardState extends State<Onboard> with SingleTickerProviderStateMixin {
                   return;
                 }
                 uid = user.uid;
+                final String? name =
+                    GoogleSignInProvider.provider!.user.displayName;
+                final String email = GoogleSignInProvider.provider!.user.email;
+                final String? photo =
+                    GoogleSignInProvider.provider!.user.photoUrl;
                 currentRoll = await FirebaseFS.getRole();
+                await FirebaseFS.addCredentials(uid!, name!, email);
                 // ignore: use_build_context_synchronously
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => Mainscreen(
-                          name: GoogleSignInProvider.provider!.user.displayName,
-                          email: GoogleSignInProvider.provider!.user.email,
-                          photo: GoogleSignInProvider.provider!.user.photoUrl,
-                          uid: uid),
+                          name: name, email: email, photo: photo, uid: uid),
                     ));
               },
               child: FadingSlidingWidget(

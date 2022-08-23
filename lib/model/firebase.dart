@@ -11,6 +11,7 @@ const String PROVIDER = "provider";
 
 String currentRoll = "none";
 String? uid;
+String? homeId;
 
 class FirebaseFS {
   static Future<bool> isAssociatedUser(String uid) async {
@@ -20,11 +21,57 @@ class FirebaseFS {
     return userDetail.get('role') != "none";
   }
 
+  static Future<String> getHomeOf(String uid) async {
+    FirebaseFirestore instance = FirebaseFirestore.instance;
+    DocumentSnapshot? userDetail;
+    String? homeId;
+    try {
+      userDetail = await instance.collection('users').doc(uid).get();
+      homeId = userDetail.get('home_id');
+      return homeId!;
+    } catch (e) {}
+    return "0";
+  }
+
+  static Future<QuerySnapshot<Map<String, dynamic>>> getUsers() async {
+    FirebaseFirestore instance = FirebaseFirestore.instance;
+    return instance.collection('users').get();
+  }
+
   static void changeRole(String uid, String role) {
     FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
         .update({'role': role});
+  }
+
+  static Future<String> saveHomeId() async {
+    DocumentSnapshot userDetail =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
+    try {
+      homeId = userDetail.get('home_id');
+    } catch (e) {
+      return NONE;
+    }
+    return homeId!;
+  }
+
+  static Future<String> getName(String uid) async {
+    DocumentSnapshot userDetail =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
+    try {
+      return userDetail.get('name');
+    } catch (e) {}
+    return NONE;
+  }
+
+  static Future<String> getEmail(String uid) async {
+    DocumentSnapshot userDetail =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
+    try {
+      return userDetail.get('email');
+    } catch (e) {}
+    return NONE;
   }
 
   static Future<String> getRole() async {
@@ -39,10 +86,18 @@ class FirebaseFS {
       FirebaseFirestore.instance
           .collection('users')
           .doc(uid)
-          .set({'role': NONE});
+          .set({'role': NONE, 'name': NONE, 'email': NONE});
       return NONE;
     }
     return userDetail.get('role');
+  }
+
+  static Future<void> addCredentials(
+      String uid, String name, String email) async {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .update({'name': name, 'email': email});
   }
 
   static Future<bool> addToken(String token) async {

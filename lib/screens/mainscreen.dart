@@ -43,8 +43,9 @@ class Mainscreen extends StatelessWidget {
     );
   }
 
-  Future<bool> message() async {
+  Future<bool> validUser() async {
     bool valid = await FirebaseFS.isAssociatedUser(uid);
+    FirebaseFS.saveHomeId();
     return valid;
   }
 
@@ -81,7 +82,7 @@ class Mainscreen extends StatelessWidget {
                 ),
                 ////////////////////////////////////////////////////////////////
                 FutureBuilder<bool>(
-                    future: message(),
+                    future: validUser(),
                     builder:
                         (BuildContext context, AsyncSnapshot<bool> snapshot) {
                       if (!snapshot.hasData) {

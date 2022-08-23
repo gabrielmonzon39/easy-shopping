@@ -1,16 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class FamilySection extends StatelessWidget {
   final controllerKey = TextEditingController();
 
   FamilySection({Key? key}) : super(key: key);
-
-  Future<bool> getData() async {
-    bool valid = await FirebaseFS.isAssociatedUser(uid!);
-    return valid;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,89 +33,84 @@ class FamilySection extends StatelessWidget {
                 const SizedBox(
                   height: 20,
                 ),
-                const Text(
-                  "Los familiares o amigos que se encuentran asociados a su casa son:",
-                  style: TextStyle(
+                Text(
+                  "Casa: $homeId",
+                  style: const TextStyle(
                     fontSize: 21,
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
                   ),
                 ),
                 const SizedBox(
-                  height: 50,
+                  height: 30,
                 ),
-                const SizedBox(
-                  height: 50,
-                ),
-                SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      ////////////////////////////////////////////////////////////////
-                      FutureBuilder<bool>(
-                          future: getData(),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<bool> snapshot) {
-                            if (!snapshot.hasData) {
-                              // not loaded
-                              return const CircularProgressIndicator();
-                            } else if (snapshot.hasError) {
-                              // some error
-                              return Column(children: const [
-                                Text(
-                                  "Lo sentimos, ha ocurrido un error",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 100,
-                                ),
-                                Icon(
-                                  Icons.close,
-                                  size: 100,
-                                ),
-                              ]);
-                            } else {
-                              // loaded
-                              bool? valid = snapshot.data;
-                              if (valid!) {
-                                return Column(children: const [
-                                  Text("Sí hay datos"),
-                                  Icon(Icons.check),
-                                ]);
-                              }
-                            }
-                            return Center(
-                                child: Column(children: const [
-                              SizedBox(
-                                height: 100,
-                              ),
-                              Text(
-                                "¡Ups! Parece que no se encuentra registrado. Vaya a la sección de Tokens para registrarse y continuar usando nuestros servicios.",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 100,
-                              ),
-                              Icon(
-                                Icons.sentiment_very_dissatisfied,
-                                size: 100,
-                              ),
-                            ]));
-                          }),
-                      ////////////////////////////////////////////////////////////////
-                    ],
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ////////////////////////////////////////////////////////////////
+                    StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('users')
+                          .snapshots(),
+                      builder:
+                          (ctx, AsyncSnapshot<QuerySnapshot> usersnapshot) {
+                        if (usersnapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        } else {
+                          return ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            itemCount: usersnapshot.data!.docs.length,
+                            itemBuilder: (context, index) {
+                              QueryDocumentSnapshot<Object?>? document =
+                                  usersnapshot.data?.docs[index];
+                              try {
+                                if (document!.get('home_id') == homeId) {
+                                  return Card(
+                                    color: Colors.amber[50],
+                                    margin: const EdgeInsets.all(15),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(25.0),
+                                    ),
+                                    elevation: 5,
+                                    shadowColor: Colors.pink[50],
+                                    child: Container(
+                                      margin: const EdgeInsets.all(10),
+                                      child: ListTile(
+                                        leading: const Icon(
+                                          Icons.face,
+                                          size: 50,
+                                        ),
+                                        title: Text(
+                                          document.get('name'),
+                                          style: const TextStyle(
+                                              fontSize: 19,
+                                              color: Colors.black),
+                                        ),
+                                        subtitle: Text(
+                                          document.get('email'),
+                                          style: const TextStyle(
+                                              fontSize: 13,
+                                              color: Colors.black),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                }
+                              } catch (e) {}
+                              return const SizedBox(
+                                width: 0,
+                                height: 0,
+                              );
+                            },
+                          );
+                        }
+                      },
+                    )
+                    ////////////////////////////////////////////////////////////////
+                  ],
                 ),
                 const SizedBox(
                   height: 20,
