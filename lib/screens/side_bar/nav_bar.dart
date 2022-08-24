@@ -103,7 +103,7 @@ class NavBar extends StatelessWidget {
                 // ignore: use_build_context_synchronously
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => MyApp()),
+                  MaterialPageRoute(builder: (context) => const MyApp()),
                 );
               },
             ),

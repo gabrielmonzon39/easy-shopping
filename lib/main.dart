@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           title: 'Easy Shopping',
           theme: ThemeData(primaryColor: const Color(0xFF4A00E0)),
-          home: Onboard(),
+          home: const Onboard(),
           builder: EasyLoading.init(),
         ),
       );

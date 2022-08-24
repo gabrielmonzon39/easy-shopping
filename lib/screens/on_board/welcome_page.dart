@@ -1,7 +1,11 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:easy_shopping/components/fading_sliding_widget.dart';
 
 class WelcomePage extends StatefulWidget {
+  const WelcomePage({Key? key}) : super(key: key);
+
   @override
   _WelcomeState createState() => _WelcomeState();
 }
@@ -62,7 +66,8 @@ class _WelcomeState extends State<WelcomePage>
                 scale: _animationController.drive(
                   Tween<double>(begin: 0.3, end: 1.0).chain(
                     CurveTween(
-                      curve: Interval(0.0, 0.2, curve: Curves.elasticInOut),
+                      curve:
+                          const Interval(0.0, 0.2, curve: Curves.elasticInOut),
                     ),
                   ),
                 ),
@@ -70,7 +75,8 @@ class _WelcomeState extends State<WelcomePage>
                   opacity: _animationController.drive(
                     Tween<double>(begin: 0.0, end: 1.0).chain(
                       CurveTween(
-                        curve: Interval(0.2, 0.4, curve: Curves.decelerate),
+                        curve:
+                            const Interval(0.2, 0.4, curve: Curves.decelerate),
                       ),
                     ),
                   ),
@@ -78,7 +84,8 @@ class _WelcomeState extends State<WelcomePage>
                     scale: _animationController.drive(
                       Tween<double>(begin: 1.3, end: 1.0).chain(
                         CurveTween(
-                          curve: Interval(0.2, 0.4, curve: Curves.elasticInOut),
+                          curve: const Interval(0.2, 0.4,
+                              curve: Curves.elasticInOut),
                         ),
                       ),
                     ),
@@ -117,7 +124,7 @@ class _WelcomeState extends State<WelcomePage>
               SizedBox(
                 height: height * 0.2,
               ),
-              Container(
+              SizedBox(
                 width: width * 0.9,
                 child: FadingSlidingWidget(
                   animationController: _animationController,

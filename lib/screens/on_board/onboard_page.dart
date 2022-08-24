@@ -1,3 +1,5 @@
+// ignore_for_file: use_key_in_widget_constructors, library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:easy_shopping/components/fading_sliding_widget.dart';
@@ -44,11 +46,9 @@ class _OnboardState extends State<OnboardPage>
                 ..duration = composition.duration
                 ..forward()
                 ..addListener(() {
-                  if (widget.onboardPageItem.animationDuration != null) {
-                    if (_animationController.lastElapsedDuration! >
-                        widget.onboardPageItem.animationDuration) {
-                      _animationController.stop();
-                    }
+                  if (_animationController.lastElapsedDuration! >
+                      widget.onboardPageItem.animationDuration) {
+                    _animationController.stop();
                   }
                 });
             },

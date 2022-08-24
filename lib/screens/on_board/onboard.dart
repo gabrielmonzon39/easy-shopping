@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:easy_shopping/model/firebase.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +13,8 @@ import 'package:easy_shopping/screens/main_screens/mainscreen.dart';
 import 'package:easy_shopping/auth/google_sign_in_provider.dart';
 
 class Onboard extends StatefulWidget {
+  const Onboard({Key? key}) : super(key: key);
+
   @override
   _OnboardState createState() => _OnboardState();
 }
@@ -64,7 +68,7 @@ class _OnboardState extends State<Onboard> with SingleTickerProviderStateMixin {
   }
 
   initializePages() {
-    onboardItems.add(WelcomePage()); // welcome page
+    onboardItems.add(const WelcomePage()); // welcome page
     for (var onboardPageItem in onboardPageItems) {
       //adding onboard pages
       onboardItems.add(OnboardPage(
@@ -97,7 +101,7 @@ class _OnboardState extends State<Onboard> with SingleTickerProviderStateMixin {
                 dotHeight: width * 0.03,
                 dotColor: onboardPage
                     ? const Color(0x11000000)
-                    : const Color(0x566FFFFFF),
+                    : const Color(0x566fffff),
                 activeDotColor: onboardPage
                     ? const Color(0xFF9544d0)
                     : const Color(0xFFFFFFFF),
