@@ -88,7 +88,9 @@ class Mainscreen extends StatelessWidget {
                         (BuildContext context, AsyncSnapshot<bool> snapshot) {
                       if (!snapshot.hasData) {
                         // not loaded
-                        return const CircularProgressIndicator();
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
                       } else if (snapshot.hasError) {
                         // some error
                         return Column(children: const [
@@ -116,7 +118,7 @@ class Mainscreen extends StatelessWidget {
                             case USER:
                               return const Text("Esta es la vista de usuario.");
                             case STORE_MANAGER:
-                              return StoreManagerMainScreen();
+                              return const StoreManagerMainScreen();
                             case PROJECT_MANAGER:
                               return const Text(
                                   "Esta es la vista de project manager.");

@@ -38,6 +38,10 @@ dependencies:
   provider: ^5.0.0
   flutter_svg: ^0.22.0
 
+  # upload files to firebase
+  firebase_storage: ^8.0.3
+  file_picker: ^3.0.1
+
   # misc
   select_form_field: "^1.0.0"
   flutter_easyloading: ^3.0.3

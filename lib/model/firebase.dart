@@ -34,6 +34,26 @@ class FirebaseFS {
     return "0";
   }
 
+  static Future<String> getStoreId(String uid) async {
+    FirebaseFirestore instance = FirebaseFirestore.instance;
+    DocumentSnapshot? userDetail;
+    String? storeId;
+    try {
+      userDetail = await instance.collection('users').doc(uid).get();
+      storeId = userDetail.get('store_id');
+      return storeId!;
+    } catch (e) {}
+    return "0";
+  }
+
+  static Future<DocumentSnapshot?> getStoreDetails(String storeId) async {
+    FirebaseFirestore instance = FirebaseFirestore.instance;
+    try {
+      return await instance.collection('stores').doc(storeId).get();
+    } catch (e) {}
+    return null;
+  }
+
   static Future<QuerySnapshot<Map<String, dynamic>>> getUsers() async {
     FirebaseFirestore instance = FirebaseFirestore.instance;
     return instance.collection('users').get();
@@ -99,6 +119,18 @@ class FirebaseFS {
         .collection('users')
         .doc(uid)
         .update({'name': name, 'email': email});
+  }
+
+  static Future<void> addProduct(String storeId, String name,
+      String description, String price, String quantity, String image) async {
+    FirebaseFirestore.instance.collection('products').add({
+      'store_id': storeId,
+      'name': name,
+      'description': description,
+      'price': int.parse(price),
+      'quantity': int.parse(quantity),
+      'image': image
+    });
   }
 
   static Future<bool> addToken(String token) async {

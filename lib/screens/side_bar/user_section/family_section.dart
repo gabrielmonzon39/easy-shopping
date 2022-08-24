@@ -6,9 +6,7 @@ import 'package:easy_shopping/model/firebase.dart';
 import 'package:flutter/material.dart';
 
 class FamilySection extends StatelessWidget {
-  final controllerKey = TextEditingController();
-
-  FamilySection({Key? key}) : super(key: key);
+  const FamilySection({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
