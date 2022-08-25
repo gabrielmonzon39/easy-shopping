@@ -94,7 +94,7 @@ class InformationSectionBuilder extends State<InformationSection> {
                             // loaded
                             bool? valid = snapshot.data;
                             if (valid!) {
-                              return StoreServiceView(
+                              return InformationStoreServiceView(
                                   name: name,
                                   description: description,
                                   imageURL: imageURL);
