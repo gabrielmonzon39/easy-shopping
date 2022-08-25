@@ -3,7 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
-import 'package:easy_shopping/widgets/store_service_view.dart';
+import 'package:easy_shopping/widgets/information_store_service_view.dart';
 import 'package:flutter/material.dart';
 
 class StoreInformationSection extends StatefulWidget {

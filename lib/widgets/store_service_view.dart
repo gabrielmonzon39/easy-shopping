@@ -1,67 +1,95 @@
 // ignore_for_file: must_be_immutable
+import 'package:easy_shopping/constants.dart';
+import 'package:easy_shopping/screens/extra/user/store_products.dart';
 import 'package:flutter/material.dart';
 
-class InformationStoreServiceView extends StatelessWidget {
+class StoreServiceView extends StatelessWidget {
   String? name;
   String? description;
   String? imageURL;
+  String? storeId;
 
-  InformationStoreServiceView(
+  StoreServiceView(
       {Key? key,
       @required this.name,
       @required this.description,
-      @required this.imageURL})
+      @required this.imageURL,
+      @required this.storeId})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Row(
+    return ElevatedButton(
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.resolveWith<Color>(
+            (Set<MaterialState> states) {
+              return ternaryColor;
+            },
+          ),
+        ),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => StoreProduct(
+                      storeId: storeId,
+                      name: name,
+                    )),
+          );
+        },
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.network(
-              imageURL!,
-              width: 200,
+            const SizedBox(
+              height: 10,
             ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 16, top: 8, bottom: 8),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Center(
-                      child: Text(
-                        name!,
-                        textAlign: TextAlign.left,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 35,
-                        ),
-                      ),
-                    )
-                  ],
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Image.network(
+                  imageURL!,
+                  width: 100,
                 ),
-              ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 16, top: 8, bottom: 8),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Center(
+                          child: Text(
+                            name!,
+                            textAlign: TextAlign.left,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          description!,
+                          textAlign: TextAlign.left,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
             ),
           ],
-        ),
-        const SizedBox(
-          height: 30,
-        ),
-        Text(
-          description!,
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-            color: Colors.black,
-          ),
-        ),
-      ],
-    );
+        ));
   }
 }

@@ -46,6 +46,21 @@ class FirebaseFS {
     return "0";
   }
 
+  static Future<String> getProjectId(String uid) async {
+    FirebaseFirestore instance = FirebaseFirestore.instance;
+    DocumentSnapshot? documentDetails;
+    String? homeId;
+    String? projectId;
+    try {
+      documentDetails = await instance.collection('users').doc(uid).get();
+      homeId = documentDetails.get('home_id');
+      documentDetails = await instance.collection('homes').doc(homeId).get();
+      projectId = documentDetails.get('project_id');
+      return projectId!;
+    } catch (e) {}
+    return "0";
+  }
+
   static Future<DocumentSnapshot?> getStoreDetails(String storeId) async {
     FirebaseFirestore instance = FirebaseFirestore.instance;
     try {

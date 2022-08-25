@@ -9,6 +9,7 @@ import 'package:easy_shopping/screens/side_bar/user_section/family_section.dart'
 import 'package:easy_shopping/screens/side_bar/options_conditions.dart';
 import 'package:easy_shopping/screens/side_bar/general_section/token_section.dart';
 import 'package:easy_shopping/screens/side_bar/user_section/information_section.dart';
+import 'package:easy_shopping/screens/side_bar/user_section/store_section.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
@@ -70,7 +71,13 @@ class NavBar extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.store),
               title: const Text('Tiendas'),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const StoresSection()),
+                );
+              },
             ),
           if (OptionConditions.stores()) const Divider(),
 

@@ -3,32 +3,34 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
-import 'package:easy_shopping/widgets/product_view.dart';
+import 'package:easy_shopping/widgets/store_service_view.dart';
 import 'package:flutter/material.dart';
 
-class ProductsSection extends StatefulWidget {
-  const ProductsSection({Key? key}) : super(key: key);
+class StoresSection extends StatefulWidget {
+  const StoresSection({Key? key}) : super(key: key);
   @override
-  ProductsSectionBuilder createState() => ProductsSectionBuilder();
+  StoresSectionBuilder createState() => StoresSectionBuilder();
 }
 
-class ProductsSectionBuilder extends State<ProductsSection> {
+class StoresSectionBuilder extends State<StoresSection> {
   String? id;
   bool availableRefresh = true;
 
-  Future<void> calculateStoreId() async {
-    final storeId = await FirebaseFS.getStoreId(uid!);
+  Future<void> calculateProjectId() async {
+    final projectId = await FirebaseFS.getProjectId(uid!);
     availableRefresh = false;
-    id = storeId;
+    setState(() {
+      id = projectId;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (availableRefresh) calculateStoreId();
+    if (availableRefresh) calculateProjectId();
     return Scaffold(
         appBar: AppBar(
           backgroundColor: secondaryColor,
-          title: const Text("Mis productos"),
+          title: const Text("Tiendas"),
         ),
         body: Container(
           width: double.infinity,
@@ -36,7 +38,7 @@ class ProductsSectionBuilder extends State<ProductsSection> {
               const EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
           padding: const EdgeInsets.all(defaultPadding),
           decoration: const BoxDecoration(
-            color: secondaryColor,
+            color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
           child: SingleChildScrollView(
@@ -44,7 +46,7 @@ class ProductsSectionBuilder extends State<ProductsSection> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(
-                  height: 50,
+                  height: 10,
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,7 +54,7 @@ class ProductsSectionBuilder extends State<ProductsSection> {
                     ////////////////////////////////////////////////////////////////
                     StreamBuilder<QuerySnapshot>(
                       stream: FirebaseFirestore.instance
-                          .collection('products')
+                          .collection('stores')
                           .snapshots(),
                       builder:
                           (ctx, AsyncSnapshot<QuerySnapshot> usersnapshot) {
@@ -69,21 +71,15 @@ class ProductsSectionBuilder extends State<ProductsSection> {
                               QueryDocumentSnapshot<Object?>? document =
                                   usersnapshot.data?.docs[index];
                               try {
-                                if (document!.get('store_id') == id!) {
-                                  return ProductView(
+                                if (document!.get('project_id') == id!) {
+                                  return StoreServiceView(
                                     name: document.get('name'),
                                     description: document.get('description'),
-                                    price: document.get('price').toString(),
-                                    quantity:
-                                        document.get('quantity').toString(),
                                     imageURL: document.get('image'),
-                                    isUser: false,
+                                    storeId: document.id,
                                   );
                                 }
-                              } catch (e) {
-                                //print(e.toString());
-                                //print("Fallooo");
-                              }
+                              } catch (e) {}
                               return const SizedBox(
                                 width: 0,
                                 height: 0,

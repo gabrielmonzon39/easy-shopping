@@ -1,34 +1,34 @@
-// ignore_for_file: empty_catches, must_be_immutable
+// ignore_for_file: empty_catches, must_be_immutable, no_logic_in_create_state
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_shopping/constants.dart';
-import 'package:easy_shopping/model/firebase.dart';
 import 'package:easy_shopping/widgets/product_view.dart';
 import 'package:flutter/material.dart';
 
-class ProductsSection extends StatefulWidget {
-  const ProductsSection({Key? key}) : super(key: key);
+class StoreProduct extends StatefulWidget {
+  String? storeId;
+  String? name;
+
+  StoreProduct({Key? key, @required this.storeId, @required this.name})
+      : super(key: key);
   @override
-  ProductsSectionBuilder createState() => ProductsSectionBuilder();
+  StoreProductBuilder createState() =>
+      StoreProductBuilder(storeId: storeId, name: name);
 }
 
-class ProductsSectionBuilder extends State<ProductsSection> {
-  String? id;
+class StoreProductBuilder extends State<StoreProduct> {
+  String? storeId;
+  String? name;
   bool availableRefresh = true;
 
-  Future<void> calculateStoreId() async {
-    final storeId = await FirebaseFS.getStoreId(uid!);
-    availableRefresh = false;
-    id = storeId;
-  }
+  StoreProductBuilder({@required this.storeId, @required this.name});
 
   @override
   Widget build(BuildContext context) {
-    if (availableRefresh) calculateStoreId();
     return Scaffold(
         appBar: AppBar(
           backgroundColor: secondaryColor,
-          title: const Text("Mis productos"),
+          title: Text(name!),
         ),
         body: Container(
           width: double.infinity,
@@ -44,7 +44,7 @@ class ProductsSectionBuilder extends State<ProductsSection> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(
-                  height: 50,
+                  height: 10,
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,7 +69,7 @@ class ProductsSectionBuilder extends State<ProductsSection> {
                               QueryDocumentSnapshot<Object?>? document =
                                   usersnapshot.data?.docs[index];
                               try {
-                                if (document!.get('store_id') == id!) {
+                                if (document!.get('store_id') == storeId!) {
                                   return ProductView(
                                     name: document.get('name'),
                                     description: document.get('description'),
@@ -77,7 +77,7 @@ class ProductsSectionBuilder extends State<ProductsSection> {
                                     quantity:
                                         document.get('quantity').toString(),
                                     imageURL: document.get('image'),
-                                    isUser: false,
+                                    isUser: true,
                                   );
                                 }
                               } catch (e) {
