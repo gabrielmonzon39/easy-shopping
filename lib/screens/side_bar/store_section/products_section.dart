@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
+import 'package:easy_shopping/widgets/product_view.dart';
 import 'package:flutter/material.dart';
 
 class ProductsSection extends StatefulWidget {
@@ -71,37 +72,15 @@ class ProductsSectionBuilder extends State<ProductsSection> {
                                   usersnapshot.data?.docs[index];
                               try {
                                 if (document!.get('store_id') == id!) {
-                                  print("--------- " + document.get('image'));
-                                  return Card(
-                                    color: Colors.amber[50],
-                                    margin: const EdgeInsets.all(15),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(25.0),
-                                    ),
-                                    elevation: 5,
-                                    shadowColor: Colors.pink[50],
-                                    child: Container(
-                                      margin: const EdgeInsets.all(10),
-                                      child: ListTile(
-                                        leading: Image.network(
-                                          'https://firebasestorage.googleapis.com/v0/b/easy-shopping-01.appspot.com/o/000%2Fs1%2FFB_IMG_1660967824513.jpg?alt=media&token=86bff2bc-ff3a-4cca-b612-8b47e03ade43',
-                                          width: 50,
-                                        ),
-                                        title: Text(
-                                          document.get('name'),
-                                          style: const TextStyle(
-                                              fontSize: 19,
-                                              color: Colors.black),
-                                        ),
-                                        subtitle: Text(
-                                          'Q${document.get('price')}\tUnidades:${document.get('quantity')}',
-                                          style: const TextStyle(
-                                              fontSize: 13,
-                                              color: Colors.black),
-                                        ),
-                                      ),
-                                    ),
-                                  );
+                                  String imageURL = document.get('image');
+                                  //print("--------${document.get('image')}");
+                                  return ProductView(
+                                      name: document.get('name'),
+                                      description: document.get('description'),
+                                      price: document.get('price').toString(),
+                                      quantity:
+                                          document.get('quantity').toString(),
+                                      imageURL: imageURL);
                                 }
                               } catch (e) {
                                 print(e.toString());
@@ -120,10 +99,7 @@ class ProductsSectionBuilder extends State<ProductsSection> {
                   ],
                 ),
                 const SizedBox(
-                  height: 20,
-                ),
-                const SizedBox(
-                  height: 100,
+                  height: 500,
                 ),
               ],
             ),
