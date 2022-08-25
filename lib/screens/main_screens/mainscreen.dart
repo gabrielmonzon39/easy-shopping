@@ -32,18 +32,6 @@ class Mainscreen extends StatelessWidget {
     );
   }
 
-  static CircleAvatar calendarIcon() {
-    return const CircleAvatar(
-      radius: 25.0,
-      backgroundColor: secondaryColor,
-      child: Icon(
-        Icons.calendar_today,
-        size: 20.0,
-        color: Colors.white,
-      ),
-    );
-  }
-
   Future<bool> validUser() async {
     bool valid = await FirebaseFS.isAssociatedUser(uid);
     FirebaseFS.saveHomeId();

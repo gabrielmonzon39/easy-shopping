@@ -1,43 +1,37 @@
 // ignore_for_file: empty_catches, must_be_immutable
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
-import 'package:easy_shopping/widgets/store_service_view.dart';
+import 'package:easy_shopping/widgets/user_view.dart';
 import 'package:flutter/material.dart';
 
-class StoreInformationSection extends StatefulWidget {
-  const StoreInformationSection({Key? key}) : super(key: key);
+class UserInformationSection extends StatefulWidget {
+  const UserInformationSection({Key? key}) : super(key: key);
   @override
   InformationSectionBuilder createState() => InformationSectionBuilder();
 }
 
-class InformationSectionBuilder extends State<StoreInformationSection> {
-  String? id;
+class InformationSectionBuilder extends State<UserInformationSection> {
   String? name;
-  String? description;
+  String? email;
   String? imageURL;
+  String? creationTime;
+  String? lastSignInTime;
   bool availableRefresh = true;
 
-  Future<bool> calculateStoreId() async {
-    final storeId = await FirebaseFS.getStoreId(uid!);
-    DocumentSnapshot? storeDetails = await FirebaseFS.getStoreDetails(storeId);
-    if (storeDetails == null) return false;
-
-    name = storeDetails.get('name');
-    description = storeDetails.get('description');
-    imageURL = storeDetails.get('image');
-
+  Future<bool> calculateUSerInformation() async {
+    name = await FirebaseFS.getName(uid!);
+    email = await FirebaseFS.getEmail(uid!);
+    imageURL = await FirebaseFS.getPhoto(uid!);
+    creationTime = await FirebaseFS.getcreationTime(uid!);
+    lastSignInTime = await FirebaseFS.getlastSignInTime(uid!);
     availableRefresh = false;
-
-    id = storeId;
-
     return true;
   }
 
   @override
   Widget build(BuildContext context) {
-    if (availableRefresh) calculateStoreId();
+    if (availableRefresh) calculateUSerInformation();
     return Scaffold(
         appBar: AppBar(
           backgroundColor: secondaryColor,
@@ -61,7 +55,7 @@ class InformationSectionBuilder extends State<StoreInformationSection> {
                   children: [
                     ////////////////////////////////////////////////////////////////
                     FutureBuilder<bool>(
-                        future: calculateStoreId(),
+                        future: calculateUSerInformation(),
                         builder: (BuildContext context,
                             AsyncSnapshot<bool> snapshot) {
                           if (!snapshot.hasData) {
@@ -92,10 +86,12 @@ class InformationSectionBuilder extends State<StoreInformationSection> {
                             // loaded
                             bool? valid = snapshot.data;
                             if (valid!) {
-                              return InformationStoreServiceView(
+                              return InformationUserView(
                                   name: name,
-                                  description: description,
-                                  imageURL: imageURL);
+                                  email: email,
+                                  imageURL: imageURL,
+                                  creationTime: creationTime,
+                                  lastSignInTime: lastSignInTime);
                             }
                           }
                           return Center(

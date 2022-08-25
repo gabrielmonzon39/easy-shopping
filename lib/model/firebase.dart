@@ -95,6 +95,33 @@ class FirebaseFS {
     return NONE;
   }
 
+  static Future<String> getPhoto(String uid) async {
+    DocumentSnapshot userDetail =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
+    try {
+      return userDetail.get('photo');
+    } catch (e) {}
+    return NONE;
+  }
+
+  static Future<String> getcreationTime(String uid) async {
+    DocumentSnapshot userDetail =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
+    try {
+      return userDetail.get('creationTime');
+    } catch (e) {}
+    return NONE;
+  }
+
+  static Future<String> getlastSignInTime(String uid) async {
+    DocumentSnapshot userDetail =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
+    try {
+      return userDetail.get('lastSignInTime');
+    } catch (e) {}
+    return NONE;
+  }
+
   static Future<String> getRole() async {
     DocumentSnapshot userDetail =
         await FirebaseFirestore.instance.collection('users').doc(uid).get();
@@ -113,12 +140,15 @@ class FirebaseFS {
     return userDetail.get('role');
   }
 
-  static Future<void> addCredentials(
-      String uid, String name, String email) async {
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .update({'name': name, 'email': email});
+  static Future<void> addCredentials(String uid, String name, String email,
+      String photoUrl, String creationTime, String lastSignInTime) async {
+    FirebaseFirestore.instance.collection('users').doc(uid).update({
+      'name': name,
+      'email': email,
+      'photo': photoUrl,
+      'creationTime': creationTime,
+      'lastSignInTime': lastSignInTime
+    });
   }
 
   static Future<void> addProduct(String storeId, String name,

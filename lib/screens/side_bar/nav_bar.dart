@@ -8,6 +8,7 @@ import 'package:easy_shopping/screens/side_bar/store_section/products_section.da
 import 'package:easy_shopping/screens/side_bar/user_section/family_section.dart';
 import 'package:easy_shopping/screens/side_bar/options_conditions.dart';
 import 'package:easy_shopping/screens/side_bar/general_section/token_section.dart';
+import 'package:easy_shopping/screens/side_bar/user_section/information_section.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
@@ -64,14 +65,23 @@ class NavBar extends StatelessWidget {
             ),
           if (OptionConditions.familyAndFriends()) const Divider(),
 
-          /// **************  Tiendas y servicios  **************
-          if (OptionConditions.storesAndServices())
+          /// **************  Tiendas  **************
+          if (OptionConditions.stores())
             ListTile(
               leading: const Icon(Icons.store),
-              title: const Text('Tiendas y servicios'),
+              title: const Text('Tiendas'),
               onTap: () {},
             ),
-          if (OptionConditions.storesAndServices()) const Divider(),
+          if (OptionConditions.stores()) const Divider(),
+
+          /// **************  Servicios  **************
+          if (OptionConditions.services())
+            ListTile(
+              leading: const Icon(Icons.room_service),
+              title: const Text('Servicios'),
+              onTap: () {},
+            ),
+          if (OptionConditions.services()) const Divider(),
 
           /// **************  Historial de pedidos  **************
           if (OptionConditions.orderHistory())
@@ -90,6 +100,21 @@ class NavBar extends StatelessWidget {
               onTap: () {},
             ),
           if (OptionConditions.reservationsHistory()) const Divider(),
+
+          /// **************  Información  **************
+          if (OptionConditions.userInformation())
+            ListTile(
+              leading: const Icon(Icons.info),
+              title: const Text('Información'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const UserInformationSection()),
+                );
+              },
+            ),
+          if (OptionConditions.userInformation()) const Divider(),
 
           ///////////////////////////////////////////////////////////////
           /////////////////    STORE MANAGER OPTIONS    /////////////////
@@ -128,7 +153,7 @@ class NavBar extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const InformationSection()),
+                      builder: (context) => const StoreInformationSection()),
                 );
               },
             ),

@@ -19,9 +19,7 @@ class ProductsSectionBuilder extends State<ProductsSection> {
   Future<void> calculateStoreId() async {
     final storeId = await FirebaseFS.getStoreId(uid!);
     availableRefresh = false;
-    setState(() {
-      id = storeId;
-    });
+    id = storeId;
   }
 
   @override

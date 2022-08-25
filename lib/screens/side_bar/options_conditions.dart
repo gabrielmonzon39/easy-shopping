@@ -7,7 +7,11 @@ class OptionConditions {
     return currentRoll == USER;
   }
 
-  static bool storesAndServices() {
+  static bool stores() {
+    return currentRoll == USER;
+  }
+
+  static bool services() {
     return currentRoll == USER;
   }
 
@@ -16,6 +20,10 @@ class OptionConditions {
   }
 
   static bool reservationsHistory() {
+    return currentRoll == USER;
+  }
+
+  static bool userInformation() {
     return currentRoll == USER;
   }
 
