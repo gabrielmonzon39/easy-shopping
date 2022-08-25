@@ -3,6 +3,7 @@
 import 'package:easy_shopping/auth/google_sign_in_provider.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/main.dart';
+import 'package:easy_shopping/screens/side_bar/store_section/information_section.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/products_section.dart';
 import 'package:easy_shopping/screens/side_bar/user_section/family_section.dart';
 import 'package:easy_shopping/screens/side_bar/options_conditions.dart';
@@ -123,7 +124,13 @@ class NavBar extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.info),
               title: const Text('Información'),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const InformationSection()),
+                );
+              },
             ),
           if (OptionConditions.storeInformation()) const Divider(),
 

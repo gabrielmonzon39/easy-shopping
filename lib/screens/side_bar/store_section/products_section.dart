@@ -83,8 +83,8 @@ class ProductsSectionBuilder extends State<ProductsSection> {
                                       imageURL: imageURL);
                                 }
                               } catch (e) {
-                                print(e.toString());
-                                print("Fallooo");
+                                //print(e.toString());
+                                //print("Fallooo");
                               }
                               return const SizedBox(
                                 width: 0,
