@@ -178,6 +178,8 @@ class FirebaseFS {
     });
   }
 
+  //static Future<bool> buyProducts(String productId, )
+
   static Future<bool> addToken(String token) async {
     DocumentSnapshot tokenDetail =
         await FirebaseFirestore.instance.collection('tokens').doc(token).get();

@@ -1,5 +1,6 @@
 // ignore_for_file: must_be_immutable
 import 'package:easy_shopping/constants.dart';
+import 'package:easy_shopping/screens/extra/user/buy_product.dart';
 import 'package:flutter/material.dart';
 
 class ProductView extends StatelessWidget {
@@ -24,7 +25,19 @@ class ProductView extends StatelessWidget {
   Widget build(BuildContext context) {
     if (isUser!) {
       return ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => BuyProduct(
+                  name: name,
+                  description: description,
+                  price: price,
+                  quantity: quantity,
+                  imageURL: imageURL,
+                ),
+              ));
+        },
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.resolveWith<Color>(
             (Set<MaterialState> states) {

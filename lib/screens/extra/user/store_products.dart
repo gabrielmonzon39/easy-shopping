@@ -69,7 +69,8 @@ class StoreProductBuilder extends State<StoreProduct> {
                               QueryDocumentSnapshot<Object?>? document =
                                   usersnapshot.data?.docs[index];
                               try {
-                                if (document!.get('store_id') == storeId!) {
+                                if (document!.get('store_id') == storeId! &&
+                                    document.get('quantity') != 0) {
                                   return ProductView(
                                     name: document.get('name'),
                                     description: document.get('description'),
