@@ -4,6 +4,7 @@ import 'package:easy_shopping/screens/extra/user/buy_product.dart';
 import 'package:flutter/material.dart';
 
 class ProductView extends StatelessWidget {
+  String? id;
   String? name;
   String? description;
   String? price;
@@ -13,6 +14,7 @@ class ProductView extends StatelessWidget {
 
   ProductView(
       {Key? key,
+      @required this.id,
       @required this.name,
       @required this.description,
       @required this.price,
@@ -30,6 +32,7 @@ class ProductView extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => BuyProduct(
+                  id: id,
                   name: name,
                   description: description,
                   price: price,

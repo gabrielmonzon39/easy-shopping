@@ -71,6 +71,7 @@ class ProductsSectionBuilder extends State<ProductsSection> {
                               try {
                                 if (document!.get('store_id') == id!) {
                                   return ProductView(
+                                    id: id,
                                     name: document.get('name'),
                                     description: document.get('description'),
                                     price: document.get('price').toString(),

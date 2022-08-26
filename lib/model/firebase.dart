@@ -1,7 +1,9 @@
-// ignore_for_file: constant_identifier_names, empty_catches
+// ignore_for_file: constant_identifier_names, empty_catches, avoid_print
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+// person role
 const String NONE = "none";
 const String USER = "user";
 const String STORE_MANAGER = "store_manager";
@@ -9,6 +11,11 @@ const String PROJECT_MANAGER = "project_manager";
 const String DELIVERY_MAN = "delivery_man";
 const String PROVIDER = "provider";
 const String SUPER_ADMIN = "admin";
+
+// product state
+const String PREPARING = "preparing";
+const String ONTHEWAY = "on the way";
+const String SERVED = "served";
 
 String currentRoll = "none";
 String? uid;
@@ -178,7 +185,68 @@ class FirebaseFS {
     });
   }
 
-  //static Future<bool> buyProducts(String productId, )
+  static Future<bool> buyProducts(List<Map<dynamic, dynamic>> products) async {
+    int orderId = Random().nextInt(1000000);
+    int deliveryProcessId = Random().nextInt(1000000);
+    try {
+      ////////////////  MAKE THE ORDER
+      DocumentReference orderDocument = FirebaseFirestore.instance
+          .collection('orders')
+          .doc(orderId.toString());
+      orderDocument.set({
+        'delivery_processId': deliveryProcessId,
+        'products': products,
+        'user_id': uid,
+      });
+      //////////////// MAKE THE DELIVERY PROCESS
+      DocumentReference deliveryProcessDocument = FirebaseFirestore.instance
+          .collection('delivery_processes')
+          .doc(deliveryProcessId.toString());
+      deliveryProcessDocument.set({
+        'delivery_man_id': await getRandomDeliveryMan(),
+        'order_id': orderId,
+        'state': PREPARING,
+      });
+      //////////////// UPDATE THE QUANTITY AVAILABLE FOR EACH PRODUCT
+
+      for (Map<dynamic, dynamic> element in products) {
+        DocumentSnapshot productDetail = await FirebaseFirestore.instance
+            .collection('products')
+            .doc(element['product_id'])
+            .get();
+        int total = productDetail.get('quantity');
+        total -= int.parse(element['buy_quantity'].toString());
+        print("------------$total");
+        FirebaseFirestore.instance
+            .collection('products')
+            .doc(element['product_id'])
+            .update({'quantity': total});
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  static Future<String> getRandomDeliveryMan() async {
+    List<String>? deliveryMans = [NONE];
+    QuerySnapshot snap =
+        await FirebaseFirestore.instance.collection('users').get();
+    for (var document in snap.docs) {
+      try {
+        if (document.get('role') == DELIVERY_MAN) {
+          deliveryMans.add(document.get('delivery_man_id'));
+        }
+      } catch (e) {
+        continue;
+      }
+    }
+    int choice = 0;
+    while (choice == 0) {
+      choice = Random().nextInt(deliveryMans.length);
+    }
+    return deliveryMans[choice];
+  }
 
   static Future<bool> addToken(String token) async {
     DocumentSnapshot tokenDetail =

@@ -1,10 +1,12 @@
 // ignore_for_file: must_be_immutable, no_logic_in_create_state
 
 import 'package:easy_shopping/constants.dart';
+import 'package:easy_shopping/model/firebase.dart';
 import 'package:easy_shopping/screens/side_bar/user_section/store_section.dart';
 import 'package:flutter/material.dart';
 
 class BuyProduct extends StatefulWidget {
+  String? id;
   String? name;
   String? description;
   String? price;
@@ -14,6 +16,7 @@ class BuyProduct extends StatefulWidget {
 
   BuyProduct({
     Key? key,
+    @required this.id,
     @required this.name,
     @required this.description,
     @required this.price,
@@ -23,6 +26,7 @@ class BuyProduct extends StatefulWidget {
 
   @override
   BuyProductBuilder createState() => BuyProductBuilder(
+        id: id,
         name: name,
         description: description,
         price: price,
@@ -32,6 +36,7 @@ class BuyProduct extends StatefulWidget {
 }
 
 class BuyProductBuilder extends State<BuyProduct> {
+  String? id;
   String? name;
   String? description;
   String? price;
@@ -41,6 +46,7 @@ class BuyProductBuilder extends State<BuyProduct> {
 
   BuyProductBuilder({
     Key? key,
+    @required this.id,
     @required this.name,
     @required this.description,
     @required this.price,
@@ -137,7 +143,7 @@ class BuyProductBuilder extends State<BuyProduct> {
                       min: 1,
                       max: double.parse(quantity!),
                       value: buyQuantity,
-                      divisions: int.parse(quantity!),
+                      divisions: int.parse(quantity!) - 1,
                       activeColor: primaryColor,
                       inactiveColor: ternaryColor,
                       thumbColor: Colors.white,
@@ -158,6 +164,22 @@ class BuyProductBuilder extends State<BuyProduct> {
                           Center(
                             child: ElevatedButton(
                               onPressed: () async {
+                                Map<dynamic, dynamic> product = {
+                                  'product_id': id,
+                                  'buy_quantity':
+                                      int.parse(buyQuantity.toStringAsFixed(0)),
+                                };
+                                List<Map<dynamic, dynamic>> order = [product];
+                                bool result =
+                                    await FirebaseFS.buyProducts(order);
+                                if (!result) {
+                                  showDialog(
+                                      context: context,
+                                      builder: (ctx) => const AlertDialog(
+                                            title: Text("Ha ocurrido un error"),
+                                          ));
+                                  return;
+                                }
                                 showDialog(
                                   context: context,
                                   builder: (ctx) => AlertDialog(
@@ -243,12 +265,9 @@ class BuyProductBuilder extends State<BuyProduct> {
                       ),
                     ),
                     const SizedBox(
-                      height: 10,
+                      height: 20,
                     ),
                   ],
-                ),
-                const SizedBox(
-                  height: 500,
                 ),
               ],
             ),

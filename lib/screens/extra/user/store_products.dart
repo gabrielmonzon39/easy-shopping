@@ -72,6 +72,7 @@ class StoreProductBuilder extends State<StoreProduct> {
                                 if (document!.get('store_id') == storeId! &&
                                     document.get('quantity') != 0) {
                                   return ProductView(
+                                    id: document.id,
                                     name: document.get('name'),
                                     description: document.get('description'),
                                     price: document.get('price').toString(),
