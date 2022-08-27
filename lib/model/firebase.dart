@@ -229,7 +229,7 @@ class FirebaseFS {
   }
 
   static Future<String> getRandomDeliveryMan() async {
-    List<String>? deliveryMans = [NONE];
+    List<String>? deliveryMans = [];
     QuerySnapshot snap =
         await FirebaseFirestore.instance.collection('users').get();
     for (var document in snap.docs) {
