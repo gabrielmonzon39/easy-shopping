@@ -76,6 +76,14 @@ class FirebaseFS {
     return null;
   }
 
+  static Future<DocumentSnapshot?> getOrderDetails(String orderId) async {
+    FirebaseFirestore instance = FirebaseFirestore.instance;
+    try {
+      return await instance.collection('orders').doc(orderId).get();
+    } catch (e) {}
+    return null;
+  }
+
   static Future<QuerySnapshot<Map<String, dynamic>>> getUsers() async {
     FirebaseFirestore instance = FirebaseFirestore.instance;
     return instance.collection('users').get();
@@ -226,6 +234,53 @@ class FirebaseFS {
     } catch (e) {
       return false;
     }
+  }
+
+  static Future<List<String>> getDeliveryManIdAndStateFromOrder(
+      String deliveryProcessId) async {
+    QuerySnapshot snap =
+        await FirebaseFirestore.instance.collection('delivery_processes').get();
+    for (var document in snap.docs) {
+      try {
+        if (document.id == deliveryProcessId) {
+          return [document.get('delivery_man_id'), document.get('state')];
+        }
+      } catch (e) {
+        continue;
+      }
+    }
+    return [NONE];
+  }
+
+  static Future<List<String>> getDeliveryManInfo(String deliveryManId) async {
+    QuerySnapshot snap =
+        await FirebaseFirestore.instance.collection('users').get();
+    for (var document in snap.docs) {
+      try {
+        if (document.get('delivery_man_id') == deliveryManId) {
+          return [document.get('name'), document.get('email')];
+        }
+      } catch (e) {
+        continue;
+      }
+    }
+    return [NONE];
+  }
+
+  static Future<List<String>> getOrdersByUid(String uid) async {
+    List<String> result = [];
+    QuerySnapshot snap =
+        await FirebaseFirestore.instance.collection('orders').get();
+    for (var document in snap.docs) {
+      try {
+        if (document.get('user_id') == uid) {
+          result.add(document.id);
+        }
+      } catch (e) {
+        continue;
+      }
+    }
+    return result;
   }
 
   static Future<String> getRandomDeliveryMan() async {

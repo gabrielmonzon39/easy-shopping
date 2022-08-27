@@ -71,6 +71,7 @@ class OrderProducts extends StatelessWidget {
                 return const Center(child: CircularProgressIndicator());
               } else {
                 return ListView.builder(
+                  shrinkWrap: true,
                   itemCount: usersnapshot.data!.docs.length,
                   itemBuilder: (context, index) {
                     QueryDocumentSnapshot<Object?>? document =

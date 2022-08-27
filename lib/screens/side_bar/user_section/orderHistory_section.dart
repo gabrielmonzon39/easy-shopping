@@ -3,7 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
-import 'package:easy_shopping/widgets/order_products_view.dart';
+import 'package:easy_shopping/widgets/single_ordered_product_view.dart';
 import 'package:flutter/material.dart';
 
 class OrderHistorySection extends StatefulWidget {
@@ -13,6 +13,238 @@ class OrderHistorySection extends StatefulWidget {
 }
 
 class OrderHistoryBuilder extends State<OrderHistorySection> {
+  String? deliveryProcessId;
+  List<dynamic>? products;
+  List<Map<String, dynamic>> mapProducts = [];
+  String? state;
+  String? deliverManId;
+  String? deliverManIdName;
+  String? deliverManIdEmail;
+  List<Widget> listTemp = [];
+  List<Widget> list = [];
+  Widget? result;
+
+  void parse() {
+    for (dynamic map in products!) {
+      mapProducts.add(Map<String, dynamic>.from(map));
+    }
+  }
+
+  Future<void> getOrderedProducts() async {
+    String productId = "";
+    String buyQuantity = "";
+    int? total;
+    for (Map<String, dynamic> product in mapProducts) {
+      productId = product['product_id'];
+      buyQuantity = product['buy_quantity'].toString();
+      DocumentSnapshot productDetails = await FirebaseFirestore.instance
+          .collection('products')
+          .doc(productId)
+          .get();
+      total = (int.parse(buyQuantity) * productDetails.get('price')) as int?;
+      listTemp.add(Container(
+        width: double.infinity,
+        margin: const EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
+        padding: const EdgeInsets.all(defaultPadding),
+        decoration: const BoxDecoration(
+          color: ternaryColor,
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Text(
+                productDetails.get('name'),
+                textAlign: TextAlign.left,
+                style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 25,
+                    color: Colors.white),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Image.network(
+                    productDetails.get('image'),
+                    width: 150,
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 16, top: 8, bottom: 8),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          'Q${productDetails.get('price').toString()}',
+                          textAlign: TextAlign.left,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 22,
+                              color: Colors.white),
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          '$buyQuantity uds',
+                          textAlign: TextAlign.left,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 22,
+                              color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Text(
+              'Total: Q${total.toString()}',
+              textAlign: TextAlign.right,
+              style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 25,
+                  color: Colors.white),
+            ),
+          ],
+        ),
+      ));
+
+      listTemp.add(const SizedBox(
+        height: 10,
+      ));
+    }
+  }
+
+  Future<bool> orderByUid() async {
+    final orders = await FirebaseFS.getOrdersByUid(uid!);
+    for (String order in orders) {
+      DocumentSnapshot orderDetails = await FirebaseFirestore.instance
+          .collection('orders')
+          .doc(order)
+          .get();
+      deliveryProcessId = orderDetails.get('delivery_processId').toString();
+      products = orderDetails.get('products');
+      await getDeliveryManAndState();
+      parse();
+      listTemp.add(
+        const SizedBox(
+          height: 15,
+        ),
+      );
+      listTemp.add(Text(
+        'Número de compra: $deliveryProcessId',
+        textAlign: TextAlign.left,
+        style: const TextStyle(
+          fontWeight: FontWeight.w700,
+          color: Colors.white,
+          fontSize: 22,
+        ),
+      ));
+      listTemp.add(const SizedBox(
+        height: 40,
+      ));
+      listTemp.add(const Text(
+        'Entregado por: ',
+        style: TextStyle(fontSize: 19, color: Colors.white),
+      ));
+      ///////////////// DELIVERY MAN CARD ////////////////////////
+      listTemp.add(Card(
+        color: Colors.amber[50],
+        margin: const EdgeInsets.all(15),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(25.0),
+        ),
+        elevation: 5,
+        shadowColor: Colors.pink[50],
+        child: Container(
+          margin: const EdgeInsets.all(2),
+          child: ListTile(
+            leading: const Icon(
+              Icons.face,
+              size: 50,
+            ),
+            title: Text(
+              deliverManIdName!,
+              style: const TextStyle(fontSize: 19, color: Colors.black),
+            ),
+            subtitle: Text(
+              deliverManIdEmail!,
+              style: const TextStyle(fontSize: 13, color: Colors.black),
+            ),
+          ),
+        ),
+      ));
+      ////////////////////////////////////////////////////////////
+      listTemp.add(const SizedBox(
+        height: 20,
+      ));
+      listTemp.add(Text(
+        'Estado: $state',
+        style: const TextStyle(fontSize: 19, color: Colors.white),
+      ));
+      listTemp.add(
+        const SizedBox(
+          height: 20,
+        ),
+      );
+      await getOrderedProducts();
+      list.add(Container(
+        color: secondaryColor,
+        child: Column(children: listTemp),
+      ));
+      list.add(const SizedBox(
+        height: 20,
+      ));
+      listTemp = [];
+    }
+    result = Column(
+      children: list,
+    );
+    return true;
+  }
+
+  Future<void> getDeliveryManAndState() async {
+    print("-Se ejecuto");
+    List<String> data =
+        await FirebaseFS.getDeliveryManIdAndStateFromOrder(deliveryProcessId!);
+    deliverManId = data[0];
+    print("---- Asignando ${data[0]} a deliverManId que tiene $deliverManId");
+    state = data[1];
+    if (state == PREPARING) state = "Preparando";
+    if (state == ONTHEWAY) state = "En camino";
+    if (state == SERVED) state = "Finalizado";
+    List<String> data2 = await FirebaseFS.getDeliveryManInfo(deliverManId!);
+    deliverManIdName = data2[0];
+    deliverManIdEmail = data2[1];
+    print('$deliverManIdName -- $deliverManIdEmail');
+  }
+
+  void getDeliveryManInfo() async {
+    print("----ERROR-----$deliverManId");
+    List<String> data = await FirebaseFS.getDeliveryManInfo(deliverManId!);
+    deliverManIdName = data[0];
+    deliverManIdEmail = data[1];
+    print('$deliverManIdName -- $deliverManIdEmail');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,48 +272,67 @@ class OrderHistoryBuilder extends State<OrderHistorySection> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ////////////////////////////////////////////////////////////////
-                    StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection('orders')
-                          .snapshots(),
-                      builder:
-                          (ctx, AsyncSnapshot<QuerySnapshot> usersnapshot) {
-                        if (usersnapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        } else {
-                          return ListView.builder(
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            itemCount: usersnapshot.data!.docs.length,
-                            itemBuilder: (context, index) {
-                              QueryDocumentSnapshot<Object?>? document =
-                                  usersnapshot.data?.docs[index];
-                              try {
-                                if (document!.get('user_id') == uid) {
-                                  return OrderProducts(
-                                    deliveryProcessId: document
-                                        .get('delivery_processId')
-                                        .toString(),
-                                    products: document.get('products'),
-                                  );
-                                }
-                              } catch (e) {}
-                              return const SizedBox(
-                                width: 0,
-                                height: 0,
-                              );
-                            },
-                          );
-                        }
-                      },
-                    )
-                    ////////////////////////////////////////////////////////////////
+                    FutureBuilder<bool>(
+                        future: orderByUid(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<bool> snapshot) {
+                          if (!snapshot.hasData) {
+                            // not loaded
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          } else if (snapshot.hasError) {
+                            // some error
+                            return Column(children: const [
+                              Text(
+                                "Lo sentimos, ha ocurrido un error",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 100,
+                              ),
+                              Icon(
+                                Icons.close,
+                                size: 100,
+                              ),
+                            ]);
+                          } else {
+                            // loaded
+                            bool? valid = snapshot.data;
+                            if (valid!) {
+                              return result!;
+                            }
+                          }
+                          return Center(
+                              child: Column(children: const [
+                            SizedBox(
+                              height: 100,
+                            ),
+                            Text(
+                              "¡Ups! Ha ocurrido un error al obtener los datos.",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 100,
+                            ),
+                            Icon(
+                              Icons.sentiment_very_dissatisfied,
+                              size: 100,
+                            ),
+                          ]));
+                        }),
                   ],
                 ),
                 const SizedBox(
-                  height: 500,
+                  height: 200,
                 ),
               ],
             ),
