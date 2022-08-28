@@ -1,5 +1,6 @@
+import 'package:easy_shopping/constants.dart';
+import 'package:easy_shopping/model/shopping_cart.dart';
 import 'package:easy_shopping/screens/on_board/onboard.dart';
-import 'package:easy_shopping/screens/side_bar/store_section/products_section.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -10,6 +11,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   GoogleSignInProvider.firebaseApp = await Firebase.initializeApp();
   initEasyLoading();
+  myShoppingCart = ShoppingCart();
   runApp(const MyApp());
 }
 

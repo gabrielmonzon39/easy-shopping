@@ -15,6 +15,10 @@ class OptionConditions {
     return currentRoll == USER;
   }
 
+  static bool shoppingCart() {
+    return currentRoll == USER;
+  }
+
   static bool orderHistory() {
     return currentRoll == USER;
   }

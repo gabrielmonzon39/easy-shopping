@@ -1,3 +1,4 @@
+import 'package:easy_shopping/model/shopping_cart.dart';
 import 'package:flutter/material.dart';
 
 const primaryColor = Color(0xFFFF3264);
@@ -12,3 +13,4 @@ const secondaryColorDarkM = Color(0xFF2A2D3E);
 const bgColorDarkM = Color(0xFF212332);
 
 const defaultPadding = 16.0;
+ShoppingCart? myShoppingCart;

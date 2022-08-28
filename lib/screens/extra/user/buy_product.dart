@@ -255,6 +255,12 @@ class BuyProductBuilder extends State<BuyProduct> {
                                 ),
                               ),
                               onPressed: () async {
+                                Map<String, dynamic> product = {
+                                  'product_id': id,
+                                  'buy_quantity':
+                                      int.parse(buyQuantity.toStringAsFixed(0)),
+                                };
+                                myShoppingCart!.push(product);
                                 showDialog(
                                   context: context,
                                   builder: (ctx) => AlertDialog(
@@ -265,12 +271,8 @@ class BuyProductBuilder extends State<BuyProduct> {
                                     actions: <Widget>[
                                       TextButton(
                                         onPressed: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const StoresSection(),
-                                              ));
+                                          Navigator.pop(context);
+                                          Navigator.pop(context);
                                         },
                                         child: Container(
                                           color: Colors.white,

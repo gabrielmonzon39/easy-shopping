@@ -11,6 +11,7 @@ import 'package:easy_shopping/screens/side_bar/options_conditions.dart';
 import 'package:easy_shopping/screens/side_bar/general_section/token_section.dart';
 import 'package:easy_shopping/screens/side_bar/user_section/information_section.dart';
 import 'package:easy_shopping/screens/side_bar/user_section/order_history_section.dart';
+import 'package:easy_shopping/screens/side_bar/user_section/shopping_cart_section.dart';
 import 'package:easy_shopping/screens/side_bar/user_section/store_section.dart';
 import 'package:flutter/material.dart';
 
@@ -92,10 +93,25 @@ class NavBar extends StatelessWidget {
             ),
           if (OptionConditions.services()) const Divider(),
 
+          /// **************  Carrito de compras  **************
+          if (OptionConditions.shoppingCart())
+            ListTile(
+              leading: const Icon(Icons.shopping_cart),
+              title: const Text('Carrito de compras'),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ShoppingCartSection(),
+                    ));
+              },
+            ),
+          if (OptionConditions.shoppingCart()) const Divider(),
+
           /// **************  Historial de pedidos  **************
           if (OptionConditions.orderHistory())
             ListTile(
-              leading: const Icon(Icons.shopping_cart),
+              leading: const Icon(Icons.description),
               title: const Text('Historial de pedidos'),
               onTap: () {
                 Navigator.push(
