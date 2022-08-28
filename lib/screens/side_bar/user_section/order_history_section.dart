@@ -1,9 +1,6 @@
-// ignore_for_file: empty_catches, must_be_immutable
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
-import 'package:easy_shopping/widgets/single_ordered_product_view.dart';
 import 'package:flutter/material.dart';
 
 class OrderHistorySection extends StatefulWidget {
@@ -23,6 +20,7 @@ class OrderHistoryBuilder extends State<OrderHistorySection> {
   List<Widget> listTemp = [];
   List<Widget> list = [];
   Widget? result;
+  int total = 0;
 
   void parse() {
     for (dynamic map in products!) {
@@ -42,6 +40,7 @@ class OrderHistoryBuilder extends State<OrderHistorySection> {
           .doc(productId)
           .get();
       total = (int.parse(buyQuantity) * productDetails.get('price')) as int?;
+      this.total += total!;
       listTemp.add(Container(
         width: double.infinity,
         margin: const EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
@@ -141,6 +140,7 @@ class OrderHistoryBuilder extends State<OrderHistorySection> {
           .doc(order)
           .get();
       deliveryProcessId = orderDetails.get('delivery_processId').toString();
+      String fecha = orderDetails.get('date').toString();
       products = orderDetails.get('products');
       await getDeliveryManAndState();
       parse();
@@ -160,6 +160,14 @@ class OrderHistoryBuilder extends State<OrderHistorySection> {
       ));
       listTemp.add(const SizedBox(
         height: 40,
+      ));
+      listTemp.add(Text(
+        'Fecha: $fecha',
+        textAlign: TextAlign.left,
+        style: const TextStyle(fontSize: 19, color: Colors.white),
+      ));
+      listTemp.add(const SizedBox(
+        height: 25,
       ));
       listTemp.add(const Text(
         'Entregado por: ',
@@ -206,12 +214,27 @@ class OrderHistoryBuilder extends State<OrderHistorySection> {
         ),
       );
       await getOrderedProducts();
-      list.add(Container(
-        color: secondaryColor,
-        child: Column(children: listTemp),
+      listTemp.add(Text(
+        'Total de compra: Q${total.toString()}',
+        style: const TextStyle(
+          fontWeight: FontWeight.w700,
+          color: Colors.white,
+          fontSize: 22,
+        ),
       ));
-      list.add(const SizedBox(
+      total = 0;
+      mapProducts = [];
+      listTemp.add(const SizedBox(
         height: 20,
+      ));
+      list.add(Align(
+          alignment: Alignment.centerLeft,
+          child: Container(
+            color: secondaryColor,
+            child: Column(children: listTemp),
+          )));
+      list.add(const SizedBox(
+        height: 40,
       ));
       listTemp = [];
     }
@@ -222,11 +245,9 @@ class OrderHistoryBuilder extends State<OrderHistorySection> {
   }
 
   Future<void> getDeliveryManAndState() async {
-    print("-Se ejecuto");
     List<String> data =
         await FirebaseFS.getDeliveryManIdAndStateFromOrder(deliveryProcessId!);
     deliverManId = data[0];
-    print("---- Asignando ${data[0]} a deliverManId que tiene $deliverManId");
     state = data[1];
     if (state == PREPARING) state = "Preparando";
     if (state == ONTHEWAY) state = "En camino";
@@ -234,15 +255,12 @@ class OrderHistoryBuilder extends State<OrderHistorySection> {
     List<String> data2 = await FirebaseFS.getDeliveryManInfo(deliverManId!);
     deliverManIdName = data2[0];
     deliverManIdEmail = data2[1];
-    print('$deliverManIdName -- $deliverManIdEmail');
   }
 
   void getDeliveryManInfo() async {
-    print("----ERROR-----$deliverManId");
     List<String> data = await FirebaseFS.getDeliveryManInfo(deliverManId!);
     deliverManIdName = data[0];
     deliverManIdEmail = data[1];
-    print('$deliverManIdName -- $deliverManIdEmail');
   }
 
   @override
@@ -256,7 +274,6 @@ class OrderHistoryBuilder extends State<OrderHistorySection> {
           width: double.infinity,
           margin:
               const EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
-          padding: const EdgeInsets.all(defaultPadding),
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -332,7 +349,7 @@ class OrderHistoryBuilder extends State<OrderHistorySection> {
                   ],
                 ),
                 const SizedBox(
-                  height: 200,
+                  height: 20,
                 ),
               ],
             ),

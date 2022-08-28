@@ -190,12 +190,8 @@ class BuyProductBuilder extends State<BuyProduct> {
                                     actions: <Widget>[
                                       TextButton(
                                         onPressed: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const StoresSection(),
-                                              ));
+                                          Navigator.pop(context);
+                                          Navigator.pop(context);
                                         },
                                         child: Container(
                                           color: Colors.white,

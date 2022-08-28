@@ -8,20 +8,27 @@ import 'package:flutter/material.dart';
 class StoreProduct extends StatefulWidget {
   String? storeId;
   String? name;
+  int? color;
 
-  StoreProduct({Key? key, @required this.storeId, @required this.name})
+  StoreProduct(
+      {Key? key,
+      @required this.storeId,
+      @required this.name,
+      @required this.color})
       : super(key: key);
   @override
   StoreProductBuilder createState() =>
-      StoreProductBuilder(storeId: storeId, name: name);
+      StoreProductBuilder(storeId: storeId, name: name, color: color);
 }
 
 class StoreProductBuilder extends State<StoreProduct> {
   String? storeId;
   String? name;
+  int? color;
   bool availableRefresh = true;
 
-  StoreProductBuilder({@required this.storeId, @required this.name});
+  StoreProductBuilder(
+      {@required this.storeId, @required this.name, @required this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -79,6 +86,7 @@ class StoreProductBuilder extends State<StoreProduct> {
                                     quantity:
                                         document.get('quantity').toString(),
                                     imageURL: document.get('image'),
+                                    color: color!,
                                     isUser: true,
                                   );
                                 }

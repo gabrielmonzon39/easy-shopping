@@ -5,11 +5,12 @@ import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/main.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/information_section.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/products_section.dart';
+import 'package:easy_shopping/screens/side_bar/store_section/store_sales_section.dart';
 import 'package:easy_shopping/screens/side_bar/user_section/family_section.dart';
 import 'package:easy_shopping/screens/side_bar/options_conditions.dart';
 import 'package:easy_shopping/screens/side_bar/general_section/token_section.dart';
 import 'package:easy_shopping/screens/side_bar/user_section/information_section.dart';
-import 'package:easy_shopping/screens/side_bar/user_section/orderHistory_section.dart';
+import 'package:easy_shopping/screens/side_bar/user_section/order_history_section.dart';
 import 'package:easy_shopping/screens/side_bar/user_section/store_section.dart';
 import 'package:flutter/material.dart';
 
@@ -154,7 +155,13 @@ class NavBar extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.monetization_on),
               title: const Text('Mis ventas'),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const StoreSalesSection(),
+                    ));
+              },
             ),
           if (OptionConditions.storeSales()) const Divider(),
 

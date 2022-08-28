@@ -42,7 +42,6 @@ class SingleOrderedProductView extends StatelessWidget {
                       if (document!.id == productId) {
                         total = int.parse(buyQuantity!) *
                             int.parse(document.get('price'));
-                        return Text("data");
                         return Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,7 +116,9 @@ class SingleOrderedProductView extends StatelessWidget {
                           ],
                         );
                       }
-                    } catch (e) {}
+                    } catch (e) {
+                      //print(e.toString());
+                    }
                     return const SizedBox(
                       width: 0,
                       height: 0,

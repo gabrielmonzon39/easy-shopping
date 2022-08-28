@@ -1,5 +1,4 @@
 // ignore_for_file: must_be_immutable
-import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/screens/extra/user/store_products.dart';
 import 'package:flutter/material.dart';
 
@@ -8,13 +7,15 @@ class StoreServiceView extends StatelessWidget {
   String? description;
   String? imageURL;
   String? storeId;
+  int? color;
 
   StoreServiceView(
       {Key? key,
       @required this.name,
       @required this.description,
       @required this.imageURL,
-      @required this.storeId})
+      @required this.storeId,
+      @required this.color})
       : super(key: key);
 
   @override
@@ -23,7 +24,7 @@ class StoreServiceView extends StatelessWidget {
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.resolveWith<Color>(
             (Set<MaterialState> states) {
-              return ternaryColor;
+              return Color(color!);
             },
           ),
         ),
@@ -34,6 +35,7 @@ class StoreServiceView extends StatelessWidget {
                 builder: (context) => StoreProduct(
                       storeId: storeId,
                       name: name,
+                      color: color,
                     )),
           );
         },

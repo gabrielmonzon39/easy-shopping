@@ -14,12 +14,14 @@ class ProductsSection extends StatefulWidget {
 
 class ProductsSectionBuilder extends State<ProductsSection> {
   String? id;
+  int? color;
   bool availableRefresh = true;
 
   Future<void> calculateStoreId() async {
     final storeId = await FirebaseFS.getStoreId(uid!);
     availableRefresh = false;
     id = storeId;
+    color = await FirebaseFS.getColorStore(storeId);
   }
 
   @override
@@ -78,6 +80,7 @@ class ProductsSectionBuilder extends State<ProductsSection> {
                                     quantity:
                                         document.get('quantity').toString(),
                                     imageURL: document.get('image'),
+                                    color: color!,
                                     isUser: false,
                                   );
                                 }

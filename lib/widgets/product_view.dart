@@ -10,6 +10,7 @@ class ProductView extends StatelessWidget {
   String? price;
   String? quantity;
   String? imageURL;
+  int? color;
   bool? isUser;
 
   ProductView(
@@ -20,7 +21,8 @@ class ProductView extends StatelessWidget {
       @required this.price,
       @required this.quantity,
       @required this.imageURL,
-      @required this.isUser})
+      @required this.isUser,
+      @required this.color})
       : super(key: key);
 
   @override
@@ -44,7 +46,7 @@ class ProductView extends StatelessWidget {
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.resolveWith<Color>(
             (Set<MaterialState> states) {
-              return Colors.white;
+              return ternaryColor;
             },
           ),
         ),
@@ -52,11 +54,17 @@ class ProductView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            const SizedBox(
+              height: 10,
+            ),
             Center(
               child: Image.network(
                 imageURL!,
                 height: 100,
               ),
+            ),
+            const SizedBox(
+              height: 10,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -84,9 +92,8 @@ class ProductView extends StatelessWidget {
                           children: <Widget>[
                             Text(
                               description!,
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey.withOpacity(0.8)),
+                              style: const TextStyle(
+                                  fontSize: 14, color: Colors.white),
                             ),
                             const SizedBox(
                               width: 4,
@@ -114,13 +121,16 @@ class ProductView extends StatelessWidget {
                       ),
                       Text(
                         '$quantity unidades',
-                        style: TextStyle(
-                            fontSize: 14, color: Colors.grey.withOpacity(0.8)),
+                        style:
+                            const TextStyle(fontSize: 14, color: Colors.white),
                       ),
                     ],
                   ),
                 ),
               ],
+            ),
+            const SizedBox(
+              height: 10,
             ),
           ],
         ),
@@ -132,11 +142,17 @@ class ProductView extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          const SizedBox(
+            height: 10,
+          ),
           Center(
             child: Image.network(
               imageURL!,
               height: 100,
             ),
+          ),
+          const SizedBox(
+            height: 10,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -163,9 +179,8 @@ class ProductView extends StatelessWidget {
                         children: <Widget>[
                           Text(
                             description!,
-                            style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey.withOpacity(0.8)),
+                            style: const TextStyle(
+                                fontSize: 14, color: Colors.white),
                           ),
                           const SizedBox(
                             width: 4,
@@ -192,13 +207,15 @@ class ProductView extends StatelessWidget {
                     ),
                     Text(
                       '$quantity unidades',
-                      style: TextStyle(
-                          fontSize: 14, color: Colors.grey.withOpacity(0.8)),
+                      style: const TextStyle(fontSize: 14, color: Colors.white),
                     ),
                   ],
                 ),
               ),
             ],
+          ),
+          const SizedBox(
+            height: 10,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,

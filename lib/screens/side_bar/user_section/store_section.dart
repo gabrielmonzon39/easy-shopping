@@ -77,9 +77,12 @@ class StoresSectionBuilder extends State<StoresSection> {
                                     description: document.get('description'),
                                     imageURL: document.get('image'),
                                     storeId: document.id,
+                                    color: document.get('color'),
                                   );
                                 }
-                              } catch (e) {}
+                              } catch (e) {
+                                //print(e.toString());
+                              }
                               return const SizedBox(
                                 width: 0,
                                 height: 0,

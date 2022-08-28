@@ -1,6 +1,6 @@
 // ignore_for_file: constant_identifier_names, empty_catches, avoid_print
 import 'dart:math';
-
+import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 // person role
@@ -37,7 +37,9 @@ class FirebaseFS {
       userDetail = await instance.collection('users').doc(uid).get();
       homeId = userDetail.get('home_id');
       return homeId!;
-    } catch (e) {}
+    } catch (e) {
+      print(e.toString());
+    }
     return "0";
   }
 
@@ -49,8 +51,24 @@ class FirebaseFS {
       userDetail = await instance.collection('users').doc(uid).get();
       storeId = userDetail.get('store_id');
       return storeId!;
-    } catch (e) {}
+    } catch (e) {
+      print(e.toString());
+    }
     return "0";
+  }
+
+  static Future<int> getColorStore(String id) async {
+    FirebaseFirestore instance = FirebaseFirestore.instance;
+    DocumentSnapshot? storeDetail;
+    int? color;
+    try {
+      storeDetail = await instance.collection('stores').doc(id).get();
+      color = storeDetail.get('color');
+      return color!;
+    } catch (e) {
+      print(e.toString());
+    }
+    return 0xFF2697FF;
   }
 
   static Future<String> getProjectId(String uid) async {
@@ -64,7 +82,9 @@ class FirebaseFS {
       documentDetails = await instance.collection('homes').doc(homeId).get();
       projectId = documentDetails.get('project_id');
       return projectId!;
-    } catch (e) {}
+    } catch (e) {
+      print(e.toString());
+    }
     return "0";
   }
 
@@ -72,7 +92,9 @@ class FirebaseFS {
     FirebaseFirestore instance = FirebaseFirestore.instance;
     try {
       return await instance.collection('stores').doc(storeId).get();
-    } catch (e) {}
+    } catch (e) {
+      print(e.toString());
+    }
     return null;
   }
 
@@ -80,7 +102,9 @@ class FirebaseFS {
     FirebaseFirestore instance = FirebaseFirestore.instance;
     try {
       return await instance.collection('orders').doc(orderId).get();
-    } catch (e) {}
+    } catch (e) {
+      print(e.toString());
+    }
     return null;
   }
 
@@ -102,6 +126,7 @@ class FirebaseFS {
     try {
       homeId = userDetail.get('home_id');
     } catch (e) {
+      print(e.toString());
       return NONE;
     }
     return homeId!;
@@ -112,7 +137,9 @@ class FirebaseFS {
         await FirebaseFirestore.instance.collection('users').doc(uid).get();
     try {
       return userDetail.get('name');
-    } catch (e) {}
+    } catch (e) {
+      print(e.toString());
+    }
     return NONE;
   }
 
@@ -121,7 +148,9 @@ class FirebaseFS {
         await FirebaseFirestore.instance.collection('users').doc(uid).get();
     try {
       return userDetail.get('email');
-    } catch (e) {}
+    } catch (e) {
+      print(e.toString());
+    }
     return NONE;
   }
 
@@ -130,7 +159,9 @@ class FirebaseFS {
         await FirebaseFirestore.instance.collection('users').doc(uid).get();
     try {
       return userDetail.get('photo');
-    } catch (e) {}
+    } catch (e) {
+      print(e.toString());
+    }
     return NONE;
   }
 
@@ -139,7 +170,9 @@ class FirebaseFS {
         await FirebaseFirestore.instance.collection('users').doc(uid).get();
     try {
       return userDetail.get('creationTime');
-    } catch (e) {}
+    } catch (e) {
+      print(e.toString());
+    }
     return NONE;
   }
 
@@ -148,7 +181,9 @@ class FirebaseFS {
         await FirebaseFirestore.instance.collection('users').doc(uid).get();
     try {
       return userDetail.get('lastSignInTime');
-    } catch (e) {}
+    } catch (e) {
+      print(e.toString());
+    }
     return NONE;
   }
 
@@ -161,6 +196,7 @@ class FirebaseFS {
         return NONE;
       }
     } catch (e) {
+      print(e.toString());
       FirebaseFirestore.instance
           .collection('users')
           .doc(uid)
@@ -193,19 +229,86 @@ class FirebaseFS {
     });
   }
 
+  static CollectionReference getStores() {
+    return FirebaseFirestore.instance.collection('stores');
+  }
+
+  static Future<bool> isProductFromStore(
+      String productId, String storeId) async {
+    DocumentSnapshot productDetail = await FirebaseFirestore.instance
+        .collection('products')
+        .doc(productId)
+        .get();
+    String realStoreId = productDetail.get('store_id');
+    return realStoreId == storeId;
+  }
+
+  static Future<void> makeSales(List<Map<dynamic, dynamic>> products,
+      String storeId, int orderId, int deliveryProcessId) async {
+    if (products.isEmpty) return;
+    String now = DateFormat("hh:mm dd-MM-yyyy").format(DateTime.now());
+    try {
+      ////////////////  MAKE THE SALE
+      FirebaseFirestore.instance.collection('sales').add({
+        'delivery_processId': deliveryProcessId.toString(),
+        'date': now,
+        'products': products,
+        'user_id': uid,
+        'order_id': orderId.toString(),
+      });
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  ////////////////  PREPARE THE SALE(S)
+  static Future<void> prepareSales(List<Map<dynamic, dynamic>> products,
+      int orderId, int deliveryProcessId) async {
+    QuerySnapshot stores = await getStores().get();
+    Map<String, List<Map<dynamic, dynamic>>> storesAndProducts = {};
+    for (int i = 0; i < stores.size; i++) {
+      QueryDocumentSnapshot<Object?> document = stores.docs[i];
+      storesAndProducts[document.id] = [];
+    }
+    for (Map<dynamic, dynamic> product in products) {
+      for (String storeId in storesAndProducts.keys) {
+        if (await isProductFromStore(product['product_id'], storeId)) {
+          storesAndProducts[storeId]!.add(product);
+        }
+      }
+    }
+    for (String storeId in storesAndProducts.keys) {
+      await makeSales(
+          storesAndProducts[storeId]!, storeId, orderId, deliveryProcessId);
+    }
+  }
+
+  /*
+  QueryDocumentSnapshot<Object?>? document =
+                                  usersnapshot.data?.docs[index];
+                                   */
+
   static Future<bool> buyProducts(List<Map<dynamic, dynamic>> products) async {
     int orderId = Random().nextInt(1000000);
     int deliveryProcessId = Random().nextInt(1000000);
+    String now = DateFormat("hh:mm dd-MM-yyyy").format(DateTime.now());
     try {
+      ////////////////  MAKE THE SALE(S)
+      print("Antes");
+      prepareSales(products, orderId, deliveryProcessId);
+      print("Despues");
       ////////////////  MAKE THE ORDER
       DocumentReference orderDocument = FirebaseFirestore.instance
           .collection('orders')
           .doc(orderId.toString());
       orderDocument.set({
         'delivery_processId': deliveryProcessId,
+        'date': now,
         'products': products,
         'user_id': uid,
       });
+      print("Despues 2");
+
       //////////////// MAKE THE DELIVERY PROCESS
       DocumentReference deliveryProcessDocument = FirebaseFirestore.instance
           .collection('delivery_processes')
@@ -215,9 +318,10 @@ class FirebaseFS {
         'order_id': orderId,
         'state': PREPARING,
       });
+      print("Despues 3");
       //////////////// UPDATE THE QUANTITY AVAILABLE FOR EACH PRODUCT
-
       for (Map<dynamic, dynamic> element in products) {
+        print("Dedbiooo actualizar puta");
         DocumentSnapshot productDetail = await FirebaseFirestore.instance
             .collection('products')
             .doc(element['product_id'])
@@ -230,14 +334,17 @@ class FirebaseFS {
             .doc(element['product_id'])
             .update({'quantity': total});
       }
+      print("Despues 4");
       return true;
     } catch (e) {
-      return false;
+      print(e.toString());
     }
+    return false;
   }
 
   static Future<List<String>> getDeliveryManIdAndStateFromOrder(
       String deliveryProcessId) async {
+    print("SE LE DIO EL ID DEL PROCESO --> $deliveryProcessId");
     QuerySnapshot snap =
         await FirebaseFirestore.instance.collection('delivery_processes').get();
     for (var document in snap.docs) {
@@ -246,6 +353,7 @@ class FirebaseFS {
           return [document.get('delivery_man_id'), document.get('state')];
         }
       } catch (e) {
+        print(e.toString());
         continue;
       }
     }
@@ -261,6 +369,7 @@ class FirebaseFS {
           return [document.get('name'), document.get('email')];
         }
       } catch (e) {
+        print(e.toString());
         continue;
       }
     }
@@ -277,6 +386,7 @@ class FirebaseFS {
           result.add(document.id);
         }
       } catch (e) {
+        print(e.toString());
         continue;
       }
     }
@@ -288,18 +398,20 @@ class FirebaseFS {
     QuerySnapshot snap =
         await FirebaseFirestore.instance.collection('users').get();
     for (var document in snap.docs) {
+      print("Entro a ver a los deliverys");
       try {
         if (document.get('role') == DELIVERY_MAN) {
+          print("encontro unooooo");
           deliveryMans.add(document.get('delivery_man_id'));
         }
       } catch (e) {
+        print(e.toString());
         continue;
       }
     }
-    int choice = 0;
-    while (choice == 0) {
-      choice = Random().nextInt(deliveryMans.length);
-    }
+    if (deliveryMans.isEmpty) return "dm1";
+    if (deliveryMans.length == 1) return deliveryMans[0];
+    int choice = Random().nextInt(deliveryMans.length);
     return deliveryMans[choice];
   }
 
@@ -313,6 +425,7 @@ class FirebaseFS {
     try {
       remaining = tokenDetail.get('remaining');
     } catch (e) {
+      print(e.toString());
       return false;
     }
 
