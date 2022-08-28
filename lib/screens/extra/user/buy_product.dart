@@ -101,6 +101,7 @@ class BuyProductBuilder extends State<BuyProduct> {
                           child: Image.network(
                             imageURL!,
                             height: 220,
+                            width: 220,
                           ),
                         ),
                         Expanded(
@@ -137,22 +138,49 @@ class BuyProductBuilder extends State<BuyProduct> {
                     const SizedBox(
                       height: 30,
                     ),
-                    const Text('Cantidad:',
-                        style: TextStyle(fontSize: 18, color: Colors.white)),
-                    Slider(
-                      min: 1,
-                      max: double.parse(quantity!),
-                      value: buyQuantity,
-                      divisions: int.parse(quantity!) - 1,
-                      activeColor: primaryColor,
-                      inactiveColor: ternaryColor,
-                      thumbColor: Colors.white,
-                      label: '${buyQuantity.round()}',
-                      onChanged: (value) {
-                        setState(() {
-                          buyQuantity = value;
-                        });
-                      },
+                    Text('Cantidad: ${buyQuantity.toInt()}',
+                        style:
+                            const TextStyle(fontSize: 18, color: Colors.white)),
+                    Row(
+                      children: [
+                        TextButton(
+                          child: const Text(
+                            "-",
+                            style: TextStyle(fontSize: 25, color: Colors.white),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              buyQuantity--;
+                            });
+                          },
+                        ),
+                        Slider(
+                          min: 1,
+                          max: double.parse(quantity!),
+                          value: buyQuantity,
+                          divisions: int.parse(quantity!) - 1,
+                          activeColor: primaryColor,
+                          inactiveColor: ternaryColor,
+                          thumbColor: Colors.white,
+                          label: '${buyQuantity.round()}',
+                          onChanged: (value) {
+                            setState(() {
+                              buyQuantity = value;
+                            });
+                          },
+                        ),
+                        TextButton(
+                          child: const Text(
+                            "+",
+                            style: TextStyle(fontSize: 25, color: Colors.white),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              buyQuantity++;
+                            });
+                          },
+                        ),
+                      ],
                     ),
                     const SizedBox(
                       height: 20,

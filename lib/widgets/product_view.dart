@@ -1,7 +1,11 @@
-// ignore_for_file: must_be_immutable
+// ignore_for_file: must_be_immutable, use_build_context_synchronously
+import 'package:flutter/scheduler.dart';
 import 'package:easy_shopping/constants.dart';
+import 'package:easy_shopping/model/firebase.dart';
 import 'package:easy_shopping/screens/extra/user/buy_product.dart';
+import 'package:easy_shopping/screens/side_bar/store_section/products_section.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class ProductView extends StatelessWidget {
   String? id;
@@ -12,6 +16,8 @@ class ProductView extends StatelessWidget {
   String? imageURL;
   int? color;
   bool? isUser;
+  final quantityController = TextEditingController();
+  final priceController = TextEditingController();
 
   ProductView(
       {Key? key,
@@ -55,7 +61,7 @@ class ProductView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             const SizedBox(
-              height: 10,
+              height: 20,
             ),
             Center(
               child: Image.network(
@@ -64,7 +70,7 @@ class ProductView extends StatelessWidget {
               ),
             ),
             const SizedBox(
-              height: 10,
+              height: 20,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -130,20 +136,20 @@ class ProductView extends StatelessWidget {
               ],
             ),
             const SizedBox(
-              height: 10,
+              height: 20,
             ),
           ],
         ),
       );
     }
     return Container(
-      color: Colors.white,
+      color: ternaryColor,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           const SizedBox(
-            height: 10,
+            height: 20,
           ),
           Center(
             child: Image.network(
@@ -152,7 +158,7 @@ class ProductView extends StatelessWidget {
             ),
           ),
           const SizedBox(
-            height: 10,
+            height: 20,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -215,18 +221,127 @@ class ProductView extends StatelessWidget {
             ],
           ),
           const SizedBox(
-            height: 10,
+            height: 20,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  showDialog(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: const Text("Modifique los siguientes campos"),
+                      content: Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              keyboardType: TextInputType.number,
+                              obscureText: false,
+                              controller: priceController,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black,
+                              ),
+                              decoration: const InputDecoration(
+                                hintText: "Precio",
+                                hintStyle: TextStyle(
+                                  color: Color(0xffA6B0BD),
+                                ),
+                                fillColor: Colors.white,
+                                filled: true,
+                                prefixIcon: Icon(
+                                  Icons.production_quantity_limits,
+                                  color: Colors.black,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(200),
+                                  ),
+                                  borderSide: BorderSide(color: secondaryColor),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(200),
+                                  ),
+                                  borderSide: BorderSide(color: secondaryColor),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: TextField(
+                              keyboardType: TextInputType.number,
+                              obscureText: false,
+                              controller: quantityController,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black,
+                              ),
+                              decoration: const InputDecoration(
+                                hintText: "Existencias",
+                                hintStyle: TextStyle(
+                                  color: Color(0xffA6B0BD),
+                                ),
+                                fillColor: Colors.white,
+                                filled: true,
+                                prefixIcon: Icon(
+                                  Icons.production_quantity_limits,
+                                  color: Colors.black,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(200),
+                                  ),
+                                  borderSide: BorderSide(color: secondaryColor),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(200),
+                                  ),
+                                  borderSide: BorderSide(color: secondaryColor),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () async {
+                            if (int.parse(quantityController.text) < 0) {
+                              EasyLoading.showError('Cantidad inválida');
+                              return;
+                            }
+                            await FirebaseFS.updateProduct(
+                                id!,
+                                int.parse(priceController.text),
+                                int.parse(quantityController.text));
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const ProductsSection(),
+                                ));
+                          },
+                          child: Container(
+                            color: Colors.white,
+                            padding: const EdgeInsets.all(14),
+                            child: const Text("Aceptar"),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.resolveWith<Color>(
                     (Set<MaterialState> states) {
-                      return ternaryColor;
+                      return Colors.green;
                     },
                   ),
                 ),
@@ -243,7 +358,32 @@ class ProductView extends StatelessWidget {
                 width: 20,
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  BuildContext dialogContext;
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        dialogContext = context;
+                        return AlertDialog(
+                          title: Text("Borrar producto $name"),
+                          content: const Text(
+                              "Si borra el producto, ya no podrá recuperar sus datos y nos será visible para sus clientes."),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () async {
+                                await FirebaseFS.deleteProduct(id!);
+                                Navigator.pop(dialogContext);
+                              },
+                              child: Container(
+                                color: Colors.white,
+                                padding: const EdgeInsets.all(14),
+                                child: const Text("Aceptar"),
+                              ),
+                            ),
+                          ],
+                        );
+                      });
+                },
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.resolveWith<Color>(
                     (Set<MaterialState> states) {
@@ -263,7 +403,7 @@ class ProductView extends StatelessWidget {
             ],
           ),
           const SizedBox(
-            height: 10,
+            height: 20,
           ),
         ],
       ),

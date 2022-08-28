@@ -98,7 +98,7 @@ class OrderHistoryBuilder extends State<OrderHistorySection> {
                           height: 15,
                         ),
                         Text(
-                          '$buyQuantity uds',
+                          'Cantidad: $buyQuantity',
                           textAlign: TextAlign.left,
                           style: const TextStyle(
                               fontWeight: FontWeight.w600,

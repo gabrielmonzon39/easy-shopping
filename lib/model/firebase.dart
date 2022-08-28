@@ -254,6 +254,7 @@ class FirebaseFS {
         'date': now,
         'products': products,
         'user_id': uid,
+        'store_id': storeId,
         'order_id': orderId.toString(),
       });
     } catch (e) {
@@ -337,9 +338,25 @@ class FirebaseFS {
       print("Despues 4");
       return true;
     } catch (e) {
+      print("awea");
       print(e.toString());
     }
     return false;
+  }
+
+  static Future<void> deleteProduct(String productId) async {
+    await FirebaseFirestore.instance
+        .collection('products')
+        .doc(productId)
+        .delete();
+  }
+
+  static Future<void> updateProduct(
+      String productId, int price, int quantity) async {
+    await FirebaseFirestore.instance
+        .collection('products')
+        .doc(productId)
+        .update({'quantity': quantity, 'price': price});
   }
 
   static Future<List<String>> getDeliveryManIdAndStateFromOrder(
@@ -383,6 +400,26 @@ class FirebaseFS {
     for (var document in snap.docs) {
       try {
         if (document.get('user_id') == uid) {
+          result.add(document.id);
+        }
+      } catch (e) {
+        print(e.toString());
+        continue;
+      }
+    }
+    return result;
+  }
+
+  static Future<List<String>> getSalesByUid(String uid) async {
+    DocumentSnapshot userDetail =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
+    String storeId = userDetail.get('store_id');
+    List<String> result = [];
+    QuerySnapshot snap =
+        await FirebaseFirestore.instance.collection('sales').get();
+    for (var document in snap.docs) {
+      try {
+        if (document.get('store_id') == storeId) {
           result.add(document.id);
         }
       } catch (e) {

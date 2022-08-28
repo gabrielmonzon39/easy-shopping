@@ -98,7 +98,7 @@ class StoreSalesBuilder extends State<StoreSalesSection> {
                           height: 15,
                         ),
                         Text(
-                          '$buyQuantity uds',
+                          'Cantidad: $buyQuantity',
                           textAlign: TextAlign.left,
                           style: const TextStyle(
                               fontWeight: FontWeight.w600,
@@ -132,16 +132,14 @@ class StoreSalesBuilder extends State<StoreSalesSection> {
     }
   }
 
-  Future<bool> orderByUid() async {
-    final orders = await FirebaseFS.getOrdersByUid(uid!);
-    for (String order in orders) {
-      DocumentSnapshot orderDetails = await FirebaseFirestore.instance
-          .collection('orders')
-          .doc(order)
-          .get();
-      deliveryProcessId = orderDetails.get('delivery_processId').toString();
-      String fecha = orderDetails.get('date').toString();
-      products = orderDetails.get('products');
+  Future<bool> salesByUid() async {
+    final sales = await FirebaseFS.getSalesByUid(uid!);
+    for (String sale in sales) {
+      DocumentSnapshot saleDetails =
+          await FirebaseFirestore.instance.collection('sales').doc(sale).get();
+      deliveryProcessId = saleDetails.get('delivery_processId').toString();
+      String fecha = saleDetails.get('date').toString();
+      products = saleDetails.get('products');
       await getDeliveryManAndState();
       parse();
       listTemp.add(
@@ -246,18 +244,12 @@ class StoreSalesBuilder extends State<StoreSalesSection> {
     deliverManIdEmail = data2[1];
   }
 
-  void getDeliveryManInfo() async {
-    List<String> data = await FirebaseFS.getDeliveryManInfo(deliverManId!);
-    deliverManIdName = data[0];
-    deliverManIdEmail = data[1];
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: secondaryColor,
-          title: const Text("Historial de compras"),
+          title: const Text("Historial de ventas"),
         ),
         body: Container(
           width: double.infinity,
@@ -280,7 +272,7 @@ class StoreSalesBuilder extends State<StoreSalesSection> {
                   children: [
                     ////////////////////////////////////////////////////////////////
                     FutureBuilder<bool>(
-                        future: orderByUid(),
+                        future: salesByUid(),
                         builder: (BuildContext context,
                             AsyncSnapshot<bool> snapshot) {
                           if (!snapshot.hasData) {

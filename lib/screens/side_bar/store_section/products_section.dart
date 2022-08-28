@@ -20,8 +20,10 @@ class ProductsSectionBuilder extends State<ProductsSection> {
   Future<void> calculateStoreId() async {
     final storeId = await FirebaseFS.getStoreId(uid!);
     availableRefresh = false;
-    id = storeId;
     color = await FirebaseFS.getColorStore(storeId);
+    setState(() {
+      id = storeId;
+    });
   }
 
   @override
@@ -46,7 +48,7 @@ class ProductsSectionBuilder extends State<ProductsSection> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(
-                  height: 50,
+                  height: 20,
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,9 +73,10 @@ class ProductsSectionBuilder extends State<ProductsSection> {
                               QueryDocumentSnapshot<Object?>? document =
                                   usersnapshot.data?.docs[index];
                               try {
+                                print("El id fue: $id");
                                 if (document!.get('store_id') == id!) {
                                   return ProductView(
-                                    id: id,
+                                    id: document.id,
                                     name: document.get('name'),
                                     description: document.get('description'),
                                     price: document.get('price').toString(),
