@@ -243,21 +243,9 @@ class ShoppingCartBuilder extends State<ShoppingCartSection> {
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
-                                    title: const Text("Comprar productos"),
+                                    title: const Text("Productos comprados"),
                                     content: Text(
-                                        "Desea comprar los siguientes productos por Q${total.toString()}"),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: Container(
-                                          color: Colors.white,
-                                          padding: const EdgeInsets.all(14),
-                                          child: const Text("Aceptar"),
-                                        ),
-                                      ),
-                                    ],
+                                        "Sus productos han sido comprados, el total a cancelar es de Q${total.toString()}"),
                                   );
                                 });
                           },
