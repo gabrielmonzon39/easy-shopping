@@ -40,6 +40,7 @@ class InformationStoreServiceView extends StatelessWidget {
                         textAlign: TextAlign.left,
                         style: const TextStyle(
                           fontWeight: FontWeight.w600,
+                          color: Colors.white,
                           fontSize: 35,
                         ),
                       ),
@@ -58,7 +59,7 @@ class InformationStoreServiceView extends StatelessWidget {
           style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w600,
-            color: Colors.black,
+            color: Colors.white,
           ),
         ),
       ],

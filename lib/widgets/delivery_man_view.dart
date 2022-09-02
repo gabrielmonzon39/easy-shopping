@@ -59,7 +59,7 @@ class DeliveryManView extends StatelessWidget {
                       );
                     }
                   } catch (e) {
-                    //print(e.toString());
+                    print(e.toString());
                   }
                   return const SizedBox(
                     width: 0,

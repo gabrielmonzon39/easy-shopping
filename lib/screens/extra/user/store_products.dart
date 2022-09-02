@@ -78,21 +78,27 @@ class StoreProductBuilder extends State<StoreProduct> {
                               try {
                                 if (document!.get('store_id') == storeId! &&
                                     document.get('quantity') != 0) {
-                                  return ProductView(
-                                    id: document.id,
-                                    name: document.get('name'),
-                                    description: document.get('description'),
-                                    price: document.get('price').toString(),
-                                    quantity:
-                                        document.get('quantity').toString(),
-                                    imageURL: document.get('image'),
-                                    color: color!,
-                                    isUser: true,
+                                  return Column(
+                                    children: [
+                                      ProductView(
+                                        id: document.id,
+                                        name: document.get('name'),
+                                        description:
+                                            document.get('description'),
+                                        price: document.get('price').toString(),
+                                        quantity:
+                                            document.get('quantity').toString(),
+                                        imageURL: document.get('image'),
+                                        isUser: true,
+                                      ),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                    ],
                                   );
                                 }
                               } catch (e) {
-                                //print(e.toString());
-                                //print("Fallooo");
+                                print(e.toString());
                               }
                               return const SizedBox(
                                 width: 0,

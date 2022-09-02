@@ -17,6 +17,40 @@ const String PREPARING = "preparing";
 const String ONTHEWAY = "on the way";
 const String SERVED = "served";
 
+// type of products
+const typesFB = [
+  "clothes",
+  "footwear",
+  "entertainment",
+  "toys",
+  "food",
+  "drink",
+  "Alcohol drink",
+  "accessory",
+  "cleaning",
+  "medicine",
+  "pets",
+  "school supplies",
+  "techonology",
+  "other",
+];
+const types = [
+  "Ropa",
+  "Calzado",
+  "Entretenimiento",
+  "Juguetes",
+  "Comida",
+  "Bebida",
+  "Bebida Alcohólica",
+  "Accesorio",
+  "Limpieza",
+  "Medicina",
+  "Mascotas",
+  "Útiles escolares",
+  "Tecnología",
+  "Otro",
+];
+
 String currentRoll = "none";
 String? uid;
 String? homeId;
@@ -217,15 +251,23 @@ class FirebaseFS {
     });
   }
 
-  static Future<void> addProduct(String storeId, String name,
-      String description, String price, String quantity, String image) async {
+  static Future<void> addProduct(
+      String storeId,
+      String name,
+      String description,
+      String price,
+      String quantity,
+      String image,
+      String type) async {
+    String fireBaseType = typesFB[types.indexOf(type)];
     FirebaseFirestore.instance.collection('products').add({
       'store_id': storeId,
       'name': name,
       'description': description,
       'price': int.parse(price),
       'quantity': int.parse(quantity),
-      'image': image
+      'image': image,
+      'type': fireBaseType,
     });
   }
 
@@ -295,9 +337,8 @@ class FirebaseFS {
     String now = DateFormat("hh:mm dd-MM-yyyy").format(DateTime.now());
     try {
       ////////////////  MAKE THE SALE(S)
-      print("Antes");
       prepareSales(products, orderId, deliveryProcessId);
-      print("Despues");
+
       ////////////////  MAKE THE ORDER
       DocumentReference orderDocument = FirebaseFirestore.instance
           .collection('orders')
@@ -308,7 +349,6 @@ class FirebaseFS {
         'products': products,
         'user_id': uid,
       });
-      print("Despues 2");
 
       //////////////// MAKE THE DELIVERY PROCESS
       DocumentReference deliveryProcessDocument = FirebaseFirestore.instance
@@ -319,26 +359,21 @@ class FirebaseFS {
         'order_id': orderId,
         'state': PREPARING,
       });
-      print("Despues 3");
       //////////////// UPDATE THE QUANTITY AVAILABLE FOR EACH PRODUCT
       for (Map<dynamic, dynamic> element in products) {
-        print("Dedbiooo actualizar puta");
         DocumentSnapshot productDetail = await FirebaseFirestore.instance
             .collection('products')
             .doc(element['product_id'])
             .get();
         int total = productDetail.get('quantity');
         total -= int.parse(element['buy_quantity'].toString());
-        print("------------$total");
         FirebaseFirestore.instance
             .collection('products')
             .doc(element['product_id'])
             .update({'quantity': total});
       }
-      print("Despues 4");
       return true;
     } catch (e) {
-      print("awea");
       print(e.toString());
     }
     return false;
@@ -361,7 +396,6 @@ class FirebaseFS {
 
   static Future<List<String>> getDeliveryManIdAndStateFromOrder(
       String deliveryProcessId) async {
-    print("SE LE DIO EL ID DEL PROCESO --> $deliveryProcessId");
     QuerySnapshot snap =
         await FirebaseFirestore.instance.collection('delivery_processes').get();
     for (var document in snap.docs) {
@@ -435,10 +469,8 @@ class FirebaseFS {
     QuerySnapshot snap =
         await FirebaseFirestore.instance.collection('users').get();
     for (var document in snap.docs) {
-      print("Entro a ver a los deliverys");
       try {
         if (document.get('role') == DELIVERY_MAN) {
-          print("encontro unooooo");
           deliveryMans.add(document.get('delivery_man_id'));
         }
       } catch (e) {

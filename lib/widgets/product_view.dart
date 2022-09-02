@@ -14,25 +14,32 @@ class ProductView extends StatelessWidget {
   String? price;
   String? quantity;
   String? imageURL;
-  int? color;
   bool? isUser;
   final quantityController = TextEditingController();
   final priceController = TextEditingController();
+  final limitDescriptionSize = 25;
 
-  ProductView(
-      {Key? key,
-      @required this.id,
-      @required this.name,
-      @required this.description,
-      @required this.price,
-      @required this.quantity,
-      @required this.imageURL,
-      @required this.isUser,
-      @required this.color})
-      : super(key: key);
+  ProductView({
+    Key? key,
+    @required this.id,
+    @required this.name,
+    @required this.description,
+    @required this.price,
+    @required this.quantity,
+    @required this.imageURL,
+    @required this.isUser,
+  }) : super(key: key);
+
+  void manageDescription() {
+    if (description!.length > limitDescriptionSize) {
+      description = description!.substring(0, limitDescriptionSize);
+      description = "${description!}...";
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    manageDescription();
     if (isUser!) {
       return ElevatedButton(
         onPressed: () {
@@ -96,10 +103,20 @@ class ProductView extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
-                            Text(
-                              description!,
-                              style: const TextStyle(
-                                  fontSize: 14, color: Colors.white),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 16, top: 8, bottom: 8),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      description!,
+                                      style: const TextStyle(
+                                          fontSize: 14, color: Colors.white),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                             const SizedBox(
                               width: 4,

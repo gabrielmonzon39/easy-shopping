@@ -17,6 +17,7 @@ class StoreManagerBuilder extends State<StoreManagerMainScreen> {
   final descriptionController = TextEditingController();
   final priceController = TextEditingController();
   final quantityController = TextEditingController();
+  String selected = types[types.length - 1];
   UploadTask? task;
   File? file;
 
@@ -97,7 +98,8 @@ class StoreManagerBuilder extends State<StoreManagerMainScreen> {
         descriptionController.text,
         priceController.text,
         quantityController.text,
-        urlDownload);
+        urlDownload,
+        selected);
 
     cleanData();
   }
@@ -291,7 +293,39 @@ class StoreManagerBuilder extends State<StoreManagerMainScreen> {
                       ),
                     )
                   ],
-                )
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    const Text(
+                      "Tipo de producto: ",
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.black,
+                      ),
+                    ),
+                    DropdownButton(
+                      icon: const Icon(Icons.keyboard_arrow_down),
+                      value: selected,
+                      iconEnabledColor: secondaryColor,
+                      // Array list of items
+                      items: types.map((String items) {
+                        return DropdownMenuItem(
+                          value: items,
+                          child: Text(items),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selected = newValue!;
+                        });
+                      },
+                    ),
+                  ],
+                ),
               ],
             )),
           ],

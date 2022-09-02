@@ -13,7 +13,6 @@ class ShoppingCart {
     int index = 0;
     for (final e in order!) {
       if (e['product_id'] == key) {
-        print("entro para quitar un producto");
         break;
       }
       index++;

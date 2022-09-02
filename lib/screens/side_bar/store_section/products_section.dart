@@ -73,23 +73,28 @@ class ProductsSectionBuilder extends State<ProductsSection> {
                               QueryDocumentSnapshot<Object?>? document =
                                   usersnapshot.data?.docs[index];
                               try {
-                                print("El id fue: $id");
                                 if (document!.get('store_id') == id!) {
-                                  return ProductView(
-                                    id: document.id,
-                                    name: document.get('name'),
-                                    description: document.get('description'),
-                                    price: document.get('price').toString(),
-                                    quantity:
-                                        document.get('quantity').toString(),
-                                    imageURL: document.get('image'),
-                                    color: color!,
-                                    isUser: false,
+                                  return Column(
+                                    children: [
+                                      ProductView(
+                                        id: document.id,
+                                        name: document.get('name'),
+                                        description:
+                                            document.get('description'),
+                                        price: document.get('price').toString(),
+                                        quantity:
+                                            document.get('quantity').toString(),
+                                        imageURL: document.get('image'),
+                                        isUser: false,
+                                      ),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                    ],
                                   );
                                 }
                               } catch (e) {
-                                //print(e.toString());
-                                //print("Fallooo");
+                                print(e.toString());
                               }
                               return const SizedBox(
                                 width: 0,

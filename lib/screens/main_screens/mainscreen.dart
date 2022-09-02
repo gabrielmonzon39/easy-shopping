@@ -3,6 +3,7 @@
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
 import 'package:easy_shopping/screens/main_screens/store_manager.dart';
+import 'package:easy_shopping/screens/main_screens/user.dart';
 import 'package:easy_shopping/screens/side_bar/nav_bar.dart';
 import 'package:flutter/material.dart';
 
@@ -104,7 +105,7 @@ class Mainscreen extends StatelessWidget {
                         if (valid!) {
                           switch (currentRoll) {
                             case USER:
-                              return const Text("Esta es la vista de usuario.");
+                              return const UserMainScreen();
                             case STORE_MANAGER:
                               return const StoreManagerMainScreen();
                             case PROJECT_MANAGER:
