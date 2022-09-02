@@ -1,5 +1,4 @@
 // ignore_for_file: must_be_immutable, use_build_context_synchronously
-import 'package:flutter/scheduler.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
 import 'package:easy_shopping/screens/extra/user/buy_product.dart';
@@ -32,8 +31,8 @@ class ProductView extends StatelessWidget {
   }) : super(key: key);
 
   void manageDescription() {
+    originalDescription = description!;
     if (description!.length > limitDescriptionSize) {
-      originalDescription = description!;
       description = description!.substring(0, limitDescriptionSize);
       description = "${description!}...";
     }

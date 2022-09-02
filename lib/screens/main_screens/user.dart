@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_shopping/constants.dart';
+import 'package:easy_shopping/model/firebase.dart';
 import 'package:easy_shopping/widgets/product_view.dart';
 import 'package:flutter/material.dart';
 
@@ -11,71 +12,143 @@ class UserMainScreen extends StatefulWidget {
 
 class UserBuilder extends State<UserMainScreen> {
   final nameController = TextEditingController();
+  bool selected = true;
+  String selectedOption = types[types.length - 1];
+
+  bool evalConditions(QueryDocumentSnapshot<Object?>? document) {
+    if (document == null) return false;
+    if (document.id == "8NSZ1ielRBQyriNRwXdx") return false;
+    if (document.get('quantity') == 0) return false;
+    if (selected) {
+      return nameCondition(document);
+    } else {
+      String fireBaseType = typesFB[types.indexOf(selectedOption)];
+      if (document.get('type') != fireBaseType) return false;
+      return nameCondition(document);
+    }
+  }
+
+  bool nameCondition(QueryDocumentSnapshot<Object?>? document) {
+    if (nameController.text == "") return true;
+    if (!document!
+        .get('name')
+        .toString()
+        .toLowerCase()
+        .contains(nameController.text.toLowerCase())) {
+      return false;
+    }
+    return true;
+  }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-        height: 650,
+        height: 680,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          TextField(
-            keyboardType: TextInputType.text,
-            obscureText: false,
-            controller: nameController,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w400,
-              color: Colors.black,
-            ),
-            decoration: const InputDecoration(
-              hintText: "Nombre del producto",
-              hintStyle: TextStyle(
-                color: Color(0xffA6B0BD),
-              ),
-              fillColor: Colors.white,
-              filled: true,
-              prefixIcon: Icon(
-                Icons.search,
-                color: Colors.black,
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(200),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Expanded(
+                child: TextField(
+                  keyboardType: TextInputType.text,
+                  obscureText: false,
+                  controller: nameController,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.black,
+                  ),
+                  decoration: const InputDecoration(
+                    hintText: "Nombre del producto",
+                    hintStyle: TextStyle(
+                      color: Color(0xffA6B0BD),
+                    ),
+                    fillColor: Colors.white,
+                    filled: true,
+                    prefixIcon: Icon(
+                      Icons.description,
+                      color: Colors.black,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(200),
+                      ),
+                      borderSide: BorderSide(color: secondaryColor),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(200),
+                      ),
+                      borderSide: BorderSide(color: secondaryColor),
+                    ),
+                  ),
                 ),
-                borderSide: BorderSide(color: secondaryColor),
               ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(200),
-                ),
-                borderSide: BorderSide(color: secondaryColor),
+              const SizedBox(
+                width: 10,
               ),
-            ),
-          ),
-          const SizedBox(
-            height: 15,
-          ),
-          Center(
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                  (Set<MaterialState> states) {
-                    return Colors.green;
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {});
                   },
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                      (Set<MaterialState> states) {
+                        return Colors.green;
+                      },
+                    ),
+                  ),
+                  child: const Icon(
+                    Icons.search,
+                    size: 30,
+                  ),
                 ),
               ),
-              child: const Text(
-                "Buscar",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
-              ),
-            ),
+            ],
           ),
           const SizedBox(
-            height: 15,
+            height: 10,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text("Todo:",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.black,
+                  )),
+              Checkbox(
+                value: selected,
+                onChanged: (bool? value) {
+                  setState(() {
+                    selected = value!;
+                  });
+                },
+              ),
+              if (!selected)
+                DropdownButton(
+                  icon: const Icon(Icons.keyboard_arrow_down),
+                  value: selectedOption,
+                  iconEnabledColor: secondaryColor,
+                  // Array list of items
+                  items: types.map((String items) {
+                    return DropdownMenuItem(
+                      value: items,
+                      child: Text(items),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedOption = newValue!;
+                    });
+                  },
+                )
+            ],
+          ),
+          const SizedBox(
+            height: 10,
           ),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
@@ -93,12 +166,11 @@ class UserBuilder extends State<UserMainScreen> {
                       QueryDocumentSnapshot<Object?>? document =
                           usersnapshot.data?.docs[index];
                       try {
-                        if (document!.id != "8NSZ1ielRBQyriNRwXdx" &&
-                            document.get('quantity') != 0) {
+                        if (evalConditions(document)) {
                           return Column(
                             children: [
                               ProductView(
-                                id: document.id,
+                                id: document!.id,
                                 name: document.get('name'),
                                 description: document.get('description'),
                                 price: document.get('price').toString(),

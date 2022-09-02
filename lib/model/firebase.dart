@@ -326,11 +326,6 @@ class FirebaseFS {
     }
   }
 
-  /*
-  QueryDocumentSnapshot<Object?>? document =
-                                  usersnapshot.data?.docs[index];
-                                   */
-
   static Future<bool> buyProducts(List<Map<dynamic, dynamic>> products) async {
     int orderId = Random().nextInt(1000000);
     int deliveryProcessId = Random().nextInt(1000000);
