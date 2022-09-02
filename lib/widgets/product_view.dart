@@ -99,29 +99,11 @@ class ProductView extends StatelessWidget {
                             fontSize: 22,
                           ),
                         ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 16, top: 8, bottom: 8),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      description!,
-                                      style: const TextStyle(
-                                          fontSize: 14, color: Colors.white),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 4,
-                            ),
-                          ],
+                        Text(
+                          description!,
+                          textAlign: TextAlign.left,
+                          style: const TextStyle(
+                              fontSize: 14, color: Colors.white),
                         ),
                       ],
                     ),

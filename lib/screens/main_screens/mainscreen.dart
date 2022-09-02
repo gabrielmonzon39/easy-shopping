@@ -57,7 +57,7 @@ class Mainscreen extends StatelessWidget {
             child: Container(
           width: double.infinity,
           margin:
-              const EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
+              const EdgeInsets.only(top: 15, bottom: 15, left: 15, right: 15),
           padding: const EdgeInsets.all(defaultPadding),
           decoration: const BoxDecoration(
             color: Colors.white,
@@ -67,9 +67,6 @@ class Mainscreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(
-                  height: 20,
-                ),
                 ////////////////////////////////////////////////////////////////
                 FutureBuilder<bool>(
                     future: validUser(),

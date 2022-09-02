@@ -170,154 +170,150 @@ class ShoppingCartBuilder extends State<ShoppingCartSection> {
         backgroundColor: secondaryColor,
         title: const Text("Carrito de compras"),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(
-              height: 20,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                if (!myShoppingCart!.isEmpty())
-                  ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
-                            return Colors.red;
-                          },
-                        ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(
+            height: 20,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              if (!myShoppingCart!.isEmpty())
+                ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        (Set<MaterialState> states) {
+                          return Colors.red;
+                        },
                       ),
-                      onPressed: () {
-                        myShoppingCart!.clear();
-                        Navigator.pop(context);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const ShoppingCartSection(),
-                            ));
-                      },
-                      child: const Text(
-                        'Cancelar',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                      )),
-                if (!myShoppingCart!.isEmpty())
-                  ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
-                            return Colors.green;
-                          },
-                        ),
+                    ),
+                    onPressed: () {
+                      myShoppingCart!.clear();
+                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ShoppingCartSection(),
+                          ));
+                    },
+                    child: const Text(
+                      'Cancelar',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
                       ),
-                      onPressed: () async {
-                        // pendiente
-                        bool result =
-                            await FirebaseFS.buyProducts(myShoppingCart!.get());
-                        myShoppingCart!.clear();
-                        if (!result) {
-                          showDialog(
-                              context: context,
-                              builder: (ctx) => const AlertDialog(
-                                    title: Text("Ha ocurrido un error"),
-                                  ));
-                          return;
-                        }
+                    )),
+              if (!myShoppingCart!.isEmpty())
+                ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        (Set<MaterialState> states) {
+                          return Colors.green;
+                        },
+                      ),
+                    ),
+                    onPressed: () async {
+                      // pendiente
+                      bool result =
+                          await FirebaseFS.buyProducts(myShoppingCart!.get());
+                      myShoppingCart!.clear();
+                      if (!result) {
                         showDialog(
                             context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text("Productos comprados"),
-                                content: Text(
-                                    "Sus productos han sido comprados, el total a cancelar es de Q${total.toString()}"),
-                              );
-                            });
-                      },
-                      child: const Text(
-                        'Comprar',
+                            builder: (ctx) => const AlertDialog(
+                                  title: Text("Ha ocurrido un error"),
+                                ));
+                        return;
+                      }
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text("Productos comprados"),
+                              content: Text(
+                                  "Sus productos han sido comprados, el total a cancelar es de Q${total.toString()}"),
+                            );
+                          });
+                    },
+                    child: const Text(
+                      'Comprar',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    )),
+            ],
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          ////////////////////////////////////////////////////////////////
+          Expanded(
+              child: SingleChildScrollView(
+            child: FutureBuilder<bool>(
+                future: getProducts(),
+                builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                  if (!snapshot.hasData) {
+                    // not loaded
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.hasError) {
+                    // some error
+                    return Column(children: const [
+                      Text(
+                        "Lo sentimos, ha ocurrido un error",
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w600,
-                          color: Colors.white,
+                          color: Colors.black,
                         ),
-                      )),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ////////////////////////////////////////////////////////////////
-                FutureBuilder<bool>(
-                    future: getProducts(),
-                    builder:
-                        (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                      if (!snapshot.hasData) {
-                        // not loaded
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else if (snapshot.hasError) {
-                        // some error
-                        return Column(children: const [
-                          Text(
-                            "Lo sentimos, ha ocurrido un error",
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 100,
-                          ),
-                          Icon(
-                            Icons.close,
-                            size: 100,
-                          ),
-                        ]);
-                      } else {
-                        // loaded
-                        bool? valid = snapshot.data;
-                        if (valid!) {
-                          return result!;
-                        }
-                      }
-                      return Center(
-                          child: Column(children: const [
-                        SizedBox(
-                          height: 100,
-                        ),
-                        Text(
-                          "¡Ups! Ha ocurrido un error al obtener los datos.",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 100,
-                        ),
-                        Icon(
-                          Icons.sentiment_very_dissatisfied,
-                          size: 100,
-                        ),
-                      ]));
-                    }),
-              ],
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-          ],
-        ),
+                      ),
+                      SizedBox(
+                        height: 100,
+                      ),
+                      Icon(
+                        Icons.close,
+                        size: 100,
+                      ),
+                    ]);
+                  } else {
+                    // loaded
+                    bool? valid = snapshot.data;
+                    if (valid!) {
+                      return result!;
+                    }
+                  }
+                  return Center(
+                      child: Column(children: const [
+                    SizedBox(
+                      height: 100,
+                    ),
+                    Text(
+                      "¡Ups! Ha ocurrido un error al obtener los datos.",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 100,
+                    ),
+                    Icon(
+                      Icons.sentiment_very_dissatisfied,
+                      size: 100,
+                    ),
+                  ]));
+                }),
+          )),
+          const SizedBox(
+            height: 20,
+          ),
+        ],
       ),
     );
   }
