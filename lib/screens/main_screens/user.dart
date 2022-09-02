@@ -93,7 +93,6 @@ class UserBuilder extends State<UserMainScreen> {
                       QueryDocumentSnapshot<Object?>? document =
                           usersnapshot.data?.docs[index];
                       try {
-                        print("Fucooooo");
                         if (document!.id != "8NSZ1ielRBQyriNRwXdx" &&
                             document.get('quantity') != 0) {
                           return Column(

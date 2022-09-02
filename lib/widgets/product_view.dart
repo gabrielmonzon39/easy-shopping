@@ -11,6 +11,7 @@ class ProductView extends StatelessWidget {
   String? id;
   String? name;
   String? description;
+  String? originalDescription;
   String? price;
   String? quantity;
   String? imageURL;
@@ -32,6 +33,7 @@ class ProductView extends StatelessWidget {
 
   void manageDescription() {
     if (description!.length > limitDescriptionSize) {
+      originalDescription = description!;
       description = description!.substring(0, limitDescriptionSize);
       description = "${description!}...";
     }
@@ -49,7 +51,7 @@ class ProductView extends StatelessWidget {
                 builder: (context) => BuyProduct(
                   id: id,
                   name: name,
-                  description: description,
+                  description: originalDescription,
                   price: price,
                   quantity: quantity,
                   imageURL: imageURL,
