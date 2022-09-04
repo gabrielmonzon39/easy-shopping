@@ -43,78 +43,67 @@ class StoreProductBuilder extends State<StoreProduct> {
               const EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
           padding: const EdgeInsets.all(defaultPadding),
           decoration: const BoxDecoration(
-            color: secondaryColor,
+            color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
-          child: SingleChildScrollView(
+          child: SizedBox(
+            height: 680,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(
-                  height: 10,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ////////////////////////////////////////////////////////////////
-                    StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection('products')
-                          .snapshots(),
-                      builder:
-                          (ctx, AsyncSnapshot<QuerySnapshot> usersnapshot) {
-                        if (usersnapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        } else {
-                          return ListView.builder(
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            itemCount: usersnapshot.data!.docs.length,
-                            itemBuilder: (context, index) {
-                              QueryDocumentSnapshot<Object?>? document =
-                                  usersnapshot.data?.docs[index];
-                              try {
-                                if (document!.get('store_id') == storeId! &&
-                                    document.get('quantity') != 0) {
-                                  return Column(
-                                    children: [
-                                      ProductView(
-                                        id: document.id,
-                                        name: document.get('name'),
-                                        description:
-                                            document.get('description'),
-                                        price: document.get('price').toString(),
-                                        quantity:
-                                            document.get('quantity').toString(),
-                                        imageURL: document.get('image'),
-                                        isUser: true,
-                                      ),
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
-                                    ],
-                                  );
-                                }
-                              } catch (e) {
-                                print(e.toString());
-                              }
-                              return const SizedBox(
-                                width: 0,
-                                height: 0,
+                Expanded(
+                    child: ////////////////////////////////////////////////////////////////
+                        StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('products')
+                      .snapshots(),
+                  builder: (ctx, AsyncSnapshot<QuerySnapshot> usersnapshot) {
+                    if (usersnapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else {
+                      return ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: usersnapshot.data!.docs.length,
+                        itemBuilder: (context, index) {
+                          QueryDocumentSnapshot<Object?>? document =
+                              usersnapshot.data?.docs[index];
+                          try {
+                            if (document!.get('store_id') == storeId! &&
+                                document.get('quantity') != 0) {
+                              return Column(
+                                children: [
+                                  ProductView(
+                                    id: document.id,
+                                    name: document.get('name'),
+                                    description: document.get('description'),
+                                    price: document.get('price').toString(),
+                                    quantity:
+                                        document.get('quantity').toString(),
+                                    imageURL: document.get('image'),
+                                    isUser: true,
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                ],
                               );
-                            },
+                            }
+                          } catch (e) {
+                            print(e.toString());
+                          }
+                          return const SizedBox(
+                            width: 0,
+                            height: 0,
                           );
-                        }
-                      },
-                    )
+                        },
+                      );
+                    }
+                  },
+                )
                     ////////////////////////////////////////////////////////////////
-                  ],
-                ),
-                const SizedBox(
-                  height: 500,
-                ),
+                    ),
               ],
             ),
           ),

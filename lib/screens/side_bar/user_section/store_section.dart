@@ -41,63 +41,53 @@ class StoresSectionBuilder extends State<StoresSection> {
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
-          child: SingleChildScrollView(
+          child: SizedBox(
+            height: 680,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(
-                  height: 10,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ////////////////////////////////////////////////////////////////
-                    StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection('stores')
-                          .snapshots(),
-                      builder:
-                          (ctx, AsyncSnapshot<QuerySnapshot> usersnapshot) {
-                        if (usersnapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        } else {
-                          return ListView.builder(
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            itemCount: usersnapshot.data!.docs.length,
-                            itemBuilder: (context, index) {
-                              QueryDocumentSnapshot<Object?>? document =
-                                  usersnapshot.data?.docs[index];
-                              try {
-                                if (document!.get('project_id') == id!) {
-                                  return StoreServiceView(
-                                    name: document.get('name'),
-                                    description: document.get('description'),
-                                    imageURL: document.get('image'),
-                                    storeId: document.id,
-                                    color: document.get('color'),
-                                  );
-                                }
-                              } catch (e) {
-                                print(e.toString());
-                              }
-                              return const SizedBox(
-                                width: 0,
-                                height: 0,
+                Expanded(
+                    child:
+                        ////////////////////////////////////////////////////////////////
+                        StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('stores')
+                      .snapshots(),
+                  builder: (ctx, AsyncSnapshot<QuerySnapshot> usersnapshot) {
+                    if (usersnapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else {
+                      return ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: usersnapshot.data!.docs.length,
+                        itemBuilder: (context, index) {
+                          QueryDocumentSnapshot<Object?>? document =
+                              usersnapshot.data?.docs[index];
+                          try {
+                            if (document!.get('project_id') == id!) {
+                              return StoreServiceView(
+                                name: document.get('name'),
+                                description: document.get('description'),
+                                imageURL: document.get('image'),
+                                storeId: document.id,
+                                color: document.get('color'),
                               );
-                            },
+                            }
+                          } catch (e) {
+                            print(e.toString());
+                          }
+                          return const SizedBox(
+                            width: 0,
+                            height: 0,
                           );
-                        }
-                      },
-                    )
-                    ////////////////////////////////////////////////////////////////
-                  ],
-                ),
-                const SizedBox(
-                  height: 500,
-                ),
+                        },
+                      );
+                    }
+                  },
+                )),
+                ////////////////////////////////////////////////////////////////
               ],
             ),
           ),

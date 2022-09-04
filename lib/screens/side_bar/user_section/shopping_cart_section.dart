@@ -234,6 +234,20 @@ class ShoppingCartBuilder extends State<ShoppingCartSection> {
                               title: const Text("Productos comprados"),
                               content: Text(
                                   "Sus productos han sido comprados, el total a cancelar es de Q${total.toString()}"),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context, rootNavigator: true)
+                                        .pop(true);
+                                    Navigator.pop(context, true);
+                                  },
+                                  child: Container(
+                                    color: Colors.white,
+                                    padding: const EdgeInsets.all(14),
+                                    child: const Text("Aceptar"),
+                                  ),
+                                ),
+                              ],
                             );
                           });
                     },

@@ -158,7 +158,9 @@ class BuyProductBuilder extends State<BuyProduct> {
                           min: 1,
                           max: double.parse(quantity!),
                           value: buyQuantity,
-                          divisions: int.parse(quantity!) - 1,
+                          divisions: (int.parse(quantity!) == 1)
+                              ? 1
+                              : int.parse(quantity!) - 1,
                           activeColor: primaryColor,
                           inactiveColor: ternaryColor,
                           thumbColor: Colors.white,

@@ -46,7 +46,8 @@ class InformationSectionBuilder extends State<UserInformationSection> {
             color: ternaryColor,
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
-          child: SingleChildScrollView(
+          child: SizedBox(
+            height: 680,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -118,9 +119,6 @@ class InformationSectionBuilder extends State<UserInformationSection> {
                         }),
                     ////////////////////////////////////////////////////////////////
                   ],
-                ),
-                const SizedBox(
-                  height: 500,
                 ),
               ],
             ),
