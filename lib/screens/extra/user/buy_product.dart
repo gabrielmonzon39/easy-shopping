@@ -218,8 +218,10 @@ class BuyProductBuilder extends State<BuyProduct> {
                                     actions: <Widget>[
                                       TextButton(
                                         onPressed: () {
-                                          Navigator.pop(context);
-                                          Navigator.pop(context);
+                                          Navigator.of(context,
+                                                  rootNavigator: true)
+                                              .pop(result);
+                                          Navigator.pop(context, result);
                                         },
                                         child: Container(
                                           color: Colors.white,
@@ -271,8 +273,10 @@ class BuyProductBuilder extends State<BuyProduct> {
                                     actions: <Widget>[
                                       TextButton(
                                         onPressed: () {
-                                          Navigator.pop(context);
-                                          Navigator.pop(context);
+                                          Navigator.of(context,
+                                                  rootNavigator: true)
+                                              .pop(true);
+                                          Navigator.pop(context, true);
                                         },
                                         child: Container(
                                           color: Colors.white,
