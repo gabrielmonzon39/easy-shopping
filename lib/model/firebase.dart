@@ -382,11 +382,12 @@ class FirebaseFS {
   }
 
   static Future<void> updateProduct(
-      String productId, int price, int quantity) async {
+      String productId, int price, int quantity, String description) async {
     await FirebaseFirestore.instance
         .collection('products')
         .doc(productId)
-        .update({'quantity': quantity, 'price': price});
+        .update(
+            {'quantity': quantity, 'price': price, 'description': description});
   }
 
   static Future<List<String>> getDeliveryManIdAndStateFromOrder(

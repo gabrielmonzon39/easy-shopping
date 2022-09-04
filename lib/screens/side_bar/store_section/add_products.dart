@@ -63,9 +63,9 @@ class AddProductsBuilder extends State<AddProductsSection> {
 
   Future<void> uploadProduct() async {
     // check if it is valid data
-    if (nameController.text == "" &&
-        descriptionController.text == "" &&
-        priceController.text == "" &&
+    if (nameController.text == "" ||
+        descriptionController.text == "" ||
+        priceController.text == "" ||
         quantityController.text == "") return;
     if (file == null) return;
     final filePath = file!.path;

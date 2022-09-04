@@ -17,6 +17,7 @@ class ProductView extends StatelessWidget {
   bool? isUser;
   final quantityController = TextEditingController();
   final priceController = TextEditingController();
+  final descriptionController = TextEditingController();
   final limitDescriptionSize = 25;
 
   ProductView({
@@ -233,20 +234,22 @@ class ProductView extends StatelessWidget {
                     context: context,
                     builder: (ctx) => AlertDialog(
                       title: const Text("Modifique los siguientes campos"),
-                      content: Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              keyboardType: TextInputType.number,
+                      content: SizedBox(
+                        height: 130,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            TextField(
+                              keyboardType: TextInputType.text,
                               obscureText: false,
-                              controller: priceController,
+                              controller: descriptionController,
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w400,
                                 color: Colors.black,
                               ),
                               decoration: const InputDecoration(
-                                hintText: "Precio",
+                                hintText: "Descripción",
                                 hintStyle: TextStyle(
                                   color: Color(0xffA6B0BD),
                                 ),
@@ -270,48 +273,98 @@ class ProductView extends StatelessWidget {
                                 ),
                               ),
                             ),
-                          ),
-                          Expanded(
-                            child: TextField(
-                              keyboardType: TextInputType.number,
-                              obscureText: false,
-                              controller: quantityController,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black,
-                              ),
-                              decoration: const InputDecoration(
-                                hintText: "Existencias",
-                                hintStyle: TextStyle(
-                                  color: Color(0xffA6B0BD),
-                                ),
-                                fillColor: Colors.white,
-                                filled: true,
-                                prefixIcon: Icon(
-                                  Icons.production_quantity_limits,
-                                  color: Colors.black,
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(200),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: TextField(
+                                    keyboardType: TextInputType.number,
+                                    obscureText: false,
+                                    controller: priceController,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.black,
+                                    ),
+                                    decoration: const InputDecoration(
+                                      hintText: "Precio",
+                                      hintStyle: TextStyle(
+                                        color: Color(0xffA6B0BD),
+                                      ),
+                                      fillColor: Colors.white,
+                                      filled: true,
+                                      prefixIcon: Icon(
+                                        Icons.production_quantity_limits,
+                                        color: Colors.black,
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(200),
+                                        ),
+                                        borderSide:
+                                            BorderSide(color: secondaryColor),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(200),
+                                        ),
+                                        borderSide:
+                                            BorderSide(color: secondaryColor),
+                                      ),
+                                    ),
                                   ),
-                                  borderSide: BorderSide(color: secondaryColor),
                                 ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(200),
+                                Expanded(
+                                  child: TextField(
+                                    keyboardType: TextInputType.number,
+                                    obscureText: false,
+                                    controller: quantityController,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.black,
+                                    ),
+                                    decoration: const InputDecoration(
+                                      hintText: "Existencias",
+                                      hintStyle: TextStyle(
+                                        color: Color(0xffA6B0BD),
+                                      ),
+                                      fillColor: Colors.white,
+                                      filled: true,
+                                      prefixIcon: Icon(
+                                        Icons.production_quantity_limits,
+                                        color: Colors.black,
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(200),
+                                        ),
+                                        borderSide:
+                                            BorderSide(color: secondaryColor),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(200),
+                                        ),
+                                        borderSide:
+                                            BorderSide(color: secondaryColor),
+                                      ),
+                                    ),
                                   ),
-                                  borderSide: BorderSide(color: secondaryColor),
                                 ),
-                              ),
-                            ),
-                          ),
-                        ],
+                              ],
+                            )
+                          ],
+                        ),
                       ),
                       actions: <Widget>[
                         TextButton(
                           onPressed: () async {
+                            if (quantityController.text == "" ||
+                                descriptionController.text == "" ||
+                                priceController.text == "") {
+                              return;
+                            }
                             if (int.parse(quantityController.text) < 0) {
                               EasyLoading.showError('Cantidad inválida');
                               return;
@@ -319,7 +372,8 @@ class ProductView extends StatelessWidget {
                             await FirebaseFS.updateProduct(
                                 id!,
                                 int.parse(priceController.text),
-                                int.parse(quantityController.text));
+                                int.parse(quantityController.text),
+                                descriptionController.text);
                             Navigator.pop(context);
                             Navigator.pop(context);
                             Navigator.push(
