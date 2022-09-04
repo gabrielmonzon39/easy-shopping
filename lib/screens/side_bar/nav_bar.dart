@@ -3,6 +3,7 @@
 import 'package:easy_shopping/auth/google_sign_in_provider.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/main.dart';
+import 'package:easy_shopping/screens/side_bar/store_section/add_products.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/information_section.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/products_section.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/store_sales_section.dart';
@@ -112,7 +113,7 @@ class NavBar extends StatelessWidget {
           if (OptionConditions.orderHistory())
             ListTile(
               leading: const Icon(Icons.description),
-              title: const Text('Historial de pedidos'),
+              title: const Text('Historial de compras'),
               onTap: () {
                 Navigator.push(
                     context,
@@ -150,6 +151,21 @@ class NavBar extends StatelessWidget {
           ///////////////////////////////////////////////////////////////
           /////////////////    STORE MANAGER OPTIONS    /////////////////
           ///////////////////////////////////////////////////////////////
+
+          /// **************  Ingresar productos  **************
+          if (OptionConditions.addProducts())
+            ListTile(
+              leading: const Icon(Icons.add),
+              title: const Text('Ingresar producto'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AddProductsSection()),
+                );
+              },
+            ),
+          if (OptionConditions.addProducts()) const Divider(),
 
           /// **************  Mis productos  **************
           if (OptionConditions.storeProducts())

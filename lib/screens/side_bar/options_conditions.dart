@@ -33,6 +33,10 @@ class OptionConditions {
 
   /////////////////    STORE MANAGER OPTIONS    /////////////////
 
+  static bool addProducts() {
+    return currentRoll == STORE_MANAGER;
+  }
+
   static bool storeProducts() {
     return currentRoll == STORE_MANAGER;
   }
