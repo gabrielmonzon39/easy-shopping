@@ -104,7 +104,7 @@ class Mainscreen extends StatelessWidget {
                             case USER:
                               return const UserMainScreen();
                             case STORE_MANAGER:
-                              return const StoreManagerMainScreen();
+                              return StoreManagerMainScreen();
                             case PROJECT_MANAGER:
                               return const Text(
                                   "Esta es la vista de project manager.");
