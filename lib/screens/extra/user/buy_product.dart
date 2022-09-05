@@ -2,7 +2,6 @@
 
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
-import 'package:easy_shopping/screens/side_bar/user_section/store_section.dart';
 import 'package:flutter/material.dart';
 
 class BuyProduct extends StatefulWidget {

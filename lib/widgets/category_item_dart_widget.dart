@@ -6,17 +6,17 @@ class CategoryItemCardWidget extends StatelessWidget {
   final CategoryItem? item;
   final height = 200.0;
   final width = 175.0;
-  final Color borderColor = Color(0xffE2E2E2);
+  final Color borderColor = const Color(0xffE2E2E2);
   final double borderRadius = 18;
   final Color color;
 
-  CategoryItemCardWidget({Key? key, this.item, this.color = Colors.blue})
+  const CategoryItemCardWidget({Key? key, this.item, this.color = Colors.blue})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(top: 5, bottom: 5),
+      padding: const EdgeInsets.only(top: 5, bottom: 5),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(18),
@@ -28,7 +28,7 @@ class CategoryItemCardWidget extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
+          SizedBox(
             height: 80,
             width: 80,
             child: iconWidget(),
