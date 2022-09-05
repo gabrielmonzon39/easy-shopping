@@ -26,9 +26,22 @@ class StoreProductBuilder extends State<StoreProduct> {
   String? name;
   int? color;
   bool availableRefresh = true;
+  final nameController = TextEditingController();
 
   StoreProductBuilder(
       {@required this.storeId, @required this.name, @required this.color});
+
+  bool evalConditions(QueryDocumentSnapshot<Object?>? document) {
+    if (nameController.text == "") return true;
+    if (!document!
+        .get('name')
+        .toString()
+        .toLowerCase()
+        .contains(nameController.text.toLowerCase())) {
+      return false;
+    }
+    return true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +64,72 @@ class StoreProductBuilder extends State<StoreProduct> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        keyboardType: TextInputType.text,
+                        obscureText: false,
+                        controller: nameController,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black,
+                        ),
+                        decoration: const InputDecoration(
+                          hintText: "Nombre del producto",
+                          hintStyle: TextStyle(
+                            color: Color(0xffA6B0BD),
+                          ),
+                          fillColor: Colors.white,
+                          filled: true,
+                          prefixIcon: Icon(
+                            Icons.description,
+                            color: Colors.black,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(200),
+                            ),
+                            borderSide: BorderSide(color: secondaryColor),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(200),
+                            ),
+                            borderSide: BorderSide(color: secondaryColor),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          setState(() {});
+                        },
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.resolveWith<Color>(
+                            (Set<MaterialState> states) {
+                              return Colors.green;
+                            },
+                          ),
+                        ),
+                        child: const Icon(
+                          Icons.search,
+                          size: 30,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
                 Expanded(
                     child: ////////////////////////////////////////////////////////////////
                         StreamBuilder<QuerySnapshot>(
@@ -71,7 +150,8 @@ class StoreProductBuilder extends State<StoreProduct> {
                               usersnapshot.data?.docs[index];
                           try {
                             if (document!.get('store_id') == storeId! &&
-                                document.get('quantity') != 0) {
+                                document.get('quantity') != 0 &&
+                                evalConditions(document)) {
                               return Column(
                                 children: [
                                   ProductView(

@@ -31,230 +31,233 @@ class NavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        // Remove padding
-        padding: EdgeInsets.zero,
-        children: [
-          UserAccountsDrawerHeader(
-            accountName: Text(name),
-            accountEmail: Text(email),
-            currentAccountPicture: const CircleAvatar(
-              backgroundColor: ternaryColor,
-              radius: 35.0,
-              backgroundImage: AssetImage(
-                'assets/images/avatar.png',
+    return SizedBox(
+      width: 310,
+      child: Drawer(
+        child: ListView(
+          // Remove padding
+          padding: EdgeInsets.zero,
+          children: [
+            UserAccountsDrawerHeader(
+              accountName: Text(name),
+              accountEmail: Text(email),
+              currentAccountPicture: const CircleAvatar(
+                backgroundColor: ternaryColor,
+                radius: 35.0,
+                backgroundImage: AssetImage(
+                  'assets/images/avatar.png',
+                ),
+              ),
+              decoration: const BoxDecoration(
+                color: secondaryColor,
               ),
             ),
-            decoration: const BoxDecoration(
-              color: secondaryColor,
-            ),
-          ),
 
-          //////////////////////////////////////////////////////
-          /////////////////    USER OPTIONS    /////////////////
-          //////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////
+            /////////////////    USER OPTIONS    /////////////////
+            //////////////////////////////////////////////////////
 
-          /// **************  Familiares y amigos  **************
-          if (OptionConditions.familyAndFriends())
-            ListTile(
-              leading: const Icon(Icons.groups),
-              title: const Text('Familiares y amigos'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const FamilySection()),
-                );
-              },
-            ),
-          if (OptionConditions.familyAndFriends()) const Divider(),
-
-          /// **************  Tiendas  **************
-          if (OptionConditions.stores())
-            ListTile(
-              leading: const Icon(Icons.store),
-              title: const Text('Tiendas'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const StoresSection()),
-                );
-              },
-            ),
-          if (OptionConditions.stores()) const Divider(),
-
-          /// **************  Servicios  **************
-          if (OptionConditions.services())
-            ListTile(
-              leading: const Icon(Icons.room_service),
-              title: const Text('Servicios'),
-              onTap: () {},
-            ),
-          if (OptionConditions.services()) const Divider(),
-
-          /// **************  Carrito de compras  **************
-          if (OptionConditions.shoppingCart())
-            ListTile(
-              leading: const Icon(Icons.shopping_cart),
-              title: const Text('Carrito de compras'),
-              onTap: () {
-                Navigator.push(
+            /// **************  Familiares y amigos  **************
+            if (OptionConditions.familyAndFriends())
+              ListTile(
+                leading: const Icon(Icons.groups),
+                title: const Text('Familiares y amigos'),
+                onTap: () {
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const ShoppingCartSection(),
-                    ));
-              },
-            ),
-          if (OptionConditions.shoppingCart()) const Divider(),
+                        builder: (context) => const FamilySection()),
+                  );
+                },
+              ),
+            if (OptionConditions.familyAndFriends()) const Divider(),
 
-          /// **************  Historial de pedidos  **************
-          if (OptionConditions.orderHistory())
-            ListTile(
-              leading: const Icon(Icons.description),
-              title: const Text('Historial de compras'),
-              onTap: () {
-                Navigator.push(
+            /// **************  Tiendas  **************
+            if (OptionConditions.stores())
+              ListTile(
+                leading: const Icon(Icons.store),
+                title: const Text('Tiendas'),
+                onTap: () {
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const OrderHistorySection(),
-                    ));
-              },
-            ),
-          if (OptionConditions.orderHistory()) const Divider(),
+                        builder: (context) => const StoresSection()),
+                  );
+                },
+              ),
+            if (OptionConditions.stores()) const Divider(),
 
-          /// **************  Historial de reservaciones  **************
-          if (OptionConditions.reservationsHistory())
-            ListTile(
-              leading: const Icon(Icons.menu_book),
-              title: const Text('Historial de reservaciones'),
-              onTap: () {},
-            ),
-          if (OptionConditions.reservationsHistory()) const Divider(),
+            /// **************  Servicios  **************
+            if (OptionConditions.services())
+              ListTile(
+                leading: const Icon(Icons.room_service),
+                title: const Text('Servicios'),
+                onTap: () {},
+              ),
+            if (OptionConditions.services()) const Divider(),
 
-          /// **************  Información  **************
-          if (OptionConditions.userInformation())
-            ListTile(
-              leading: const Icon(Icons.info),
-              title: const Text('Información'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const UserInformationSection()),
-                );
-              },
-            ),
-          if (OptionConditions.userInformation()) const Divider(),
+            /// **************  Carrito de compras  **************
+            if (OptionConditions.shoppingCart())
+              ListTile(
+                leading: const Icon(Icons.shopping_cart),
+                title: const Text('Carrito de compras'),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ShoppingCartSection(),
+                      ));
+                },
+              ),
+            if (OptionConditions.shoppingCart()) const Divider(),
 
-          ///////////////////////////////////////////////////////////////
-          /////////////////    STORE MANAGER OPTIONS    /////////////////
-          ///////////////////////////////////////////////////////////////
+            /// **************  Historial de pedidos  **************
+            if (OptionConditions.orderHistory())
+              ListTile(
+                leading: const Icon(Icons.description),
+                title: const Text('Historial de compras'),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const OrderHistorySection(),
+                      ));
+                },
+              ),
+            if (OptionConditions.orderHistory()) const Divider(),
 
-          /// **************  Ingresar productos  **************
-          if (OptionConditions.addProducts())
-            ListTile(
-              leading: const Icon(Icons.add),
-              title: const Text('Ingresar producto'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const AddProductsSection()),
-                );
-              },
-            ),
-          if (OptionConditions.addProducts()) const Divider(),
+            /// **************  Historial de reservaciones  **************
+            if (OptionConditions.reservationsHistory())
+              ListTile(
+                leading: const Icon(Icons.menu_book),
+                title: const Text('Historial de reservaciones'),
+                onTap: () {},
+              ),
+            if (OptionConditions.reservationsHistory()) const Divider(),
 
-          /// **************  Mis productos  **************
-          if (OptionConditions.storeProducts())
-            ListTile(
-              leading: const Icon(Icons.local_grocery_store),
-              title: const Text('Mis productos'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const ProductsSection()),
-                );
-              },
-            ),
-          if (OptionConditions.storeProducts()) const Divider(),
-
-          /// **************  Mis ventas  **************
-          if (OptionConditions.storeSales())
-            ListTile(
-              leading: const Icon(Icons.monetization_on),
-              title: const Text('Mis ventas'),
-              onTap: () {
-                Navigator.push(
+            /// **************  Información  **************
+            if (OptionConditions.userInformation())
+              ListTile(
+                leading: const Icon(Icons.info),
+                title: const Text('Información'),
+                onTap: () {
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const StoreSalesSection(),
-                    ));
-              },
-            ),
-          if (OptionConditions.storeSales()) const Divider(),
+                        builder: (context) => const UserInformationSection()),
+                  );
+                },
+              ),
+            if (OptionConditions.userInformation()) const Divider(),
 
-          /// **************  Información  **************
-          if (OptionConditions.storeInformation())
-            ListTile(
-              leading: const Icon(Icons.info),
-              title: const Text('Información'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const StoreInformationSection()),
-                );
-              },
-            ),
-          if (OptionConditions.storeInformation()) const Divider(),
+            ///////////////////////////////////////////////////////////////
+            /////////////////    STORE MANAGER OPTIONS    /////////////////
+            ///////////////////////////////////////////////////////////////
 
-          /////////////////////////////////////////////////////////
-          /////////////////    GENERAL OPTIONS    /////////////////
-          /////////////////////////////////////////////////////////
+            /// **************  Ingresar productos  **************
+            if (OptionConditions.addProducts())
+              ListTile(
+                leading: const Icon(Icons.add),
+                title: const Text('Ingresar producto'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const AddProductsSection()),
+                  );
+                },
+              ),
+            if (OptionConditions.addProducts()) const Divider(),
 
-          /// **************  Notificaciones  **************
-          if (OptionConditions.notifications())
-            ListTile(
-              leading: const Icon(Icons.notifications),
-              title: const Text('Notificaciones'),
-              onTap: () {},
-            ),
-          if (OptionConditions.notifications()) const Divider(),
+            /// **************  Mis productos  **************
+            if (OptionConditions.storeProducts())
+              ListTile(
+                leading: const Icon(Icons.local_grocery_store),
+                title: const Text('Mis productos'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ProductsSection()),
+                  );
+                },
+              ),
+            if (OptionConditions.storeProducts()) const Divider(),
 
-          /// **************  Token  **************
-          if (OptionConditions.token())
-            ListTile(
-              leading: const Icon(Icons.vpn_key),
-              title: const Text('Token'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => TokenSection()),
-                );
-              },
-            ),
-          if (OptionConditions.token()) const Divider(),
+            /// **************  Mis ventas  **************
+            if (OptionConditions.storeSales())
+              ListTile(
+                leading: const Icon(Icons.monetization_on),
+                title: const Text('Mis ventas'),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const StoreSalesSection(),
+                      ));
+                },
+              ),
+            if (OptionConditions.storeSales()) const Divider(),
 
-          /// **************  Cerrar sesión  **************
-          if (OptionConditions.logOut())
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text('Cerrar sesión'),
-              onTap: () async {
-                await GoogleSignInProvider.provider!.googleSignOut();
-                // ignore: use_build_context_synchronously
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const MyApp()),
-                );
-              },
-            ),
-          if (OptionConditions.logOut()) const Divider(),
-        ],
+            /// **************  Información  **************
+            if (OptionConditions.storeInformation())
+              ListTile(
+                leading: const Icon(Icons.info),
+                title: const Text('Información'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const StoreInformationSection()),
+                  );
+                },
+              ),
+            if (OptionConditions.storeInformation()) const Divider(),
+
+            /////////////////////////////////////////////////////////
+            /////////////////    GENERAL OPTIONS    /////////////////
+            /////////////////////////////////////////////////////////
+
+            /// **************  Notificaciones  **************
+            if (OptionConditions.notifications())
+              ListTile(
+                leading: const Icon(Icons.notifications),
+                title: const Text('Notificaciones'),
+                onTap: () {},
+              ),
+            if (OptionConditions.notifications()) const Divider(),
+
+            /// **************  Token  **************
+            if (OptionConditions.token())
+              ListTile(
+                leading: const Icon(Icons.vpn_key),
+                title: const Text('Token'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => TokenSection()),
+                  );
+                },
+              ),
+            if (OptionConditions.token()) const Divider(),
+
+            /// **************  Cerrar sesión  **************
+            if (OptionConditions.logOut())
+              ListTile(
+                leading: const Icon(Icons.logout),
+                title: const Text('Cerrar sesión'),
+                onTap: () async {
+                  await GoogleSignInProvider.provider!.googleSignOut();
+                  // ignore: use_build_context_synchronously
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const MyApp()),
+                  );
+                },
+              ),
+            if (OptionConditions.logOut()) const Divider(),
+          ],
+        ),
       ),
     );
   }

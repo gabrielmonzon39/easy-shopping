@@ -18,6 +18,7 @@ class ProductView extends StatelessWidget {
   final quantityController = TextEditingController();
   final priceController = TextEditingController();
   final descriptionController = TextEditingController();
+  final nameController = TextEditingController();
   final limitDescriptionSize = 25;
 
   ProductView({
@@ -235,10 +236,44 @@ class ProductView extends StatelessWidget {
                     builder: (ctx) => AlertDialog(
                       title: const Text("Modifique los siguientes campos"),
                       content: SizedBox(
-                        height: 130,
+                        height: 190,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
+                            TextField(
+                              keyboardType: TextInputType.text,
+                              obscureText: false,
+                              controller: nameController,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black,
+                              ),
+                              decoration: const InputDecoration(
+                                hintText: "Nombre",
+                                hintStyle: TextStyle(
+                                  color: Color(0xffA6B0BD),
+                                ),
+                                fillColor: Colors.white,
+                                filled: true,
+                                prefixIcon: Icon(
+                                  Icons.production_quantity_limits,
+                                  color: Colors.black,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(200),
+                                  ),
+                                  borderSide: BorderSide(color: secondaryColor),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(200),
+                                  ),
+                                  borderSide: BorderSide(color: secondaryColor),
+                                ),
+                              ),
+                            ),
                             TextField(
                               keyboardType: TextInputType.text,
                               obscureText: false,
@@ -360,20 +395,12 @@ class ProductView extends StatelessWidget {
                       actions: <Widget>[
                         TextButton(
                           onPressed: () async {
-                            if (quantityController.text == "" ||
-                                descriptionController.text == "" ||
-                                priceController.text == "") {
-                              return;
-                            }
-                            if (int.parse(quantityController.text) < 0) {
-                              EasyLoading.showError('Cantidad inválida');
-                              return;
-                            }
                             await FirebaseFS.updateProduct(
                                 id!,
-                                int.parse(priceController.text),
-                                int.parse(quantityController.text),
-                                descriptionController.text);
+                                priceController.text,
+                                quantityController.text,
+                                descriptionController.text,
+                                nameController.text);
                             Navigator.pop(context);
                             Navigator.pop(context);
                             Navigator.push(

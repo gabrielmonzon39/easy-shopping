@@ -381,13 +381,32 @@ class FirebaseFS {
         .delete();
   }
 
-  static Future<void> updateProduct(
-      String productId, int price, int quantity, String description) async {
+  static bool invalidParam(String param) {
+    return param == "";
+  }
+
+  static Future<void> updateProduct(String productId, String price,
+      String quantity, String description, String name) async {
+    Map<String, dynamic> params = {
+      'quantity': quantity,
+      'price': price,
+      'description': description,
+      'name': name
+    };
+    if (invalidParam(quantity)) params.remove('quantity');
+    if (invalidParam(price)) params.remove('price');
+    if (invalidParam(description)) params.remove('description');
+    if (invalidParam(name)) params.remove('name');
+    if (params.containsKey('quantity')) {
+      params['quantity'] = int.parse(quantity);
+    }
+    if (params.containsKey('price')) {
+      params['price'] = int.parse(price);
+    }
     await FirebaseFirestore.instance
         .collection('products')
         .doc(productId)
-        .update(
-            {'quantity': quantity, 'price': price, 'description': description});
+        .update(params);
   }
 
   static Future<List<String>> getDeliveryManIdAndStateFromOrder(

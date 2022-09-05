@@ -149,7 +149,9 @@ class BuyProductBuilder extends State<BuyProduct> {
                           ),
                           onPressed: () {
                             setState(() {
-                              buyQuantity--;
+                              if (buyQuantity - 1 >= 1) {
+                                buyQuantity--;
+                              }
                             });
                           },
                         ),
@@ -177,7 +179,9 @@ class BuyProductBuilder extends State<BuyProduct> {
                           ),
                           onPressed: () {
                             setState(() {
-                              buyQuantity++;
+                              if (buyQuantity + 1 <= int.parse(quantity!)) {
+                                buyQuantity++;
+                              }
                             });
                           },
                         ),
