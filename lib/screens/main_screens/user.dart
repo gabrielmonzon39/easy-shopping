@@ -12,13 +12,26 @@ class UserMainScreen extends StatefulWidget {
 
 class UserBuilder extends State<UserMainScreen> {
   final nameController = TextEditingController();
+  final maxViewController = TextEditingController();
+  final defaultMaxView = 10;
+  int currentMaxView = 0;
+  int count = 0;
+
   bool selected = true;
   String selectedOption = types[types.length - 1];
+
+  UserBuilder() {
+    currentMaxView = defaultMaxView;
+  }
 
   bool evalConditions(QueryDocumentSnapshot<Object?>? document) {
     if (document == null) return false;
     if (document.id == "8NSZ1ielRBQyriNRwXdx") return false;
     if (document.get('quantity') == 0) return false;
+
+    count++;
+    if (count > int.parse(maxViewController.text)) return false;
+
     if (selected) {
       return nameCondition(document);
     } else {
@@ -42,6 +55,7 @@ class UserBuilder extends State<UserMainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    maxViewController.text = currentMaxView.toString();
     return SizedBox(
         height: 680,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -54,7 +68,7 @@ class UserBuilder extends State<UserMainScreen> {
                   obscureText: false,
                   controller: nameController,
                   style: const TextStyle(
-                    fontSize: 14,
+                    fontSize: 16,
                     fontWeight: FontWeight.w400,
                     color: Colors.black,
                   ),
@@ -90,7 +104,13 @@ class UserBuilder extends State<UserMainScreen> {
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    setState(() {});
+                    setState(() {
+                      if (maxViewController.text == "") {
+                        maxViewController.text = defaultMaxView.toString();
+                      }
+                      currentMaxView = int.parse(maxViewController.text);
+                      count = 0;
+                    });
                   },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.resolveWith<Color>(
@@ -109,6 +129,52 @@ class UserBuilder extends State<UserMainScreen> {
           ),
           const SizedBox(
             height: 10,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              const Text("Vista máxima: ",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.black,
+                  )),
+              Expanded(
+                child: TextField(
+                  keyboardType: TextInputType.number,
+                  obscureText: false,
+                  controller: maxViewController,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.black,
+                  ),
+                  decoration: const InputDecoration(
+                    hintStyle: TextStyle(
+                      color: Color(0xffA6B0BD),
+                    ),
+                    fillColor: Colors.white,
+                    filled: true,
+                    prefixIcon: Icon(
+                      Icons.format_list_bulleted,
+                      color: Colors.black,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(200),
+                      ),
+                      borderSide: BorderSide(color: secondaryColor),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(200),
+                      ),
+                      borderSide: BorderSide(color: secondaryColor),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
