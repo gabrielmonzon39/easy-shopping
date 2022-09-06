@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
+import 'package:easy_shopping/widgets/order_view.dart';
+import 'package:easy_shopping/widgets/sale_view.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class StoreSalesSection extends StatefulWidget {
   const StoreSalesSection({Key? key}) : super(key: key);
@@ -21,6 +24,25 @@ class StoreSalesBuilder extends State<StoreSalesSection> {
   List<Widget> list = [];
   Widget? result;
   int total = 0;
+  String initialPick = DateFormat("yyyy-MM-dd").format(DateTime.now());
+  String endPick = DateFormat("yyyy-MM-dd").format(DateTime.now());
+  String? id;
+  bool availableRefresh = true;
+
+  DateTime parseDate(String dateAndHour) {
+    String date = dateAndHour.split(" ").last;
+    List<String> formatedDate = date.split("-");
+    return DateTime(int.parse(formatedDate[2]), int.parse(formatedDate[1]),
+        int.parse(formatedDate[0]));
+  }
+
+  Future<void> calculateStoreId() async {
+    final storeId = await FirebaseFS.getStoreId(uid!);
+    availableRefresh = false;
+    setState(() {
+      id = storeId;
+    });
+  }
 
   void parse() {
     for (dynamic map in products!) {
@@ -132,15 +154,18 @@ class StoreSalesBuilder extends State<StoreSalesSection> {
     }
   }
 
-  Future<bool> salesByUid() async {
-    final sales = await FirebaseFS.getSalesByUid(uid!);
+  Future<bool> salesByUid(QueryDocumentSnapshot<Object?> document) async {
+    deliveryProcessId = document.get('delivery_processId').toString();
+    await getDeliveryManAndState();
+
+    /*final sales = await FirebaseFS.getSalesByUid(uid!);
     for (String sale in sales) {
       DocumentSnapshot saleDetails =
           await FirebaseFirestore.instance.collection('sales').doc(sale).get();
-      deliveryProcessId = saleDetails.get('delivery_processId').toString();
+      
       String fecha = saleDetails.get('date').toString();
       products = saleDetails.get('products');
-      await getDeliveryManAndState();
+      
       parse();
       listTemp.add(
         const SizedBox(
@@ -224,7 +249,7 @@ class StoreSalesBuilder extends State<StoreSalesSection> {
         height: 20,
       ));
       listTemp = [];
-    }
+    }*/
     result = Column(
       children: list,
     );
@@ -246,6 +271,7 @@ class StoreSalesBuilder extends State<StoreSalesSection> {
 
   @override
   Widget build(BuildContext context) {
+    if (availableRefresh) calculateStoreId();
     return Scaffold(
         appBar: AppBar(
           backgroundColor: secondaryColor,
@@ -260,78 +286,212 @@ class StoreSalesBuilder extends State<StoreSalesSection> {
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
-          child: SingleChildScrollView(
+          child: SizedBox(
+            height: 680,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(
-                  height: 10,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    ////////////////////////////////////////////////////////////////
-                    FutureBuilder<bool>(
-                        future: salesByUid(),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<bool> snapshot) {
-                          if (!snapshot.hasData) {
-                            // not loaded
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          } else if (snapshot.hasError) {
-                            // some error
-                            return Column(children: const [
-                              Text(
-                                "Lo sentimos, ha ocurrido un error",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 100,
-                              ),
-                              Icon(
-                                Icons.close,
-                                size: 100,
-                              ),
-                            ]);
-                          } else {
-                            // loaded
-                            bool? valid = snapshot.data;
-                            if (valid!) {
-                              return result!;
-                            }
-                          }
-                          return Center(
-                              child: Column(children: const [
-                            SizedBox(
-                              height: 100,
-                            ),
-                            Text(
-                              "¡Ups! Ha ocurrido un error al obtener los datos.",
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black,
-                              ),
-                            ),
-                            SizedBox(
-                              height: 100,
-                            ),
-                            Icon(
-                              Icons.sentiment_very_dissatisfied,
-                              size: 100,
-                            ),
-                          ]));
-                        }),
+                    const Text(
+                      "Fecha inicial : ",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                    ),
+                    Text(
+                      initialPick,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        DateTime? temp = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.parse(initialPick),
+                            firstDate: DateTime(2000),
+                            lastDate: DateTime(2100));
+                        if (temp == null) return;
+                        setState(() {
+                          initialPick = DateFormat("yyyy-MM-dd").format(temp);
+                        });
+                      },
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                            return Colors.green;
+                          },
+                        ),
+                      ),
+                      child: const Icon(
+                        Icons.calendar_month,
+                        size: 25,
+                      ),
+                    )
                   ],
                 ),
                 const SizedBox(
-                  height: 200,
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Fecha final   : ",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                    ),
+                    Text(
+                      endPick,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        DateTime? temp = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.parse(endPick),
+                            firstDate: DateTime(2000),
+                            lastDate: DateTime(2100));
+                        if (temp == null) return;
+                        setState(() {
+                          endPick = DateFormat("yyyy-MM-dd").format(temp);
+                        });
+                      },
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                            return Colors.green;
+                          },
+                        ),
+                      ),
+                      child: const Icon(
+                        Icons.calendar_month,
+                        size: 25,
+                      ),
+                    )
+                  ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Expanded(
+                  child:
+                      ////////////////////////////////////////////////////////////////
+                      StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('sales')
+                        .snapshots(),
+                    builder: (ctx, AsyncSnapshot<QuerySnapshot> usersnapshot) {
+                      if (usersnapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else {
+                        return ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemCount: usersnapshot.data!.docs.length,
+                          itemBuilder: (context, index) {
+                            QueryDocumentSnapshot<Object?>? document =
+                                usersnapshot.data?.docs[index];
+                            try {
+                              DateTime date = parseDate(document!.get('date'));
+
+                              if (document.get('store_id') == id! &&
+                                  date.isAfter(DateTime.parse(initialPick)
+                                      .subtract(const Duration(days: 1))) &&
+                                  date.isBefore(DateTime.parse(endPick)
+                                      .add(const Duration(days: 1)))) {
+                                salesByUid(document);
+                                return Column(
+                                  children: [
+                                    SizedBox(
+                                      width: double.infinity,
+                                      child: ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      SaleView(
+                                                        id: document.id,
+                                                        orderId: document
+                                                            .get('order_id'),
+                                                        date: document
+                                                            .get('date'),
+                                                        deliverManIdName:
+                                                            deliverManIdName,
+                                                        deliverManIdEmail:
+                                                            deliverManIdEmail,
+                                                        state: state,
+                                                      )),
+                                            );
+                                          },
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty
+                                                    .resolveWith<Color>(
+                                              (Set<MaterialState> states) {
+                                                return ternaryColor;
+                                              },
+                                            ),
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                "Venta : ${document.get('order_id')}",
+                                                style: const TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              Text(
+                                                "Fecha : ${date.toString().split(" ").first}",
+                                                style: const TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ],
+                                          )),
+                                    ),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                  ],
+                                );
+                              }
+                              //products?.clear();
+                              //mapProducts.clear();
+                            } catch (e) {
+                              print(e.toString());
+                            }
+                            return const SizedBox(
+                              width: 0,
+                              height: 0,
+                            );
+                          },
+                        );
+                      }
+                    },
+                  ),
+                  ////////////////////////////////////////////////////////////////
                 ),
               ],
             ),

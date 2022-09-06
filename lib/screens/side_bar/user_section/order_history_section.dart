@@ -42,7 +42,7 @@ class OrderHistoryBuilder extends State<OrderHistorySection> {
 
   Future<void> orderByUid(QueryDocumentSnapshot<Object?> document) async {
     deliveryProcessId = document.get('delivery_processId').toString();
-    getDeliveryManAndState();
+    await getDeliveryManAndState();
   }
 
   Future<void> getDeliveryManAndState() async {
@@ -280,7 +280,7 @@ class OrderHistoryBuilder extends State<OrderHistorySection> {
                     }
                   },
                 )
-                    ////////////////////////////////////////////////////////////////,
+                    ////////////////////////////////////////////////////////////////
                     ),
                 const SizedBox(
                   height: 20,
