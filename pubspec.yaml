@@ -45,6 +45,7 @@ dependencies:
   # misc
   select_form_field: "^1.0.0"
   flutter_easyloading: ^3.0.3
+  shared_preferences: ^2.0.15
 
   # for getting date
   intl: ^0.17.0

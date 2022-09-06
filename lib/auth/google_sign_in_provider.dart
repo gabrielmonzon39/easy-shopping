@@ -27,6 +27,8 @@ class GoogleSignInProvider extends ChangeNotifier {
   }
 
   Future googleSignOut() async {
-    await googleSignIn.signOut();
+    try {
+      await googleSignIn.signOut();
+    } catch (e) {}
   }
 }

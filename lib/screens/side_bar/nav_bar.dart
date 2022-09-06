@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_typing_uninitialized_variables
+// ignore_for_file: prefer_typing_uninitialized_variables, use_build_context_synchronously, duplicate_ignore
 
 import 'package:easy_shopping/auth/google_sign_in_provider.dart';
 import 'package:easy_shopping/constants.dart';
@@ -15,6 +15,8 @@ import 'package:easy_shopping/screens/side_bar/user_section/order_history_sectio
 import 'package:easy_shopping/screens/side_bar/user_section/shopping_cart_section.dart';
 import 'package:easy_shopping/screens/side_bar/user_section/store_section.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: must_be_immutable
 class NavBar extends StatelessWidget {
@@ -247,8 +249,12 @@ class NavBar extends StatelessWidget {
                 leading: const Icon(Icons.logout),
                 title: const Text('Cerrar sesión'),
                 onTap: () async {
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  prefs.setBool('isAlreadyLogged', false);
+                  GoogleSignInProvider.provider =
+                      Provider.of<GoogleSignInProvider>(context, listen: false);
                   await GoogleSignInProvider.provider!.googleSignOut();
-                  // ignore: use_build_context_synchronously
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => const MyApp()),

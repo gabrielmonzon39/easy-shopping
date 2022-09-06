@@ -11,6 +11,7 @@ import 'package:easy_shopping/screens/on_board/welcome_page.dart';
 import 'package:easy_shopping/screens/on_board/onboard_page.dart';
 import 'package:easy_shopping/screens/main_screens/mainscreen.dart';
 import 'package:easy_shopping/auth/google_sign_in_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Onboard extends StatefulWidget {
   const Onboard({Key? key}) : super(key: key);
@@ -134,6 +135,14 @@ class _OnboardState extends State<Onboard> with SingleTickerProviderStateMixin {
                     photo!,
                     user.metadata.creationTime.toString(),
                     user.metadata.lastSignInTime.toString());
+
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.setBool('isAlreadyLogged', true);
+                prefs.setString('name', name);
+                prefs.setString('email', email);
+                prefs.setString('photo', photo);
+                prefs.setString('uid', uid!);
+                prefs.setString('role', currentRoll);
                 // ignore: use_build_context_synchronously
                 Navigator.push(
                     context,
