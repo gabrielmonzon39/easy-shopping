@@ -27,6 +27,7 @@ class OrderHistoryBuilder extends State<OrderHistorySection> {
   String endPick = DateFormat("yyyy-MM-dd").format(DateTime.now());
 
   void parse() {
+    mapProducts = [];
     for (dynamic map in products!) {
       mapProducts.add(Map<String, dynamic>.from(map));
     }
@@ -39,117 +40,9 @@ class OrderHistoryBuilder extends State<OrderHistorySection> {
         int.parse(formatedDate[0]));
   }
 
-  Future<void> getOrderedProducts() async {
-    String productId = "";
-    String buyQuantity = "";
-    int? total;
-    for (Map<String, dynamic> product in mapProducts) {
-      productId = product['product_id'];
-      buyQuantity = product['buy_quantity'].toString();
-      DocumentSnapshot productDetails = await FirebaseFirestore.instance
-          .collection('products')
-          .doc(productId)
-          .get();
-      total = (int.parse(buyQuantity) * productDetails.get('price')) as int?;
-      this.total += total!;
-      listTemp.add(Container(
-        width: double.infinity,
-        margin: const EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
-        padding: const EdgeInsets.all(defaultPadding),
-        decoration: const BoxDecoration(
-          color: ternaryColor,
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Text(
-                productDetails.get('name'),
-                textAlign: TextAlign.left,
-                style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 25,
-                    color: Colors.white),
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Image.network(
-                    productDetails.get('image'),
-                    width: 150,
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 16, top: 8, bottom: 8),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Text(
-                          'Q${productDetails.get('price').toString()}',
-                          textAlign: TextAlign.left,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 22,
-                              color: Colors.white),
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Text(
-                          'Cantidad: $buyQuantity',
-                          textAlign: TextAlign.left,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 22,
-                              color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Text(
-              'Total: Q${total.toString()}',
-              textAlign: TextAlign.right,
-              style: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 25,
-                  color: Colors.white),
-            ),
-          ],
-        ),
-      ));
-
-      listTemp.add(const SizedBox(
-        height: 10,
-      ));
-    }
-  }
-
   Future<void> orderByUid(QueryDocumentSnapshot<Object?> document) async {
     deliveryProcessId = document.get('delivery_processId').toString();
-    String date = document.get('date').toString();
-    products = document.get('products');
     getDeliveryManAndState();
-    parse();
-    //await getOrderedProducts();
   }
 
   Future<void> getDeliveryManAndState() async {
@@ -290,7 +183,7 @@ class OrderHistoryBuilder extends State<OrderHistorySection> {
                   height: 20,
                 ),
                 Expanded(
-                    child: ////////////////////////////////////////////////////////////////
+                    child:
                         ////////////////////////////////////////////////////////////////
                         StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance
@@ -310,47 +203,62 @@ class OrderHistoryBuilder extends State<OrderHistorySection> {
                               usersnapshot.data?.docs[index];
                           try {
                             DateTime date = parseDate(document!.get('date'));
+
                             if (document.get('user_id') == uid! &&
-                                date.isAfter(DateTime.parse(initialPick)) &&
-                                date.isBefore(DateTime.parse(endPick))) {
+                                date.isAfter(DateTime.parse(initialPick)
+                                    .subtract(const Duration(days: 1))) &&
+                                date.isBefore(DateTime.parse(endPick)
+                                    .add(const Duration(days: 1)))) {
                               orderByUid(document);
                               return Column(
                                 children: [
                                   SizedBox(
                                     width: double.infinity,
                                     child: ElevatedButton(
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => OrderView(
-                                                    id: document.id,
-                                                    date: document.get('date'),
-                                                    deliverManIdName:
-                                                        deliverManIdName,
-                                                    deliverManIdEmail:
-                                                        deliverManIdEmail,
-                                                    state: state,
-                                                  )),
-                                        );
-                                      },
-                                      style: ButtonStyle(
-                                        backgroundColor: MaterialStateProperty
-                                            .resolveWith<Color>(
-                                          (Set<MaterialState> states) {
-                                            return ternaryColor;
-                                          },
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => OrderView(
+                                                      id: document.id,
+                                                      date:
+                                                          document.get('date'),
+                                                      deliverManIdName:
+                                                          deliverManIdName,
+                                                      deliverManIdEmail:
+                                                          deliverManIdEmail,
+                                                      state: state,
+                                                    )),
+                                          );
+                                        },
+                                        style: ButtonStyle(
+                                          backgroundColor: MaterialStateProperty
+                                              .resolveWith<Color>(
+                                            (Set<MaterialState> states) {
+                                              return ternaryColor;
+                                            },
+                                          ),
                                         ),
-                                      ),
-                                      child: Text(
-                                        "Compra : ${document.id}",
-                                        style: const TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              "Compra : ${document.id}",
+                                              style: const TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                            Text(
+                                              "Fecha : ${date.toString().split(" ").first}",
+                                              style: const TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ],
+                                        )),
                                   ),
                                   const SizedBox(
                                     height: 20,
@@ -358,6 +266,8 @@ class OrderHistoryBuilder extends State<OrderHistorySection> {
                                 ],
                               );
                             }
+                            //products?.clear();
+                            //mapProducts.clear();
                           } catch (e) {
                             print(e.toString());
                           }
