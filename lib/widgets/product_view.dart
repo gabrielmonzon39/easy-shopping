@@ -4,7 +4,6 @@ import 'package:easy_shopping/model/firebase.dart';
 import 'package:easy_shopping/screens/extra/user/buy_product.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/products_section.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class ProductView extends StatelessWidget {
   String? id;
@@ -145,6 +144,7 @@ class ProductView extends StatelessWidget {
       );
     }
     return Container(
+      width: 330,
       color: ternaryColor,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
