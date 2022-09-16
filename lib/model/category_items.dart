@@ -24,3 +24,14 @@ var categoryItemsDemo = [
     icon: "4",
   ),
 ];
+
+var superAdminItemsDemo = [
+  CategoryItem(
+    name: "Nuevo Proyecto",
+    icon: "1",
+  ),
+  CategoryItem(
+    name: "Generar Project Manager",
+    icon: "1",
+  ),
+];
