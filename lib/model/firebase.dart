@@ -10,7 +10,7 @@ const String STORE_MANAGER = "store_manager";
 const String PROJECT_MANAGER = "project_manager";
 const String DELIVERY_MAN = "delivery_man";
 const String PROVIDER = "provider";
-const String SUPER_ADMIN = "admin";
+const String SUPER_ADMIN = "super_admin";
 
 // product state
 const String PREPARING = "preparing";
@@ -379,6 +379,13 @@ class FirebaseFS {
         .collection('products')
         .doc(productId)
         .delete();
+  }
+
+  static Future<String> generateProjectManagerToken(String projectId) async {
+    var token = await FirebaseFirestore.instance
+        .collection('tokens')
+        .add({'project_id': projectId, 'role': 'project_manager'});
+    return token.id;
   }
 
   static bool invalidParam(String param) {
