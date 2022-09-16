@@ -3,6 +3,7 @@
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
 import 'package:easy_shopping/screens/main_screens/store_manager.dart';
+import 'package:easy_shopping/screens/main_screens/super_admin.dart';
 import 'package:easy_shopping/screens/main_screens/user.dart';
 import 'package:easy_shopping/screens/side_bar/nav_bar.dart';
 import 'package:flutter/material.dart';
@@ -115,8 +116,7 @@ class Mainscreen extends StatelessWidget {
                               return const Text(
                                   "Esta es la vista de provider.");
                             case SUPER_ADMIN:
-                              return const Text(
-                                  "Esta es la vista de super admin.");
+                              return SuperAdminMainScreen();
                             case NONE:
                               return const Text("Ha ocurrido un error.");
                           }
