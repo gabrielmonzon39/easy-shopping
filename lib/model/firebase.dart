@@ -122,6 +122,21 @@ class FirebaseFS {
     return "0";
   }
 
+  static Future<String> getProjectIdForProjectManager(String? uid) async {
+    FirebaseFirestore instance = FirebaseFirestore.instance;
+    DocumentSnapshot? documentDetails;
+    String? homeId;
+    String? projectId;
+    try {
+      documentDetails = await instance.collection('users').doc(uid).get();
+      projectId = documentDetails.get('project_id');
+      return projectId!;
+    } catch (e) {
+      print(e.toString());
+    }
+    return "0";
+  }
+
   static Future<DocumentSnapshot?> getStoreDetails(String storeId) async {
     FirebaseFirestore instance = FirebaseFirestore.instance;
     try {
@@ -396,6 +411,16 @@ class FirebaseFS {
     });
   }
 
+  static Future<void> generateStore(String storeName, String storeDescription,
+      String storeColor, String projectId) async {
+    await FirebaseFirestore.instance.collection('stores').add({
+      'name': storeName,
+      'description': storeDescription,
+      'color': storeColor,
+      'project_id': projectId,
+    });
+  }
+
   static bool invalidParam(String param) {
     return param == "";
   }
@@ -567,6 +592,13 @@ class FirebaseFS {
             .update({'store_id': storeId});
         break;
       case PROJECT_MANAGER:
+        // associate user to the project provided by the token
+        String projectId = tokenDetail.get("project_id");
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(uid)
+            .update({'project_id': projectId});
+        break;
 
       case DELIVERY_MAN:
 

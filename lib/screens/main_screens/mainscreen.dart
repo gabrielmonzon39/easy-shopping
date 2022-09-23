@@ -2,6 +2,7 @@
 
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
+import 'package:easy_shopping/screens/main_screens/project_manager.dart';
 import 'package:easy_shopping/screens/main_screens/store_manager.dart';
 import 'package:easy_shopping/screens/main_screens/super_admin.dart';
 import 'package:easy_shopping/screens/main_screens/user.dart';
@@ -107,8 +108,7 @@ class Mainscreen extends StatelessWidget {
                             case STORE_MANAGER:
                               return StoreManagerMainScreen();
                             case PROJECT_MANAGER:
-                              return const Text(
-                                  "Esta es la vista de project manager.");
+                              return ProjectManagerMainScreen();
                             case DELIVERY_MAN:
                               return const Text(
                                   "Esta es la vista de delivery man.");

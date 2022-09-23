@@ -35,3 +35,14 @@ var superAdminItemsDemo = [
     icon: "1",
   ),
 ];
+
+var projectManagerItemsDemo = [
+  CategoryItem(
+    name: "Nueva Tienda",
+    icon: "1",
+  ),
+  CategoryItem(
+    name: "Generar Store Manager",
+    icon: "1",
+  ),
+];
