@@ -382,9 +382,11 @@ class FirebaseFS {
   }
 
   static Future<String> generateProjectManagerToken(String projectId) async {
-    var token = await FirebaseFirestore.instance
-        .collection('tokens')
-        .add({'project_id': projectId, 'role': 'project_manager'});
+    var token = await FirebaseFirestore.instance.collection('tokens').add({
+      'project_id': projectId,
+      'role': 'project_manager',
+      'remaining': 1,
+    });
     return token.id;
   }
 
