@@ -390,6 +390,12 @@ class FirebaseFS {
     return token.id;
   }
 
+  static Future<void> generateProject(String projectName) async {
+    await FirebaseFirestore.instance.collection('projects').add({
+      'name': projectName,
+    });
+  }
+
   static bool invalidParam(String param) {
     return param == "";
   }

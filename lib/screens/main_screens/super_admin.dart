@@ -8,6 +8,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:easy_shopping/model/category_items.dart';
 import 'package:easy_shopping/widgets/category_item_dart_widget.dart';
 import 'package:easy_shopping/screens/side_bar/admin_section/create_tokens.dart';
+import 'package:easy_shopping/screens/side_bar/admin_section/create_projects.dart';
 
 class SuperAdminMainScreen extends StatelessWidget {
   int i = 0;
@@ -74,6 +75,13 @@ class SuperAdminMainScreen extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const CreateTokensSection()),
+        );
+        break;
+      case 'Nuevo Proyecto':
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const CreateProjectsSection()),
         );
         break;
     }
