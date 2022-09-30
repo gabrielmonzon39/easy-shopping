@@ -2,6 +2,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_shopping/constants.dart';
+import 'package:easy_shopping/model/firebase.dart';
 import 'package:flutter/material.dart';
 
 class SaleView extends StatelessWidget {
@@ -200,40 +201,46 @@ class SaleView extends StatelessWidget {
                 const SizedBox(
                   height: 25,
                 ),
-
-                const Text(
-                  'Entregado por: ',
-                  style: TextStyle(fontSize: 19, color: Colors.white),
-                ),
-                ///////////////// DELIVERY MAN CARD ////////////////////////
-                Card(
-                  color: Colors.amber[50],
-                  margin: const EdgeInsets.all(15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25.0),
+                if (deliverManIdName! == NONE)
+                  const Text(
+                    'Entregado en tienda',
+                    style: TextStyle(fontSize: 19, color: Colors.white),
                   ),
-                  elevation: 5,
-                  shadowColor: Colors.pink[50],
-                  child: Container(
-                    margin: const EdgeInsets.all(2),
-                    child: ListTile(
-                      leading: const Icon(
-                        Icons.face,
-                        size: 50,
-                      ),
-                      title: Text(
-                        deliverManIdName!,
-                        style:
-                            const TextStyle(fontSize: 19, color: Colors.black),
-                      ),
-                      subtitle: Text(
-                        deliverManIdEmail!,
-                        style:
-                            const TextStyle(fontSize: 13, color: Colors.black),
+                if (deliverManIdName! != NONE)
+                  const Text(
+                    'Entregado por: ',
+                    style: TextStyle(fontSize: 19, color: Colors.white),
+                  ),
+                ///////////////// DELIVERY MAN CARD ////////////////////////
+                if (deliverManIdName! != NONE)
+                  Card(
+                    color: Colors.amber[50],
+                    margin: const EdgeInsets.all(15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25.0),
+                    ),
+                    elevation: 5,
+                    shadowColor: Colors.pink[50],
+                    child: Container(
+                      margin: const EdgeInsets.all(2),
+                      child: ListTile(
+                        leading: const Icon(
+                          Icons.face,
+                          size: 50,
+                        ),
+                        title: Text(
+                          deliverManIdName!,
+                          style: const TextStyle(
+                              fontSize: 19, color: Colors.black),
+                        ),
+                        subtitle: Text(
+                          deliverManIdEmail!,
+                          style: const TextStyle(
+                              fontSize: 13, color: Colors.black),
+                        ),
                       ),
                     ),
                   ),
-                ),
                 ////////////////////////////////////////////////////////////
                 const SizedBox(
                   height: 20,

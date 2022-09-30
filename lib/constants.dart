@@ -14,3 +14,6 @@ const bgColorDarkM = Color(0xFF212332);
 
 const defaultPadding = 16.0;
 ShoppingCart? myShoppingCart;
+
+const minBuy = 35;
+const deliverPrice = 5;

@@ -27,16 +27,20 @@ class UserBuilder extends State<UserMainScreen> {
   bool evalConditions(QueryDocumentSnapshot<Object?>? document) {
     if (document == null) return false;
     if (document.id == "8NSZ1ielRBQyriNRwXdx") return false;
-    if (document.get('quantity') == 0) return false;
+    if (document.get('quantity') <= 0) return false;
 
     count++;
     if (count > int.parse(maxViewController.text)) return false;
+    //print(count);
 
     if (selected) {
       return nameCondition(document);
     } else {
       String fireBaseType = typesFB[types.indexOf(selectedOption)];
-      if (document.get('type') != fireBaseType) return false;
+      if (document.get('type') != fireBaseType) {
+        count--;
+        return false;
+      }
       return nameCondition(document);
     }
   }
@@ -48,6 +52,7 @@ class UserBuilder extends State<UserMainScreen> {
         .toString()
         .toLowerCase()
         .contains(nameController.text.toLowerCase())) {
+      count--;
       return false;
     }
     return true;
@@ -224,8 +229,57 @@ class UserBuilder extends State<UserMainScreen> {
                 if (usersnapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 } else {
+                  /*return CustomScrollView(
+                    slivers: <Widget>[
+                      SliverGrid(
+                        gridDelegate:
+                            const SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: 330.0,
+                          mainAxisSpacing: 10.0,
+                          crossAxisSpacing: 10.0,
+                          childAspectRatio: 4.0,
+                        ),
+                        delegate: SliverChildBuilderDelegate(
+                          (BuildContext context, int index) {
+                            QueryDocumentSnapshot<Object?>? document;
+                            if (index < usersnapshot.data!.docs.length) {
+                              document = usersnapshot.data?.docs[index];
+                            }
+                            try {
+                              if (evalConditions(document)) {
+                                //return Text("index : $index");
+                                return Column(
+                                  children: [
+                                    ProductView(
+                                      id: document!.id,
+                                      name: document.get('name'),
+                                      description: document.get('description'),
+                                      price: document.get('price').toString(),
+                                      quantity:
+                                          document.get('quantity').toString(),
+                                      imageURL: document.get('image'),
+                                      isUser: true,
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                  ],
+                                );
+                              }
+                            } catch (e) {
+                              print(e.toString());
+                            }
+                            return const SizedBox(
+                              width: 0,
+                              height: 0,
+                            );
+                          },
+                          childCount: usersnapshot.data!.docs.length,
+                        ),
+                      ),
+                    ],
+                  );*/
                   return ListView.builder(
-                    scrollDirection: Axis.vertical,
                     shrinkWrap: true,
                     itemCount: usersnapshot.data!.docs.length,
                     itemBuilder: (context, index) {

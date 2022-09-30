@@ -14,6 +14,7 @@ class ShoppingCartBuilder extends State<ShoppingCartSection> {
   List<Widget> list = [];
   Widget? result;
   int total = 0;
+  bool selected = false;
 
   Future<void> getOrderedProducts() async {
     String productId = "";
@@ -165,6 +166,8 @@ class ShoppingCartBuilder extends State<ShoppingCartSection> {
 
   @override
   Widget build(BuildContext context) {
+    list.clear();
+    listTemp.clear();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: secondaryColor,
@@ -215,9 +218,32 @@ class ShoppingCartBuilder extends State<ShoppingCartSection> {
                       ),
                     ),
                     onPressed: () async {
+                      int total = 0;
+                      for (Map<String, dynamic> product
+                          in myShoppingCart!.get()) {
+                        String id = product['product_id'];
+                        String quantity = product['buy_quantity'].toString();
+                        DocumentSnapshot productDetails =
+                            await FirebaseFirestore.instance
+                                .collection('products')
+                                .doc(id)
+                                .get();
+                        int? totalProduct = (int.parse(quantity) *
+                            productDetails.get('price')) as int?;
+                        total += totalProduct!;
+                      }
+                      if (total < minBuy) {
+                        showDialog(
+                            context: context,
+                            builder: (ctx) => const AlertDialog(
+                                  title: Text(
+                                      "La compra debe ser de mínimo Q$minBuy para efectuarse."),
+                                ));
+                        return;
+                      }
                       // pendiente
-                      bool result =
-                          await FirebaseFS.buyProducts(myShoppingCart!.get());
+                      bool result = await FirebaseFS.buyProducts(
+                          myShoppingCart!.get(), selected);
                       myShoppingCart!.clear();
                       if (!result) {
                         showDialog(
@@ -261,6 +287,27 @@ class ShoppingCartBuilder extends State<ShoppingCartSection> {
                     )),
             ],
           ),
+          if (!myShoppingCart!.isEmpty())
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text("A domicilio:",
+                    style: TextStyle(fontSize: 18, color: Colors.black)),
+                Checkbox(
+                  value: selected,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      selected = value!;
+                    });
+                  },
+                ),
+              ],
+            ),
+          if (selected && !myShoppingCart!.isEmpty())
+            const Center(
+              child: Text("Se le agregará Q4.00 de envío",
+                  style: TextStyle(fontSize: 18, color: Colors.black)),
+            ),
           const SizedBox(
             height: 20,
           ),

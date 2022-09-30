@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
@@ -272,6 +274,7 @@ class StoreSalesBuilder extends State<StoreSalesSection> {
   @override
   Widget build(BuildContext context) {
     if (availableRefresh) calculateStoreId();
+    if (id == null) calculateStoreId();
     return Scaffold(
         appBar: AppBar(
           backgroundColor: secondaryColor,
@@ -411,7 +414,8 @@ class StoreSalesBuilder extends State<StoreSalesSection> {
                             try {
                               DateTime date = parseDate(document!.get('date'));
 
-                              if (document.get('store_id') == id! &&
+                              if (id != null &&
+                                  document.get('store_id') == id! &&
                                   date.isAfter(DateTime.parse(initialPick)
                                       .subtract(const Duration(days: 1))) &&
                                   date.isBefore(DateTime.parse(endPick)
@@ -422,7 +426,15 @@ class StoreSalesBuilder extends State<StoreSalesSection> {
                                     SizedBox(
                                       width: double.infinity,
                                       child: ElevatedButton(
-                                          onPressed: () {
+                                          onPressed: () async {
+                                            List<String> data1 = await FirebaseFS
+                                                .getDeliveryManIdAndStateFromOrder(
+                                                    document
+                                                        .get(
+                                                            'delivery_processId')
+                                                        .toString());
+                                            List<String> data = await FirebaseFS
+                                                .getDeliveryManInfo(data1[0]);
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
@@ -434,9 +446,9 @@ class StoreSalesBuilder extends State<StoreSalesSection> {
                                                         date: document
                                                             .get('date'),
                                                         deliverManIdName:
-                                                            deliverManIdName,
+                                                            data[0],
                                                         deliverManIdEmail:
-                                                            deliverManIdEmail,
+                                                            data[1],
                                                         state: state,
                                                       )),
                                             );
@@ -461,7 +473,7 @@ class StoreSalesBuilder extends State<StoreSalesSection> {
                                                 ),
                                               ),
                                               Text(
-                                                "Fecha : ${date.toString().split(" ").first}",
+                                                "Fecha : ${document.get('date')}",
                                                 style: const TextStyle(
                                                   fontSize: 20,
                                                   fontWeight: FontWeight.w600,

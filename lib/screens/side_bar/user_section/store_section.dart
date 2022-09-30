@@ -18,7 +18,7 @@ class StoresSectionBuilder extends State<StoresSection> {
   final nameController = TextEditingController();
 
   Future<void> calculateProjectId() async {
-    final projectId = await FirebaseFS.getProjectId(uid!);
+    String projectId = await FirebaseFS.getProjectId(uid!);
     availableRefresh = false;
     setState(() {
       id = projectId;
@@ -40,6 +40,7 @@ class StoresSectionBuilder extends State<StoresSection> {
   @override
   Widget build(BuildContext context) {
     if (availableRefresh) calculateProjectId();
+    if (id == null) calculateProjectId();
     return Scaffold(
         appBar: AppBar(
           backgroundColor: secondaryColor,
@@ -145,7 +146,8 @@ class StoresSectionBuilder extends State<StoresSection> {
                           QueryDocumentSnapshot<Object?>? document =
                               usersnapshot.data?.docs[index];
                           try {
-                            if (document!.get('project_id') == id! &&
+                            if (id != null &&
+                                document!.get('project_id') == id! &&
                                 evalConditions(document)) {
                               return StoreServiceView(
                                 name: document.get('name'),

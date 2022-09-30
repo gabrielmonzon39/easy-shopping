@@ -1,4 +1,3 @@
-// ignore_for_file: constant_identifier_names, empty_catches, avoid_print
 import 'dart:math';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,6 +15,8 @@ const String SUPER_ADMIN = "super_admin";
 const String PREPARING = "preparing";
 const String ONTHEWAY = "on the way";
 const String SERVED = "served";
+
+const maxValue = 1000000;
 
 // type of products
 const typesFB = [
@@ -115,6 +116,7 @@ class FirebaseFS {
       homeId = documentDetails.get('home_id');
       documentDetails = await instance.collection('homes').doc(homeId).get();
       projectId = documentDetails.get('project_id');
+      print(projectId);
       return projectId!;
     } catch (e) {
       print(e.toString());
@@ -173,6 +175,11 @@ class FirebaseFS {
     DocumentSnapshot userDetail =
         await FirebaseFirestore.instance.collection('users').doc(uid).get();
     try {
+      if (!userDetail.exists) {
+        return NONE;
+      }
+      // BORRAR ESTE RETURN NONE
+      return NONE;
       homeId = userDetail.get('home_id');
     } catch (e) {
       print(e.toString());
@@ -303,8 +310,9 @@ class FirebaseFS {
   static Future<void> makeSales(List<Map<dynamic, dynamic>> products,
       String storeId, int orderId, int deliveryProcessId) async {
     if (products.isEmpty) return;
-    String now = DateFormat("hh:mm dd-MM-yyyy").format(DateTime.now());
+    String now = DateFormat("h:mm a  dd-MM-yyyy").format(DateTime.now());
     try {
+      print("VENTA REALIZADA");
       ////////////////  MAKE THE SALE
       FirebaseFirestore.instance.collection('sales').add({
         'delivery_processId': deliveryProcessId.toString(),
@@ -341,10 +349,11 @@ class FirebaseFS {
     }
   }
 
-  static Future<bool> buyProducts(List<Map<dynamic, dynamic>> products) async {
-    int orderId = Random().nextInt(1000000);
-    int deliveryProcessId = Random().nextInt(1000000);
-    String now = DateFormat("hh:mm dd-MM-yyyy").format(DateTime.now());
+  static Future<bool> buyProducts(
+      List<Map<dynamic, dynamic>> products, bool deliver) async {
+    int orderId = Random().nextInt(maxValue);
+    int deliveryProcessId = Random().nextInt(maxValue);
+    String now = DateFormat("h:mm a  dd-MM-yyyy").format(DateTime.now());
     try {
       ////////////////  MAKE THE SALE(S)
       prepareSales(products, orderId, deliveryProcessId);
@@ -365,10 +374,11 @@ class FirebaseFS {
           .collection('delivery_processes')
           .doc(deliveryProcessId.toString());
       deliveryProcessDocument.set({
-        'delivery_man_id': await getRandomDeliveryMan(),
+        'delivery_man_id': (deliver) ? await getRandomDeliveryMan() : NONE,
         'order_id': orderId,
         'state': PREPARING,
       });
+
       //////////////// UPDATE THE QUANTITY AVAILABLE FOR EACH PRODUCT
       for (Map<dynamic, dynamic> element in products) {
         DocumentSnapshot productDetail = await FirebaseFirestore.instance
@@ -467,11 +477,15 @@ class FirebaseFS {
   }
 
   static Future<List<String>> getDeliveryManInfo(String deliveryManId) async {
+    if (deliveryManId == NONE) {
+      return [NONE, NONE];
+    }
     QuerySnapshot snap =
         await FirebaseFirestore.instance.collection('users').get();
     for (var document in snap.docs) {
       try {
-        if (document.get('delivery_man_id') == deliveryManId) {
+        if (document.get('role') == DELIVERY_MAN &&
+            document.get('delivery_man_id') == deliveryManId) {
           return [document.get('name'), document.get('email')];
         }
       } catch (e) {

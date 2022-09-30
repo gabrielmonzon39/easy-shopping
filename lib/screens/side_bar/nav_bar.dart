@@ -12,6 +12,7 @@ import 'package:easy_shopping/screens/side_bar/options_conditions.dart';
 import 'package:easy_shopping/screens/side_bar/general_section/token_section.dart';
 import 'package:easy_shopping/screens/side_bar/user_section/information_section.dart';
 import 'package:easy_shopping/screens/side_bar/user_section/order_history_section.dart';
+import 'package:easy_shopping/screens/side_bar/user_section/pending_order_section.dart';
 import 'package:easy_shopping/screens/side_bar/user_section/shopping_cart_section.dart';
 import 'package:easy_shopping/screens/side_bar/user_section/store_section.dart';
 import 'package:flutter/material.dart';
@@ -89,15 +90,6 @@ class NavBar extends StatelessWidget {
               ),
             if (OptionConditions.stores()) const Divider(),
 
-            /// **************  Servicios  **************
-            if (OptionConditions.services())
-              ListTile(
-                leading: const Icon(Icons.room_service),
-                title: const Text('Servicios'),
-                onTap: () {},
-              ),
-            if (OptionConditions.services()) const Divider(),
-
             /// **************  Carrito de compras  **************
             if (OptionConditions.shoppingCart())
               ListTile(
@@ -113,6 +105,21 @@ class NavBar extends StatelessWidget {
               ),
             if (OptionConditions.shoppingCart()) const Divider(),
 
+            /// **************  Pedidos pendientes  **************
+            if (OptionConditions.pendingOrder())
+              ListTile(
+                leading: const Icon(Icons.timer),
+                title: const Text('Pedidos pendientes'),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const PendingOrderSection(),
+                      ));
+                },
+              ),
+            if (OptionConditions.pendingOrder()) const Divider(),
+
             /// **************  Historial de pedidos  **************
             if (OptionConditions.orderHistory())
               ListTile(
@@ -127,15 +134,6 @@ class NavBar extends StatelessWidget {
                 },
               ),
             if (OptionConditions.orderHistory()) const Divider(),
-
-            /// **************  Historial de reservaciones  **************
-            if (OptionConditions.reservationsHistory())
-              ListTile(
-                leading: const Icon(Icons.menu_book),
-                title: const Text('Historial de reservaciones'),
-                onTap: () {},
-              ),
-            if (OptionConditions.reservationsHistory()) const Divider(),
 
             /// **************  Información  **************
             if (OptionConditions.userInformation())

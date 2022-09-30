@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
@@ -25,6 +27,10 @@ class OrderHistoryBuilder extends State<OrderHistorySection> {
   int total = 0;
   String initialPick = DateFormat("yyyy-MM-dd").format(DateTime.now());
   String endPick = DateFormat("yyyy-MM-dd").format(DateTime.now());
+
+  int i = 0;
+  List<String> deliversNames = [];
+  List<String> deliversEmails = [];
 
   void parse() {
     mapProducts = [];
@@ -56,6 +62,9 @@ class OrderHistoryBuilder extends State<OrderHistorySection> {
     List<String> data2 = await FirebaseFS.getDeliveryManInfo(deliverManId!);
     deliverManIdName = data2[0];
     deliverManIdEmail = data2[1];
+
+    deliversNames.add(deliverManIdName!);
+    deliversEmails.add(deliverManIdEmail!);
   }
 
   void getDeliveryManInfo(String id) async {
@@ -66,6 +75,8 @@ class OrderHistoryBuilder extends State<OrderHistorySection> {
 
   @override
   Widget build(BuildContext context) {
+    deliversNames.clear();
+    deliversEmails.clear();
     return Scaffold(
         appBar: AppBar(
           backgroundColor: secondaryColor,
@@ -210,12 +221,20 @@ class OrderHistoryBuilder extends State<OrderHistorySection> {
                                 date.isBefore(DateTime.parse(endPick)
                                     .add(const Duration(days: 1)))) {
                               orderByUid(document);
+                              i++;
                               return Column(
                                 children: [
                                   SizedBox(
                                     width: double.infinity,
                                     child: ElevatedButton(
-                                        onPressed: () {
+                                        onPressed: () async {
+                                          List<String> data1 = await FirebaseFS
+                                              .getDeliveryManIdAndStateFromOrder(
+                                                  document
+                                                      .get('delivery_processId')
+                                                      .toString());
+                                          List<String> data = await FirebaseFS
+                                              .getDeliveryManInfo(data1[0]);
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
@@ -223,10 +242,9 @@ class OrderHistoryBuilder extends State<OrderHistorySection> {
                                                       id: document.id,
                                                       date:
                                                           document.get('date'),
-                                                      deliverManIdName:
-                                                          deliverManIdName,
+                                                      deliverManIdName: data[0],
                                                       deliverManIdEmail:
-                                                          deliverManIdEmail,
+                                                          data[1],
                                                       state: state,
                                                     )),
                                           );
@@ -250,7 +268,7 @@ class OrderHistoryBuilder extends State<OrderHistorySection> {
                                               ),
                                             ),
                                             Text(
-                                              "Fecha : ${date.toString().split(" ").first}",
+                                              "Fecha : ${document.get('date')}",
                                               style: const TextStyle(
                                                 fontSize: 20,
                                                 fontWeight: FontWeight.w600,

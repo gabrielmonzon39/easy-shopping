@@ -42,6 +42,7 @@ class BuyProductBuilder extends State<BuyProduct> {
   String? quantity;
   String? imageURL;
   double buyQuantity = 1;
+  bool selected = false;
 
   BuyProductBuilder({
     Key? key,
@@ -190,6 +191,31 @@ class BuyProductBuilder extends State<BuyProduct> {
                     const SizedBox(
                       height: 20,
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("A domicilio:",
+                            style:
+                                TextStyle(fontSize: 18, color: Colors.white)),
+                        Checkbox(
+                          value: selected,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              selected = value!;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                    if (selected)
+                      const Center(
+                        child: Text("Se le agregará Q4.00 de envío",
+                            style:
+                                TextStyle(fontSize: 18, color: Colors.white)),
+                      ),
+                    const SizedBox(
+                      height: 20,
+                    ),
                     Center(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -197,14 +223,25 @@ class BuyProductBuilder extends State<BuyProduct> {
                           Center(
                             child: ElevatedButton(
                               onPressed: () async {
+                                if (int.parse(buyQuantity.toStringAsFixed(0)) *
+                                        int.parse(price!) <
+                                    minBuy) {
+                                  showDialog(
+                                      context: context,
+                                      builder: (ctx) => const AlertDialog(
+                                            title: Text(
+                                                "La compra debe ser de mínimo Q$minBuy para efectuarse."),
+                                          ));
+                                  return;
+                                }
                                 Map<dynamic, dynamic> product = {
                                   'product_id': id,
                                   'buy_quantity':
                                       int.parse(buyQuantity.toStringAsFixed(0)),
                                 };
                                 List<Map<dynamic, dynamic>> order = [product];
-                                bool result =
-                                    await FirebaseFS.buyProducts(order);
+                                bool result = await FirebaseFS.buyProducts(
+                                    order, selected);
                                 if (!result) {
                                   showDialog(
                                       context: context,

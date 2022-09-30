@@ -19,6 +19,10 @@ class OptionConditions {
     return currentRoll == USER;
   }
 
+  static bool pendingOrder() {
+    return currentRoll == USER;
+  }
+
   static bool orderHistory() {
     return currentRoll == USER;
   }
