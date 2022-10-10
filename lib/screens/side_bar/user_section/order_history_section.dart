@@ -124,6 +124,12 @@ class OrderHistoryBuilder extends State<OrderHistorySection> {
                         if (temp == null) return;
                         setState(() {
                           initialPick = DateFormat("yyyy-MM-dd").format(temp);
+                          if (DateTime.parse(initialPick)
+                              .isAfter(DateTime.parse(endPick))) {
+                            String aux = endPick;
+                            endPick = initialPick;
+                            initialPick = aux;
+                          }
                         });
                       },
                       style: ButtonStyle(
@@ -173,6 +179,12 @@ class OrderHistoryBuilder extends State<OrderHistorySection> {
                         if (temp == null) return;
                         setState(() {
                           endPick = DateFormat("yyyy-MM-dd").format(temp);
+                          if (DateTime.parse(endPick)
+                              .isBefore(DateTime.parse(initialPick))) {
+                            String aux = initialPick;
+                            initialPick = endPick;
+                            endPick = aux;
+                          }
                         });
                       },
                       style: ButtonStyle(
