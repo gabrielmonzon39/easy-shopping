@@ -178,8 +178,6 @@ class FirebaseFS {
       if (!userDetail.exists) {
         return NONE;
       }
-      // BORRAR ESTE RETURN NONE
-      return NONE;
       homeId = userDetail.get('home_id');
     } catch (e) {
       print(e.toString());

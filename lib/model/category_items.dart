@@ -25,6 +25,25 @@ var categoryItemsDemo = [
   ),
 ];
 
+var deliveryManItemsDemo = [
+  CategoryItem(
+    name: "Órdenes por entregar",
+    icon: "1",
+  ),
+  CategoryItem(
+    name: "Órdenes activas",
+    icon: "2",
+  ),
+  CategoryItem(
+    name: "Historial de órdenes entregadas",
+    icon: "3",
+  ),
+  CategoryItem(
+    name: "Notificaciones",
+    icon: "4",
+  ),
+];
+
 var superAdminItemsDemo = [
   CategoryItem(
     name: "Nuevo Proyecto",

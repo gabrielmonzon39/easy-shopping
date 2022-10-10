@@ -3,6 +3,9 @@
 import 'package:easy_shopping/auth/google_sign_in_provider.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/main.dart';
+import 'package:easy_shopping/screens/side_bar/delivery_man_section/active_orders.dart';
+import 'package:easy_shopping/screens/side_bar/delivery_man_section/delivery_history.dart';
+import 'package:easy_shopping/screens/side_bar/delivery_man_section/orders_to_deliver.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/add_products.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/information_section.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/products_section.dart';
@@ -174,7 +177,13 @@ class _NavBar extends State<NavBar> {
               ListTile(
                 leading: const Icon(Icons.delivery_dining),
                 title: const Text('Órdenes por entregar'),
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const OrdersToDeliver()),
+                  );
+                },
               ),
             if (OptionConditions.ordersToDeliver()) const Divider(),
 
@@ -183,7 +192,13 @@ class _NavBar extends State<NavBar> {
               ListTile(
                 leading: const Icon(Icons.notifications_active),
                 title: const Text('Órdenes activas'),
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ActiveOrders()),
+                  );
+                },
               ),
             if (OptionConditions.activeOrders()) const Divider(),
 
@@ -192,7 +207,13 @@ class _NavBar extends State<NavBar> {
               ListTile(
                 leading: const Icon(Icons.pending_actions),
                 title: const Text('Órdenes entregadas'),
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const DeliveryHistory()),
+                  );
+                },
               ),
             if (OptionConditions.deliveryHistory()) const Divider(),
 
