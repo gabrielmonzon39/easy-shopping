@@ -35,6 +35,20 @@ class OptionConditions {
     return currentRoll == USER;
   }
 
+  /////////////////    DELIVERY MAN  OPTIONS    /////////////////
+
+  static bool ordersToDeliver() {
+    return currentRoll == DELIVERY_MAN;
+  }
+
+  static bool activeOrders() {
+    return currentRoll == DELIVERY_MAN;
+  }
+
+  static bool deliveryHistory() {
+    return currentRoll == DELIVERY_MAN;
+  }
+
   /////////////////    STORE MANAGER OPTIONS    /////////////////
 
   static bool addProducts() {

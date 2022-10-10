@@ -554,6 +554,7 @@ class FirebaseFS {
   }
 
   static Future<bool> addToken(String token) async {
+    token = token.trim();
     DocumentSnapshot tokenDetail =
         await FirebaseFirestore.instance.collection('tokens').doc(token).get();
 
@@ -615,12 +616,46 @@ class FirebaseFS {
         break;
 
       case DELIVERY_MAN:
+        const DM = 'dm';
 
-      case PROVIDER:
+        // get the actual correlative id for delivery mans
+        DocumentSnapshot currentId = await FirebaseFirestore.instance
+            .collection('constants')
+            .doc('delivery_id')
+            .get();
+        int id = currentId.get('id');
+
+        // update de user's info with delivery_man_id
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(uid)
+            .update({'delivery_man_id': '$DM$id'});
+
+        // get the name and email from the delivery man
+        DocumentSnapshot userInfo =
+            await FirebaseFirestore.instance.collection('users').doc(uid).get();
+        String name = userInfo.get('name');
+        String email = userInfo.get('email');
+
+        // update the delivery mans collection with name and email
+        FirebaseFirestore.instance
+            .collection('delivery_mans')
+            .doc('$DM$id')
+            .set({'name': name, 'email': email});
+
+        // update the actual correlative id for delivery mans
+        id++;
+        FirebaseFirestore.instance
+            .collection('constants')
+            .doc('delivery_id')
+            .update({'id': id});
+        break;
 
       case SUPER_ADMIN:
+        break;
 
       case NONE:
+        break;
     }
 
     return true;

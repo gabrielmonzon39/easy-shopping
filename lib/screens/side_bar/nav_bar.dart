@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_typing_uninitialized_variables, use_build_context_synchronously, duplicate_ignore
+// ignore_for_file: prefer_typing_uninitialized_variables, use_build_context_synchronously, duplicate_ignore, no_logic_in_create_state, library_private_types_in_public_api, must_be_immutable
 
 import 'package:easy_shopping/auth/google_sign_in_provider.dart';
 import 'package:easy_shopping/constants.dart';
@@ -19,8 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-// ignore: must_be_immutable
-class NavBar extends StatelessWidget {
+class NavBar extends StatefulWidget {
   var name;
   var email;
   var photo;
@@ -31,6 +30,22 @@ class NavBar extends StatelessWidget {
     @required this.email,
     @required this.photo,
   }) : super(key: key);
+
+  @override
+  _NavBar createState() => _NavBar(email: email, photo: photo, name: name);
+}
+
+// ignore: must_be_immutable
+class _NavBar extends State<NavBar> {
+  var name;
+  var email;
+  var photo;
+
+  _NavBar({
+    @required this.name,
+    @required this.email,
+    @required this.photo,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +63,7 @@ class NavBar extends StatelessWidget {
                 backgroundColor: ternaryColor,
                 radius: 35.0,
                 backgroundImage: AssetImage(
-                  'assets/images/avatar.png',
+                  'assets/images/logo.jpg',
                 ),
               ),
               decoration: const BoxDecoration(
@@ -151,6 +166,37 @@ class NavBar extends StatelessWidget {
             if (OptionConditions.userInformation()) const Divider(),
 
             ///////////////////////////////////////////////////////////////
+            /////////////////    DELIVERY MAN OPTIONS     /////////////////
+            ///////////////////////////////////////////////////////////////
+
+            /// **************  Ordenes por entregar  **************
+            if (OptionConditions.ordersToDeliver())
+              ListTile(
+                leading: const Icon(Icons.delivery_dining),
+                title: const Text('Órdenes por entregar'),
+                onTap: () {},
+              ),
+            if (OptionConditions.ordersToDeliver()) const Divider(),
+
+            /// **************  Ordenes activas  **************
+            if (OptionConditions.activeOrders())
+              ListTile(
+                leading: const Icon(Icons.notifications_active),
+                title: const Text('Órdenes activas'),
+                onTap: () {},
+              ),
+            if (OptionConditions.activeOrders()) const Divider(),
+
+            /// **************  Ordenes entregadas  **************
+            if (OptionConditions.deliveryHistory())
+              ListTile(
+                leading: const Icon(Icons.pending_actions),
+                title: const Text('Órdenes entregadas'),
+                onTap: () {},
+              ),
+            if (OptionConditions.deliveryHistory()) const Divider(),
+
+            ///////////////////////////////////////////////////////////////
             /////////////////    STORE MANAGER OPTIONS    /////////////////
             ///////////////////////////////////////////////////////////////
 
@@ -234,9 +280,13 @@ class NavBar extends StatelessWidget {
                 title: const Text('Token'),
                 onTap: () {
                   Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => TokenSection()),
-                  );
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => TokenSection())).then((value) {
+                    setState(() {
+                      // refresh state
+                    });
+                  });
                 },
               ),
             if (OptionConditions.token()) const Divider(),

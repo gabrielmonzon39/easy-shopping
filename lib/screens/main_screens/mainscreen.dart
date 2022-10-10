@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_typing_uninitialized_variables
+// ignore_for_file: prefer_typing_uninitialized_variables, no_logic_in_create_state, must_be_immutable, library_private_types_in_public_api, duplicate_ignore, use_key_in_widget_constructors
 
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
@@ -9,20 +9,37 @@ import 'package:easy_shopping/screens/main_screens/user.dart';
 import 'package:easy_shopping/screens/side_bar/nav_bar.dart';
 import 'package:flutter/material.dart';
 
-// ignore: must_be_immutable
-class Mainscreen extends StatelessWidget {
+class Mainscreen extends StatefulWidget {
   var name;
   var email;
   var photo;
   var uid;
 
   Mainscreen({
-    Key? key,
     @required this.name,
     @required this.email,
     @required this.photo,
     @required this.uid,
-  }) : super(key: key);
+  });
+
+  @override
+  _MainscreenState createState() =>
+      _MainscreenState(email: email, photo: photo, name: name, uid: uid);
+}
+
+// ignore: must_be_immutable
+class _MainscreenState extends State<Mainscreen> {
+  var name;
+  var email;
+  var photo;
+  var uid;
+
+  _MainscreenState({
+    @required this.name,
+    @required this.email,
+    @required this.photo,
+    @required this.uid,
+  });
 
   Text subheading(String title) {
     return Text(
@@ -112,9 +129,6 @@ class Mainscreen extends StatelessWidget {
                             case DELIVERY_MAN:
                               return const Text(
                                   "Esta es la vista de delivery man.");
-                            case PROVIDER:
-                              return const Text(
-                                  "Esta es la vista de provider.");
                             case SUPER_ADMIN:
                               return SuperAdminMainScreen();
                             case NONE:

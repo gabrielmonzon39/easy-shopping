@@ -144,7 +144,7 @@ class PendingOrderBuilder extends State<PendingOrderSection> {
                         child: Column(
                           children: [
                             Text(
-                              "Compra : ${document!.id}",
+                              "Compra : ${document.id}",
                               style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w600,

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:easy_shopping/auth/google_sign_in_provider.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
@@ -124,7 +126,6 @@ class TokenSection extends StatelessWidget {
                                 if (result) {
                                   EasyLoading.showSuccess(
                                       'Token agregado con éxito.');
-                                  // ignore: use_build_context_synchronously
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(

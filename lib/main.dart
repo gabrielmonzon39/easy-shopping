@@ -46,50 +46,18 @@ class MyAppStateLess extends State<MyApp> {
   void getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
-      setState(() {
-        try {
-          if (prefs.getBool('isAlreadyLogged') == null) {
-            prefs.setBool('isAlreadyLogged', false);
-          } else {
-            isAlreadyLogged = prefs.getBool('isAlreadyLogged')!;
-          }
-          if (prefs.getString('name') == null) {
-            prefs.setString('name', "user123");
-          } else {
-            name = prefs.getString('name')!;
-          }
-          if (prefs.getString('email') == null) {
-            prefs.setString('email', "user123@gmail.com");
-          } else {
-            email = prefs.getString('email')!;
-          }
-          if (prefs.getString('photo') == null) {
-            prefs.setString('photo', "userphoto");
-          } else {
-            photo = prefs.getString('photo')!;
-          }
-          if (prefs.getString('uid') == null) {
-            print("PRED");
-            prefs.setString('uid', "UID123");
-          } else {
-            uid = prefs.getString('uid')!;
-          }
-          if (prefs.getString('currentRoll') == null) {
-            prefs.setString('currentRoll', USER);
-          } else {
-            currentRoll = prefs.getString('currentRoll')!;
-          }
-        } catch (e) {
-          isAlreadyLogged = false;
-          return;
-        }
+      setState(() async {
+        isAlreadyLogged = prefs.getBool('isAlreadyLogged')!;
+        name = prefs.getString('name');
+        email = prefs.getString('email');
+        photo = prefs.getString('photo');
+        uid = prefs.getString('uid');
+        currentRoll = prefs.getString('role')!;
+        await FirebaseFS.saveHomeId();
       });
     } catch (e) {
       isAlreadyLogged = false;
-      return;
     }
-    isAlreadyLogged = false;
-    await FirebaseFS.saveHomeId();
   }
 
   @override
