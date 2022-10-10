@@ -220,71 +220,6 @@ class BuyProductBuilder extends State<BuyProduct> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Center(
-                            child: ElevatedButton(
-                              onPressed: () async {
-                                if (int.parse(buyQuantity.toStringAsFixed(0)) *
-                                        int.parse(price!) <
-                                    minBuy) {
-                                  showDialog(
-                                      context: context,
-                                      builder: (ctx) => const AlertDialog(
-                                            title: Text(
-                                                "La compra debe ser de mínimo Q$minBuy para efectuarse."),
-                                          ));
-                                  return;
-                                }
-                                Map<dynamic, dynamic> product = {
-                                  'product_id': id,
-                                  'buy_quantity':
-                                      int.parse(buyQuantity.toStringAsFixed(0)),
-                                };
-                                List<Map<dynamic, dynamic>> order = [product];
-                                bool result = await FirebaseFS.buyProducts(
-                                    order, selected);
-                                if (!result) {
-                                  showDialog(
-                                      context: context,
-                                      builder: (ctx) => const AlertDialog(
-                                            title: Text("Ha ocurrido un error"),
-                                          ));
-                                  return;
-                                }
-                                showDialog(
-                                  context: context,
-                                  builder: (ctx) => AlertDialog(
-                                    title: const Text(
-                                        "¡Compra realizada con éxito!"),
-                                    content: const Text(
-                                        "Puede ver su compra en el historial de compras."),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context,
-                                                  rootNavigator: true)
-                                              .pop(result);
-                                          Navigator.pop(context, result);
-                                        },
-                                        child: Container(
-                                          color: Colors.white,
-                                          padding: const EdgeInsets.all(14),
-                                          child: const Text("Aceptar"),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                              child: const Text(
-                                "Comprar",
-                                style: TextStyle(
-                                  fontSize: 23,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
                           const SizedBox(
                             height: 20,
                           ),
@@ -330,7 +265,26 @@ class BuyProductBuilder extends State<BuyProduct> {
                                   ),
                                 );
                               },
-                              child: const Icon(Icons.shopping_cart),
+                              child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: const [
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Icon(Icons.shopping_cart),
+                                    Text(
+                                      "Comprar",
+                                      style: TextStyle(
+                                        fontSize: 23,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    )
+                                  ]),
                             ),
                           ),
                         ],
