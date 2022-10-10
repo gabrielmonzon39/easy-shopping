@@ -553,6 +553,22 @@ class FirebaseFS {
     return deliveryMans[choice];
   }
 
+  static Future<bool> checkProjectofProduct(String storeId) async {
+    try {
+      print("%%% $storeId");
+      DocumentSnapshot storeDetail = await FirebaseFirestore.instance
+          .collection('stores')
+          .doc(storeId)
+          .get();
+      if (storeDetail.get('project_id') == getProjectId(uid!)) {
+        return true;
+      }
+    } catch (e) {
+      return false;
+    }
+    return false;
+  }
+
   static Future<bool> addToken(String token) async {
     token = token.trim();
     DocumentSnapshot tokenDetail =

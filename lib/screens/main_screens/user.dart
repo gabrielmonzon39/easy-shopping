@@ -16,6 +16,7 @@ class UserBuilder extends State<UserMainScreen> {
   final defaultMaxView = 10;
   int currentMaxView = 0;
   int count = 0;
+  bool valid = true;
 
   bool selected = true;
   String selectedOption = types[types.length - 1];
@@ -58,8 +59,14 @@ class UserBuilder extends State<UserMainScreen> {
     return true;
   }
 
+  Future<void> checkProjectofProduct(
+      QueryDocumentSnapshot<Object?>? document) async {
+    valid = await FirebaseFS.checkProjectofProduct(document!.get('store_id'));
+  }
+
   @override
   Widget build(BuildContext context) {
+    return const Text("Aqui poner ofertas");
     maxViewController.text = currentMaxView.toString();
     return SizedBox(
         height: 680,
@@ -229,63 +236,15 @@ class UserBuilder extends State<UserMainScreen> {
                 if (usersnapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 } else {
-                  /*return CustomScrollView(
-                    slivers: <Widget>[
-                      SliverGrid(
-                        gridDelegate:
-                            const SliverGridDelegateWithMaxCrossAxisExtent(
-                          maxCrossAxisExtent: 330.0,
-                          mainAxisSpacing: 10.0,
-                          crossAxisSpacing: 10.0,
-                          childAspectRatio: 4.0,
-                        ),
-                        delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
-                            QueryDocumentSnapshot<Object?>? document;
-                            if (index < usersnapshot.data!.docs.length) {
-                              document = usersnapshot.data?.docs[index];
-                            }
-                            try {
-                              if (evalConditions(document)) {
-                                //return Text("index : $index");
-                                return Column(
-                                  children: [
-                                    ProductView(
-                                      id: document!.id,
-                                      name: document.get('name'),
-                                      description: document.get('description'),
-                                      price: document.get('price').toString(),
-                                      quantity:
-                                          document.get('quantity').toString(),
-                                      imageURL: document.get('image'),
-                                      isUser: true,
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                  ],
-                                );
-                              }
-                            } catch (e) {
-                              print(e.toString());
-                            }
-                            return const SizedBox(
-                              width: 0,
-                              height: 0,
-                            );
-                          },
-                          childCount: usersnapshot.data!.docs.length,
-                        ),
-                      ),
-                    ],
-                  );*/
                   return ListView.builder(
                     shrinkWrap: true,
                     itemCount: usersnapshot.data!.docs.length,
                     itemBuilder: (context, index) {
                       QueryDocumentSnapshot<Object?>? document =
                           usersnapshot.data?.docs[index];
+                      checkProjectofProduct(document);
                       try {
+                        print("--------> $valid");
                         if (evalConditions(document)) {
                           return Column(
                             children: [

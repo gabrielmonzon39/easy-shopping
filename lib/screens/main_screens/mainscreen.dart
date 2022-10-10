@@ -2,6 +2,7 @@
 
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
+import 'package:easy_shopping/screens/extra/user/search.dart';
 import 'package:easy_shopping/screens/main_screens/project_manager.dart';
 import 'package:easy_shopping/screens/main_screens/store_manager.dart';
 import 'package:easy_shopping/screens/main_screens/super_admin.dart';
@@ -64,6 +65,32 @@ class _MainscreenState extends State<Mainscreen> {
         appBar: AppBar(
           title: const Text('Easy Shopping'),
           backgroundColor: primaryColor,
+          actions: [
+            ElevatedButton(
+              style: ButtonStyle(
+                elevation: MaterialStateProperty.resolveWith<double>(
+                  (Set<MaterialState> states) {
+                    if (states.contains(MaterialState.disabled)) {
+                      return 0;
+                    }
+                    return 0;
+                  },
+                ),
+                backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                  (Set<MaterialState> states) {
+                    return primaryColor;
+                  },
+                ),
+              ),
+              onPressed: () async {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Search()),
+                );
+              },
+              child: const Icon(Icons.search),
+            )
+          ],
         ),
         drawer: NavBar(
           name: name,
