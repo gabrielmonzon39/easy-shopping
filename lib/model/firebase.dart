@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 // person role
 const String NONE = "none";
+const String DELIVERY_PENDING = "pending";
 const String USER = "user";
 const String STORE_MANAGER = "store_manager";
 const String PROJECT_MANAGER = "project_manager";
@@ -76,6 +77,28 @@ class FirebaseFS {
       print(e.toString());
     }
     return "0";
+  }
+
+  static Future<String> getAddressOf(String homeId) async {
+    FirebaseFirestore instance = FirebaseFirestore.instance;
+    DocumentSnapshot? homeDetails;
+    String? address;
+    try {
+      homeDetails = await instance.collection('homes').doc(homeId).get();
+      address = homeDetails.get('address');
+      return address!;
+    } catch (e) {
+      print(e.toString());
+    }
+    return "0";
+  }
+
+  static Future<void> assingDeliverMan(
+      String deliveryProcessId, String deliveryManId) async {
+    FirebaseFirestore.instance
+        .collection('delivery_processes')
+        .doc(deliveryProcessId)
+        .update({'delivery_man_id': deliveryManId});
   }
 
   static Future<String> getStoreId(String uid) async {
@@ -372,7 +395,7 @@ class FirebaseFS {
           .collection('delivery_processes')
           .doc(deliveryProcessId.toString());
       deliveryProcessDocument.set({
-        'delivery_man_id': (deliver) ? await getRandomDeliveryMan() : NONE,
+        'delivery_man_id': (deliver) ? DELIVERY_PENDING : NONE,
         'order_id': orderId,
         'state': PREPARING,
       });
@@ -651,11 +674,15 @@ class FirebaseFS {
         String name = userInfo.get('name');
         String email = userInfo.get('email');
 
-        // update the delivery mans collection with name and email
+        // update the delivery mans collection with name, email and projectId
         FirebaseFirestore.instance
             .collection('delivery_mans')
             .doc('$DM$id')
-            .set({'name': name, 'email': email});
+            .set({
+          'name': name,
+          'email': email,
+          'project_id': tokenDetail.get('project_id')
+        });
 
         // update the actual correlative id for delivery mans
         id++;

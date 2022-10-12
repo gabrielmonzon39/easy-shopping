@@ -3,6 +3,7 @@
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
 import 'package:easy_shopping/screens/extra/user/search.dart';
+import 'package:easy_shopping/screens/main_screens/delivery_man.dart';
 import 'package:easy_shopping/screens/main_screens/project_manager.dart';
 import 'package:easy_shopping/screens/main_screens/store_manager.dart';
 import 'package:easy_shopping/screens/main_screens/super_admin.dart';
@@ -154,8 +155,7 @@ class _MainscreenState extends State<Mainscreen> {
                             case PROJECT_MANAGER:
                               return ProjectManagerMainScreen();
                             case DELIVERY_MAN:
-                              return const Text(
-                                  "Esta es la vista de delivery man.");
+                              return DeliveryManMainScreen();
                             case SUPER_ADMIN:
                               return SuperAdminMainScreen();
                             case NONE:

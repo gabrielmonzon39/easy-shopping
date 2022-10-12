@@ -1,15 +1,17 @@
-// ignore_for_file: must_be_immutable, no_logic_in_create_state
+// ignore_for_file: must_be_immutable, no_logic_in_create_state, use_build_context_synchronously
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
 import 'package:flutter/material.dart';
 
-class OrderView extends StatelessWidget {
+class ActiveOrderView extends StatelessWidget {
   String? id;
+  String? name;
+  String? home;
   String? date;
-  String? deliverManIdName;
-  String? deliverManIdEmail;
+  String? deliveryProcessId;
+  String? deliveryManId;
   String? state;
   int totalOrder = 0;
   List<dynamic>? products;
@@ -17,12 +19,14 @@ class OrderView extends StatelessWidget {
   List<Widget> listTemp = [];
   Widget? result;
 
-  OrderView({
+  ActiveOrderView({
     Key? key,
     @required this.id,
+    @required this.name,
+    @required this.home,
+    @required this.deliveryManId,
+    @required this.deliveryProcessId,
     @required this.date,
-    @required this.deliverManIdName,
-    @required this.deliverManIdEmail,
     @required this.state,
   }) : super(key: key);
 
@@ -139,17 +143,6 @@ class OrderView extends StatelessWidget {
         height: 10,
       ));
     }
-    if (deliverManIdName! != NONE) {
-      listTemp.add(const Text(
-        'Costo de envío Q$deliverPrice',
-        style: TextStyle(
-          fontWeight: FontWeight.w700,
-          color: Colors.white,
-          fontSize: 22,
-        ),
-      ));
-      totalOrder += deliverPrice;
-    }
     listTemp.add(
       Text(
         'Total de compra: Q$totalOrder',
@@ -169,10 +162,63 @@ class OrderView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (state == PREPARING) state = "Preparando";
+    if (state == ONTHEWAY) state = "En camino";
+    if (state == SERVED) state = "Finalizado";
     return Scaffold(
         appBar: AppBar(
           backgroundColor: secondaryColor,
           title: Text("Compra $id"),
+          actions: [
+            ElevatedButton(
+              style: ButtonStyle(
+                elevation: MaterialStateProperty.resolveWith<double>(
+                  (Set<MaterialState> states) {
+                    if (states.contains(MaterialState.disabled)) {
+                      return 0;
+                    }
+                    return 0;
+                  },
+                ),
+                backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                  (Set<MaterialState> states) {
+                    return Colors.green;
+                  },
+                ),
+              ),
+              onPressed: () async {
+                BuildContext dialogContext;
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      dialogContext = context;
+                      return AlertDialog(
+                        title: const Text("Aceptar pedido"),
+                        content: const Text(
+                            "¿Desea aceptar el pedido? Para garantizar la calidad del servicio, deberá entregarlo en menos de 20 minutos."),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () async {
+                              await FirebaseFS.assingDeliverMan(
+                                  deliveryProcessId!, deliveryManId!);
+                              Navigator.of(context, rootNavigator: true)
+                                  .pop(true);
+                              Navigator.pop(context, true);
+                              Navigator.pop(context, true);
+                            },
+                            child: Container(
+                              color: Colors.white,
+                              padding: const EdgeInsets.all(14),
+                              child: const Text("Aceptar"),
+                            ),
+                          ),
+                        ],
+                      );
+                    });
+              },
+              child: const Icon(Icons.check),
+            )
+          ],
         ),
         body: Container(
           width: double.infinity,
@@ -210,53 +256,33 @@ class OrderView extends StatelessWidget {
                 const SizedBox(
                   height: 25,
                 ),
-                if (deliverManIdName! == NONE)
-                  const Text(
-                    'Entregado en tienda',
-                    style: TextStyle(fontSize: 19, color: Colors.white),
+                Card(
+                  color: Colors.amber[50],
+                  margin: const EdgeInsets.all(15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25.0),
                   ),
-                if (deliverManIdName! != NONE)
-                  const Text(
-                    'Entregado por: ',
-                    style: TextStyle(fontSize: 19, color: Colors.white),
-                  ),
-                ///////////////// DELIVERY MAN CARD ////////////////////////
-                if (deliverManIdName! != NONE)
-                  Card(
-                    color: Colors.amber[50],
-                    margin: const EdgeInsets.all(15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25.0),
-                    ),
-                    elevation: 5,
-                    shadowColor: Colors.pink[50],
-                    child: Container(
-                      margin: const EdgeInsets.all(2),
-                      child: ListTile(
-                        leading: const Icon(
-                          Icons.face,
-                          size: 50,
-                        ),
-                        title: Text(
-                          deliverManIdName!,
-                          style: const TextStyle(
-                              fontSize: 19, color: Colors.black),
-                        ),
-                        subtitle: Text(
-                          deliverManIdEmail!,
-                          style: const TextStyle(
-                              fontSize: 13, color: Colors.black),
-                        ),
+                  elevation: 5,
+                  shadowColor: Colors.pink[50],
+                  child: Container(
+                    margin: const EdgeInsets.all(2),
+                    child: ListTile(
+                      leading: const Icon(
+                        Icons.house,
+                        size: 50,
+                      ),
+                      title: Text(
+                        name!,
+                        style:
+                            const TextStyle(fontSize: 19, color: Colors.black),
+                      ),
+                      subtitle: Text(
+                        home!,
+                        style:
+                            const TextStyle(fontSize: 13, color: Colors.black),
                       ),
                     ),
                   ),
-                ////////////////////////////////////////////////////////////
-                const SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  'Estado: $state',
-                  style: const TextStyle(fontSize: 19, color: Colors.white),
                 ),
                 const SizedBox(
                   height: 20,

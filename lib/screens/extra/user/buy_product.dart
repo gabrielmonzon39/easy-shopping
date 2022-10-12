@@ -209,7 +209,7 @@ class BuyProductBuilder extends State<BuyProduct> {
                     ),
                     if (selected)
                       const Center(
-                        child: Text("Se le agregará Q4.00 de envío",
+                        child: Text("Se le agregará Q$deliverPrice de envío",
                             style:
                                 TextStyle(fontSize: 18, color: Colors.white)),
                       ),

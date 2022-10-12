@@ -35,7 +35,7 @@ var deliveryManItemsDemo = [
     icon: "2",
   ),
   CategoryItem(
-    name: "Historial de órdenes entregadas",
+    name: "Órdenes entregadas",
     icon: "3",
   ),
   CategoryItem(
