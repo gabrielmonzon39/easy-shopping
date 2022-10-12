@@ -294,6 +294,7 @@ class ActiveOrdersBuilder extends State<ActiveOrders> {
                         ]));
                       }),
                 )),
+                /////////////////////////////////////////////
                 const SizedBox(
                   height: 20,
                 ),

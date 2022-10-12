@@ -1,5 +1,7 @@
-// ignore_for_file: must_be_immutable
+// ignore_for_file: must_be_immutable, use_build_context_synchronously
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_shopping/model/category_items.dart';
+import 'package:easy_shopping/model/firebase.dart';
 import 'package:easy_shopping/screens/side_bar/delivery_man_section/active_orders.dart';
 import 'package:easy_shopping/screens/side_bar/delivery_man_section/delivery_history.dart';
 import 'package:easy_shopping/screens/side_bar/delivery_man_section/orders_to_deliver.dart';
@@ -52,8 +54,8 @@ class DeliveryManMainScreen extends StatelessWidget {
     List<Widget> options = [];
     for (CategoryItem item in deliveryManItemsDemo) {
       options.add(GestureDetector(
-        onTap: () {
-          onCategoryItemClicked(context, item);
+        onTap: () async {
+          await onCategoryItemClicked(context, item);
         },
         child: Container(
           padding: const EdgeInsets.all(10),
@@ -71,7 +73,8 @@ class DeliveryManMainScreen extends StatelessWidget {
     return options;
   }
 
-  void onCategoryItemClicked(BuildContext context, CategoryItem categoryItem2) {
+  Future<void> onCategoryItemClicked(
+      BuildContext context, CategoryItem categoryItem2) async {
     int categoryItem = int.parse(categoryItem2.icon!);
     switch (categoryItem) {
       case 1:

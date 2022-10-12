@@ -101,6 +101,14 @@ class FirebaseFS {
         .update({'delivery_man_id': deliveryManId});
   }
 
+  static Future<void> changeState(
+      String deliveryProcessId, String state) async {
+    FirebaseFirestore.instance
+        .collection('delivery_processes')
+        .doc(deliveryProcessId)
+        .update({'state': state});
+  }
+
   static Future<String> getStoreId(String uid) async {
     FirebaseFirestore instance = FirebaseFirestore.instance;
     DocumentSnapshot? userDetail;
