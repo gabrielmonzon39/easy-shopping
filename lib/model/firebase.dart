@@ -147,7 +147,6 @@ class FirebaseFS {
       homeId = documentDetails.get('home_id');
       documentDetails = await instance.collection('homes').doc(homeId).get();
       projectId = documentDetails.get('project_id');
-      print(projectId);
       return projectId!;
     } catch (e) {
       print(e.toString());
@@ -341,7 +340,6 @@ class FirebaseFS {
     if (products.isEmpty) return;
     String now = DateFormat("h:mm a  dd-MM-yyyy").format(DateTime.now());
     try {
-      print("VENTA REALIZADA");
       ////////////////  MAKE THE SALE
       FirebaseFirestore.instance.collection('sales').add({
         'delivery_processId': deliveryProcessId.toString(),
@@ -584,7 +582,6 @@ class FirebaseFS {
 
   static Future<bool> checkProjectofProduct(String storeId) async {
     try {
-      print("%%% $storeId");
       DocumentSnapshot storeDetail = await FirebaseFirestore.instance
           .collection('stores')
           .doc(storeId)

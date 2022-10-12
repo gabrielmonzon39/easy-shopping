@@ -76,7 +76,7 @@ class PendingOrderBuilder extends State<PendingOrderSection> {
     deliveryProcessId = document.get('delivery_processId').toString();
     List<String> data =
         await FirebaseFS.getDeliveryManIdAndStateFromOrder(deliveryProcessId!);
-    print("-- $deliveryProcessId : ${data[1]} --");
+    //print("-- $deliveryProcessId : ${data[1]} --");
     setState(() {
       state = data[1];
     });
