@@ -3,6 +3,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
+import 'package:easy_shopping/model/product_infor.dart';
+import 'package:easy_shopping/widgets/store_products_in_order_view.dart';
 import 'package:flutter/material.dart';
 
 class OrdersToDeliverView extends StatefulWidget {
@@ -51,6 +53,7 @@ class OrdersToDeliverViewBuilder extends State<OrdersToDeliverView> {
   List<Map<String, dynamic>> mapProducts = [];
   List<Widget> listTemp = [];
   Widget? result;
+  Map<String, List<ProductInfo>?> storeProducts = {};
 
   OrdersToDeliverViewBuilder({
     Key? key,
@@ -71,121 +74,65 @@ class OrdersToDeliverViewBuilder extends State<OrdersToDeliverView> {
   }
 
   Future<bool> getOrderedProducts() async {
-    String productId = "";
-    String buyQuantity = "";
-    int? total;
+    String? productId;
+    String? storeId;
+    String? productName;
+    String? storeName;
+    String? image;
+    int? buyQuantity;
+    int? price;
+
     DocumentSnapshot orderDetails =
         await FirebaseFirestore.instance.collection('orders').doc(id).get();
     products = orderDetails.get('products');
-    totalOrder = 0;
+
     parse();
+
     for (Map<String, dynamic> product in mapProducts) {
+      // id producto, precio, cantidad
       productId = product['product_id'];
-      buyQuantity = product['buy_quantity'].toString();
+      buyQuantity = product['buy_quantity'];
+      price = product['price'];
+
+      // acceder a los detalles del producto
       DocumentSnapshot productDetails = await FirebaseFirestore.instance
           .collection('products')
           .doc(productId)
           .get();
-      total = (int.parse(buyQuantity) * product['price']) as int?;
-      totalOrder += total!;
-      listTemp.add(Container(
-        width: double.infinity,
-        margin: const EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
-        padding: const EdgeInsets.all(defaultPadding),
-        decoration: const BoxDecoration(
-          color: ternaryColor,
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Text(
-                productDetails.get('name'),
-                textAlign: TextAlign.left,
-                style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 25,
-                    color: Colors.white),
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Image.network(
-                    productDetails.get('image'),
-                    width: 150,
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 16, top: 8, bottom: 8),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Text(
-                          'Q${product['price'].toString()}',
-                          textAlign: TextAlign.left,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 22,
-                              color: Colors.white),
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Text(
-                          'Cantidad: $buyQuantity',
-                          textAlign: TextAlign.left,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 22,
-                              color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Text(
-              'Total: Q${total.toString()}',
-              textAlign: TextAlign.right,
-              style: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 25,
-                  color: Colors.white),
-            ),
-          ],
-        ),
-      ));
-      listTemp.add(const SizedBox(
-        height: 10,
-      ));
+
+      // nombre del producto y store id
+      productName = productDetails.get('name');
+      storeId = productDetails.get('store_id');
+      image = productDetails.get('image');
+
+      // acceder a los detalles del prodcuto
+      DocumentSnapshot storeDetails = await FirebaseFirestore.instance
+          .collection('stores')
+          .doc(storeId)
+          .get();
+
+      // nombre de la tienda
+      storeName = storeDetails.get('name');
+
+      // asociar producto a la tienda
+      if (storeProducts.containsKey(storeName!)) {
+        storeProducts[storeName]!
+            .add(ProductInfo(productName, image, buyQuantity, price));
+      } else {
+        storeProducts.addEntries([
+          MapEntry(
+              storeName, [ProductInfo(productName, image, buyQuantity, price)])
+        ]);
+      }
     }
-    listTemp.add(
-      Text(
-        'Total de compra: Q$totalOrder',
-        style: const TextStyle(
-          fontWeight: FontWeight.w700,
-          color: Colors.white,
-          fontSize: 22,
-        ),
-      ),
-    );
+    // agregar los widgets
+    storeProducts.forEach((key, value) {
+      listTemp.add(StoreProductsInOrderView(
+        storeName: key,
+        products: value,
+      ));
+    });
+
     result = Column(
       children: listTemp,
     );
@@ -306,6 +253,9 @@ class OrdersToDeliverViewBuilder extends State<OrdersToDeliverView> {
                   'Fecha: $date',
                   textAlign: TextAlign.left,
                   style: const TextStyle(fontSize: 19, color: Colors.white),
+                ),
+                const SizedBox(
+                  height: 10,
                 ),
                 Text(
                   'Estado: $stateText',
