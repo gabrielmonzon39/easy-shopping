@@ -70,6 +70,7 @@ class ActiveOrderView extends StatelessWidget {
       // nombre del producto y store id
       productName = productDetails.get('name');
       storeId = productDetails.get('store_id');
+      image = productDetails.get('image');
 
       // acceder a los detalles del prodcuto
       DocumentSnapshot storeDetails = await FirebaseFirestore.instance

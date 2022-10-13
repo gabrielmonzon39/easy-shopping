@@ -3,8 +3,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
+import 'package:easy_shopping/model/product_infor.dart';
 import 'package:easy_shopping/widgets/active_order_view.dart';
 import 'package:easy_shopping/widgets/orders_to_deliver_view.dart';
+import 'package:easy_shopping/widgets/store_products_in_order_view.dart';
 import 'package:flutter/material.dart';
 
 class OrdersToDeliver extends StatefulWidget {
@@ -32,6 +34,7 @@ class OrdersToDeliverBuilder extends State<OrdersToDeliver> {
   bool change = true;
   List<String> deliversNames = [];
   List<String> deliversEmails = [];
+  Map<String, List<ProductInfo>?> storeProducts = {};
 
   void parse() {
     mapProducts = [];
@@ -86,106 +89,71 @@ class OrdersToDeliverBuilder extends State<OrdersToDeliver> {
   }
 
   Future<bool> getActiveOrders() async {
-    QuerySnapshot snapOrders =
-        await FirebaseFirestore.instance.collection('orders').get();
-    QuerySnapshot snapDelivery =
-        await FirebaseFirestore.instance.collection('delivery_processes').get();
+    String? productId;
+    String? storeId;
+    String? productName;
+    String? storeName;
+    String? image;
+    int? buyQuantity;
+    int? price;
 
-    ////////////////
-    String deliveryManId =
-        (await FirebaseFirestore.instance.collection('users').doc(uid).get())
-            .get('delivery_man_id');
+    DocumentSnapshot orderDetails = await FirebaseFirestore.instance
+        .collection('orders')
+        .doc(deliveryProcessId)
+        .get();
+    products = orderDetails.get('products');
 
-    String projectId = (await FirebaseFirestore.instance
-            .collection('delivery_mans')
-            .doc(deliveryManId)
-            .get())
-        .get('project_id');
-    ////////////////
+    parse();
 
-    for (var document in snapOrders.docs) {
-      try {
-        if ((await FirebaseFS.getProjectId(document.get('user_id'))) ==
-            projectId) {
-          int del = document.get('delivery_processId');
-          for (var document2 in snapDelivery.docs) {
-            if (document2.id == del.toString() &&
-                document2.get('delivery_man_id') == deliveryManId &&
-                document2.get('state') != SERVED) {
-              String home = await FirebaseFS.getAddressOf(
-                  await FirebaseFS.getHomeOf(document.get('user_id')));
-              String name = await FirebaseFS.getName(document.get('user_id'));
-              available = true;
-              list.add(Column(
-                children: [
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => OrdersToDeliverView(
-                                      id: document.id,
-                                      name: name,
-                                      home: home,
-                                      deliveryProcessId: del.toString(),
-                                      deliveryManId: deliveryManId,
-                                      date: document.get('date'),
-                                      state: document2.get('state'),
-                                    )),
-                          ).then((value) {
-                            setState(() {
-                              // refresh state
-                            });
-                          });
-                        },
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
-                              return ternaryColor;
-                            },
-                          ),
-                        ),
-                        child: Column(
-                          children: [
-                            Text(
-                              "Compra : ${document.id}",
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
-                            ),
-                            Text(
-                              "Fecha : ${document.get('date').toString()}",
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
-                        )),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                ],
-              ));
-            }
-          }
-        }
-      } catch (e) {
-        print(e.toString());
-        continue;
+    for (Map<String, dynamic> product in mapProducts) {
+      // id producto, precio, cantidad
+      productId = product['product_id'];
+      buyQuantity = product['buy_quantity'];
+      price = product['price'];
+
+      // acceder a los detalles del producto
+      DocumentSnapshot productDetails = await FirebaseFirestore.instance
+          .collection('products')
+          .doc(productId)
+          .get();
+
+      // nombre del producto y store id
+      productName = productDetails.get('name');
+      storeId = productDetails.get('store_id');
+      image = productDetails.get('image');
+
+      // acceder a los detalles del prodcuto
+      DocumentSnapshot storeDetails = await FirebaseFirestore.instance
+          .collection('stores')
+          .doc(storeId)
+          .get();
+
+      // nombre de la tienda
+      storeName = storeDetails.get('name');
+
+      // asociar producto a la tienda
+      if (storeProducts.containsKey(storeName!)) {
+        storeProducts[storeName]!
+            .add(ProductInfo(productName, image, buyQuantity, price));
+      } else {
+        storeProducts.addEntries([
+          MapEntry(
+              storeName, [ProductInfo(productName, image, buyQuantity, price)])
+        ]);
       }
     }
-    if (available) {
+    // agregar los widgets
+    storeProducts.forEach((key, value) {
+      listTemp.add(StoreProductsInOrderView(
+        storeName: key,
+        products: value,
+      ));
+    });
+    if (storeProducts.isEmpty) {
       result = Column(
-        children: list,
+        children: listTemp,
       );
+      listTemp = [];
     } else {
       result = Center(
           child: Column(children: const [
