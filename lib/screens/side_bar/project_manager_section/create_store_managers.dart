@@ -6,27 +6,30 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter/services.dart';
 
-class CreateTokensSection extends StatefulWidget {
-  const CreateTokensSection({Key? key}) : super(key: key);
+class CreateStoreManagersSection extends StatefulWidget {
+  final String projectId;
+
+  const CreateStoreManagersSection({Key? key, required this.projectId})
+      : super(key: key);
   @override
-  CreateTokensBuilder createState() => CreateTokensBuilder();
+  CreateStoreManagersBuilder createState() => CreateStoreManagersBuilder();
 }
 
-class CreateTokensBuilder extends State<CreateTokensSection> {
+class CreateStoreManagersBuilder extends State<CreateStoreManagersSection> {
   final nameController = TextEditingController();
-  Stream<QuerySnapshot> projects =
-      FirebaseFirestore.instance.collection('projects').snapshots();
+
   String selected = types[types.length - 1];
   UploadTask? task;
   File? file;
 
-  String? selectedProject;
+  String? selectedStore;
   String generatedToken = '';
 
   void cleanData() {
     nameController.text = "";
-    selectedProject = null;
+    selectedStore = null;
     setState(() {
       file = null;
       task = null;
@@ -34,8 +37,7 @@ class CreateTokensBuilder extends State<CreateTokensSection> {
   }
 
   Future<void> generateToken() async {
-    generatedToken =
-        await FirebaseFS.generateProjectManagerToken(selectedProject!);
+    generatedToken = await FirebaseFS.generateStoreManagerToken(selectedStore!);
     setState(() {});
     cleanData();
 
@@ -61,6 +63,9 @@ class CreateTokensBuilder extends State<CreateTokensSection> {
 
   @override
   Widget build(BuildContext context) {
+    Stream<QuerySnapshot<Object?>> stores =
+        FirebaseFS.getProjectStores(widget.projectId, uid);
+
     EasyLoading.instance
       ..displayDuration = const Duration(milliseconds: 5000)
       ..indicatorType = EasyLoadingIndicatorType.fadingCircle
@@ -72,7 +77,7 @@ class CreateTokensBuilder extends State<CreateTokensSection> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: secondaryColor,
-          title: const Text("Generar Project Manager"),
+          title: const Text("Generar Store Manager"),
         ),
         body: SafeArea(
             child: Container(
@@ -87,9 +92,6 @@ class CreateTokensBuilder extends State<CreateTokensSection> {
                 child: SingleChildScrollView(
                     child: Column(
                   children: [
-                    const SizedBox(
-                      height: 20,
-                    ),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -97,52 +99,15 @@ class CreateTokensBuilder extends State<CreateTokensSection> {
                         Expanded(
                             child: Column(
                           children: [
-                            TextField(
-                              keyboardType: TextInputType.text,
-                              obscureText: false,
-                              controller: nameController,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black,
-                              ),
-                              decoration: const InputDecoration(
-                                hintText: "Nombre del Project Manager",
-                                hintStyle: TextStyle(
-                                  color: Color(0xffA6B0BD),
-                                ),
-                                fillColor: Colors.white,
-                                filled: true,
-                                prefixIcon: Icon(
-                                  Icons.text_fields,
-                                  color: Colors.black,
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(200),
-                                  ),
-                                  borderSide: BorderSide(color: secondaryColor),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(200),
-                                  ),
-                                  borderSide: BorderSide(color: secondaryColor),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
                             StreamBuilder<QuerySnapshot>(
-                                stream: projects,
+                                stream: stores,
                                 builder: (BuildContext context,
                                     AsyncSnapshot<QuerySnapshot> snapshot) {
                                   return DropdownButton(
-                                    value: selectedProject,
+                                    value: selectedStore,
                                     // Down Arrow Icon
                                     icon: const Icon(Icons.keyboard_arrow_down),
-                                    hint: const Text("Proyecto"),
+                                    hint: const Text("Tiendas"),
                                     // Array list of items
                                     items: snapshot.data?.docs.map((project) {
                                       return DropdownMenuItem(
@@ -153,7 +118,7 @@ class CreateTokensBuilder extends State<CreateTokensSection> {
                                     onChanged: (String? value) {
                                       setState(
                                         () {
-                                          selectedProject = value!;
+                                          selectedStore = value!;
                                         },
                                       );
                                     },
@@ -185,13 +150,32 @@ class CreateTokensBuilder extends State<CreateTokensSection> {
                     const SizedBox(
                       height: 15,
                     ),
-                    Text(
-                      generatedToken,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: generatedToken == ''
+                          ? []
+                          : [
+                              Text(
+                                generatedToken,
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.copy,
+                                    color: secondaryColor),
+                                onPressed: () {
+                                  Clipboard.setData(
+                                      ClipboardData(text: generatedToken));
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content:
+                                              Text('Copiado al portapapeles')));
+                                },
+                              )
+                            ],
                     ),
                   ],
                 )))));
