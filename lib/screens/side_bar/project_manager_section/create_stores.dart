@@ -16,7 +16,6 @@ class CreateStoresSection extends StatefulWidget {
 class CreateStoresBuilder extends State<CreateStoresSection> {
   final nameController = TextEditingController();
   final descriptionController = TextEditingController();
-  final colorController = TextEditingController();
 
   Future<void> generateStore() async {
     if (nameController.text == "") {
@@ -29,15 +28,35 @@ class CreateStoresBuilder extends State<CreateStoresSection> {
       return;
     }
 
-    if (colorController.text == "") {
-      EasyLoading.showError("El color del proyecto no puede estar vacío");
+    if (file == null) {
+      EasyLoading.showError("La imagen del proyecto no puede estar vacía");
       return;
     }
-
     String projectId = await FirebaseFS.getProjectIdForProjectManager(uid);
 
-    await FirebaseFS.generateStore(nameController.text,
-        descriptionController.text, colorController.text, projectId);
+    String storeId = await FirebaseFS.generateStore(
+        nameController.text, descriptionController.text, projectId);
+
+    final filePath = file!.path;
+    final fileList = filePath.split("/");
+    final fileName = fileList[fileList.length - 1];
+
+    if (!fileName.contains("jpeg") &&
+        !fileName.contains("jpg") &&
+        !fileName.contains("png")) return;
+
+    final destination = '$projectId/$storeId/$fileName';
+    final uploadTask = uploadFile(destination, file!);
+    if (uploadTask == null) return;
+
+    setState(() {
+      task = uploadTask;
+    });
+
+    final snapshot = await uploadTask.whenComplete(() {});
+    final urlDownload = await snapshot.ref.getDownloadURL();
+
+    await FirebaseFS.setStoreImage(storeId, urlDownload);
 
     cleanData();
 
@@ -64,8 +83,51 @@ class CreateStoresBuilder extends State<CreateStoresSection> {
   void cleanData() {
     nameController.text = "";
     descriptionController.text = "";
-    colorController.text = "";
+    file = null;
+    task = null;
     setState(() {});
+  }
+
+  File? file;
+  UploadTask? task;
+
+  Future<void> selectFile() async {
+    final result = await FilePicker.platform.pickFiles(allowMultiple: false);
+    if (result == null) return;
+    final path = result.files.single.path!;
+    setState(() {
+      file = File(path);
+    });
+  }
+
+  UploadTask? uploadFile(String destination, File file) {
+    try {
+      final ref = FirebaseStorage.instance.ref(destination);
+      return ref.putFile(file);
+    } on FirebaseException {
+      return null;
+    }
+  }
+
+  Widget uploadStatus(UploadTask task) {
+    return StreamBuilder<TaskSnapshot>(
+        stream: task.snapshotEvents,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final snap = snapshot.data!;
+            final progress = snap.bytesTransferred / snap.totalBytes;
+            final porcentage = (progress * 100).toStringAsFixed(2);
+            return Text(
+              '$porcentage%',
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                color: Colors.black,
+              ),
+            );
+          }
+          return Container();
+        });
   }
 
   @override
@@ -177,40 +239,22 @@ class CreateStoresBuilder extends State<CreateStoresSection> {
                                 ),
                               ),
                             ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            TextField(
-                              keyboardType: TextInputType.text,
-                              obscureText: false,
-                              controller: colorController,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black,
+                            ElevatedButton(
+                              onPressed: selectFile,
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.resolveWith<Color>(
+                                  (Set<MaterialState> states) {
+                                    return secondaryColor;
+                                  },
+                                ),
                               ),
-                              decoration: const InputDecoration(
-                                hintText: "Color de la tienda",
-                                hintStyle: TextStyle(
-                                  color: Color(0xffA6B0BD),
-                                ),
-                                fillColor: Colors.white,
-                                filled: true,
-                                prefixIcon: Icon(
-                                  Icons.text_fields,
-                                  color: Colors.black,
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(200),
-                                  ),
-                                  borderSide: BorderSide(color: secondaryColor),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(200),
-                                  ),
-                                  borderSide: BorderSide(color: secondaryColor),
+                              child: const Text(
+                                "Subir imagen",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
                                 ),
                               ),
                             ),
@@ -243,6 +287,7 @@ class CreateStoresBuilder extends State<CreateStoresSection> {
                     const SizedBox(
                       height: 15,
                     ),
+                    if (task != null) uploadStatus(task!),
                   ],
                 )))));
   }
