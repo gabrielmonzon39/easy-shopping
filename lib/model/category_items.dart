@@ -64,4 +64,12 @@ var projectManagerItemsDemo = [
     name: "Generar Store Manager",
     icon: "1",
   ),
+  CategoryItem(
+    name: "Generar Familia",
+    icon: "1",
+  ),
+  CategoryItem(
+    name: "Generar Delivery Man",
+    icon: "1",
+  ),
 ];

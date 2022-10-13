@@ -2,44 +2,25 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter/services.dart';
 
-class CreateStoreManagersSection extends StatefulWidget {
+class CreateDeliveryManSection extends StatefulWidget {
   final String projectId;
-
-  const CreateStoreManagersSection({Key? key, required this.projectId})
+  const CreateDeliveryManSection({Key? key, required this.projectId})
       : super(key: key);
   @override
-  CreateStoreManagersBuilder createState() => CreateStoreManagersBuilder();
+  CreateDeliveryManBuilder createState() => CreateDeliveryManBuilder();
 }
 
-class CreateStoreManagersBuilder extends State<CreateStoreManagersSection> {
-  final nameController = TextEditingController();
-
-  String selected = types[types.length - 1];
-  UploadTask? task;
-  File? file;
-
-  String? selectedStore;
+class CreateDeliveryManBuilder extends State<CreateDeliveryManSection> {
   String generatedToken = '';
 
-  void cleanData() {
-    nameController.text = "";
-    selectedStore = null;
-    setState(() {
-      file = null;
-      task = null;
-    });
-  }
-
   Future<void> generateToken() async {
-    generatedToken = await FirebaseFS.generateStoreManagerToken(selectedStore!);
+    generatedToken =
+        await FirebaseFS.generateDeliveryManToken(widget.projectId);
     setState(() {});
-    cleanData();
 
     showDialog(
         context: context,
@@ -63,9 +44,6 @@ class CreateStoreManagersBuilder extends State<CreateStoreManagersSection> {
 
   @override
   Widget build(BuildContext context) {
-    Stream<QuerySnapshot<Object?>> stores =
-        FirebaseFS.getProjectStores(widget.projectId, uid);
-
     EasyLoading.instance
       ..displayDuration = const Duration(milliseconds: 5000)
       ..indicatorType = EasyLoadingIndicatorType.fadingCircle
@@ -77,7 +55,7 @@ class CreateStoreManagersBuilder extends State<CreateStoreManagersSection> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: secondaryColor,
-          title: const Text("Generar Store Manager"),
+          title: const Text("Generar Delivery Man"),
         ),
         body: SafeArea(
             child: Container(
@@ -92,42 +70,6 @@ class CreateStoreManagersBuilder extends State<CreateStoreManagersSection> {
                 child: SingleChildScrollView(
                     child: Column(
                   children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ////////////////////////////////////////////////////////////////////////////////////
-                        Expanded(
-                            child: Column(
-                          children: [
-                            StreamBuilder<QuerySnapshot>(
-                                stream: stores,
-                                builder: (BuildContext context,
-                                    AsyncSnapshot<QuerySnapshot> snapshot) {
-                                  return DropdownButton(
-                                    value: selectedStore,
-                                    // Down Arrow Icon
-                                    icon: const Icon(Icons.keyboard_arrow_down),
-                                    hint: const Text("Tiendas"),
-                                    // Array list of items
-                                    items: snapshot.data?.docs.map((project) {
-                                      return DropdownMenuItem(
-                                        value: project.id,
-                                        child: Text(project['name']),
-                                      );
-                                    }).toList(),
-                                    onChanged: (String? value) {
-                                      setState(
-                                        () {
-                                          selectedStore = value!;
-                                        },
-                                      );
-                                    },
-                                  );
-                                }),
-                          ],
-                        )),
-                      ],
-                    ),
                     ElevatedButton(
                       onPressed: generateToken,
                       style: ButtonStyle(

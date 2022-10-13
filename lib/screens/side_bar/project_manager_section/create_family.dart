@@ -2,70 +2,41 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter/services.dart';
 
-class CreateStoresSection extends StatefulWidget {
+class CreateFamilySection extends StatefulWidget {
   final String projectId;
-  const CreateStoresSection({Key? key, required this.projectId})
+  const CreateFamilySection({Key? key, required this.projectId})
       : super(key: key);
   @override
-  CreateStoresBuilder createState() => CreateStoresBuilder();
+  CreateFamilyBuilder createState() => CreateFamilyBuilder();
 }
 
-class CreateStoresBuilder extends State<CreateStoresSection> {
-  final nameController = TextEditingController();
-  final descriptionController = TextEditingController();
+class CreateFamilyBuilder extends State<CreateFamilySection> {
+  final addressController = TextEditingController();
+  final quantityController = TextEditingController();
 
-  Future<void> generateStore() async {
-    if (nameController.text == "") {
-      EasyLoading.showError("El nombre del proyecto no puede estar vacío");
-      return;
-    }
+  String generatedToken = '';
 
-    if (descriptionController.text == "") {
-      EasyLoading.showError("La descripción del proyecto no puede estar vacía");
-      return;
-    }
+  void cleanData() {
+    addressController.text = "";
+    quantityController.text = "";
+    setState(() {});
+  }
 
-    if (file == null) {
-      EasyLoading.showError("La imagen del proyecto no puede estar vacía");
-      return;
-    }
-    String projectId = widget.projectId;
-
-    String storeId = await FirebaseFS.generateStore(
-        nameController.text, descriptionController.text, projectId);
-
-    final filePath = file!.path;
-    final fileList = filePath.split("/");
-    final fileName = fileList[fileList.length - 1];
-
-    if (!fileName.contains("jpeg") &&
-        !fileName.contains("jpg") &&
-        !fileName.contains("png")) return;
-
-    final destination = '$projectId/$storeId/$fileName';
-    final uploadTask = uploadFile(destination, file!);
-    if (uploadTask == null) return;
-
-    setState(() {
-      task = uploadTask;
-    });
-
-    final snapshot = await uploadTask.whenComplete(() {});
-    final urlDownload = await snapshot.ref.getDownloadURL();
-
-    await FirebaseFS.setStoreImage(storeId, urlDownload);
-
+  Future<void> generateToken() async {
+    generatedToken = await FirebaseFS.generateUsersToken(addressController.text,
+        int.parse(quantityController.text), widget.projectId);
+    setState(() {});
     cleanData();
 
     showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
-              title: const Text("Tienda generada con éxito!"),
+              title: const Text("¡Token generada con éxito!"),
               actions: <Widget>[
                 TextButton(
                   onPressed: () {
@@ -82,56 +53,6 @@ class CreateStoresBuilder extends State<CreateStoresSection> {
             ));
   }
 
-  void cleanData() {
-    nameController.text = "";
-    descriptionController.text = "";
-    file = null;
-    task = null;
-    setState(() {});
-  }
-
-  File? file;
-  UploadTask? task;
-
-  Future<void> selectFile() async {
-    final result = await FilePicker.platform.pickFiles(allowMultiple: false);
-    if (result == null) return;
-    final path = result.files.single.path!;
-    setState(() {
-      file = File(path);
-    });
-  }
-
-  UploadTask? uploadFile(String destination, File file) {
-    try {
-      final ref = FirebaseStorage.instance.ref(destination);
-      return ref.putFile(file);
-    } on FirebaseException {
-      return null;
-    }
-  }
-
-  Widget uploadStatus(UploadTask task) {
-    return StreamBuilder<TaskSnapshot>(
-        stream: task.snapshotEvents,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final snap = snapshot.data!;
-            final progress = snap.bytesTransferred / snap.totalBytes;
-            final porcentage = (progress * 100).toStringAsFixed(2);
-            return Text(
-              '$porcentage%',
-              style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-                color: Colors.black,
-              ),
-            );
-          }
-          return Container();
-        });
-  }
-
   @override
   Widget build(BuildContext context) {
     EasyLoading.instance
@@ -145,7 +66,7 @@ class CreateStoresBuilder extends State<CreateStoresSection> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: secondaryColor,
-          title: const Text("Generar Tienda"),
+          title: const Text("Generar Familia"),
         ),
         body: SafeArea(
             child: Container(
@@ -173,14 +94,14 @@ class CreateStoresBuilder extends State<CreateStoresSection> {
                             TextField(
                               keyboardType: TextInputType.text,
                               obscureText: false,
-                              controller: nameController,
+                              controller: addressController,
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w400,
                                 color: Colors.black,
                               ),
                               decoration: const InputDecoration(
-                                hintText: "Nombre de la tienda",
+                                hintText: "Direccion",
                                 hintStyle: TextStyle(
                                   color: Color(0xffA6B0BD),
                                 ),
@@ -210,21 +131,21 @@ class CreateStoresBuilder extends State<CreateStoresSection> {
                             TextField(
                               keyboardType: TextInputType.text,
                               obscureText: false,
-                              controller: descriptionController,
+                              controller: quantityController,
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w400,
                                 color: Colors.black,
                               ),
                               decoration: const InputDecoration(
-                                hintText: "Descripción de la tienda",
+                                hintText: "Cantidad de personas en la familia",
                                 hintStyle: TextStyle(
                                   color: Color(0xffA6B0BD),
                                 ),
                                 fillColor: Colors.white,
                                 filled: true,
                                 prefixIcon: Icon(
-                                  Icons.text_fields,
+                                  Icons.numbers_sharp,
                                   color: Colors.black,
                                 ),
                                 enabledBorder: OutlineInputBorder(
@@ -241,34 +162,15 @@ class CreateStoresBuilder extends State<CreateStoresSection> {
                                 ),
                               ),
                             ),
-                            ElevatedButton(
-                              onPressed: selectFile,
-                              style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.resolveWith<Color>(
-                                  (Set<MaterialState> states) {
-                                    return secondaryColor;
-                                  },
-                                ),
-                              ),
-                              child: const Text(
-                                "Subir imagen",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                ),
-                              ),
+                            const SizedBox(
+                              height: 20,
                             ),
                           ],
                         )),
                       ],
                     ),
-                    const SizedBox(
-                      height: 15,
-                    ),
                     ElevatedButton(
-                      onPressed: generateStore,
+                      onPressed: generateToken,
                       style: ButtonStyle(
                         backgroundColor:
                             MaterialStateProperty.resolveWith<Color>(
@@ -278,7 +180,7 @@ class CreateStoresBuilder extends State<CreateStoresSection> {
                         ),
                       ),
                       child: const Text(
-                        "Generar Tienda",
+                        "Generar Token",
                         style: TextStyle(
                           fontSize: 23,
                           fontWeight: FontWeight.w600,
@@ -289,7 +191,33 @@ class CreateStoresBuilder extends State<CreateStoresSection> {
                     const SizedBox(
                       height: 15,
                     ),
-                    if (task != null) uploadStatus(task!),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: generatedToken == ''
+                          ? []
+                          : [
+                              Text(
+                                generatedToken,
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.copy,
+                                    color: secondaryColor),
+                                onPressed: () {
+                                  Clipboard.setData(
+                                      ClipboardData(text: generatedToken));
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content:
+                                              Text('Copiado al portapapeles')));
+                                },
+                              )
+                            ],
+                    ),
                   ],
                 )))));
   }
