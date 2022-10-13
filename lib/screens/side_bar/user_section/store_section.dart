@@ -154,7 +154,7 @@ class StoresSectionBuilder extends State<StoresSection> {
                                 description: document.get('description'),
                                 imageURL: document.get('image'),
                                 storeId: document.id,
-                                color: document.get('color'),
+                                color: 0xFF2697FF,
                               );
                             }
                           } catch (e) {
