@@ -63,6 +63,14 @@ class OptionConditions {
     return currentRoll == STORE_MANAGER;
   }
 
+  static bool bestSellingProducts() {
+    return currentRoll == STORE_MANAGER;
+  }
+
+  static bool income() {
+    return currentRoll == STORE_MANAGER;
+  }
+
   static bool storeInformation() {
     return currentRoll == STORE_MANAGER;
   }

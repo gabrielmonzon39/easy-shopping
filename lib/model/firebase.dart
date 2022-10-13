@@ -332,6 +332,7 @@ class FirebaseFS {
       'quantity': int.parse(quantity),
       'image': image,
       'type': fireBaseType,
+      'bought': 0,
     });
   }
 
@@ -417,7 +418,7 @@ class FirebaseFS {
       deliveryProcessDocument.set({
         'delivery_man_id': (deliver) ? DELIVERY_PENDING : NONE,
         'order_id': orderId,
-        'state': PREPARING,
+        'state': (deliver) ? PREPARING : SERVED,
       });
 
       //////////////// UPDATE THE QUANTITY AVAILABLE FOR EACH PRODUCT
@@ -427,11 +428,13 @@ class FirebaseFS {
             .doc(element['product_id'])
             .get();
         int total = productDetail.get('quantity');
+        int bought = productDetail.get('bought');
         total -= int.parse(element['buy_quantity'].toString());
+        bought += int.parse(element['buy_quantity'].toString());
         FirebaseFirestore.instance
             .collection('products')
             .doc(element['product_id'])
-            .update({'quantity': total});
+            .update({'quantity': total, 'bought': bought});
       }
       return true;
     } catch (e) {

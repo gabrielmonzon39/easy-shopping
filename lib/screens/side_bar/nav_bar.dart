@@ -7,6 +7,8 @@ import 'package:easy_shopping/screens/side_bar/delivery_man_section/active_order
 import 'package:easy_shopping/screens/side_bar/delivery_man_section/delivery_history.dart';
 import 'package:easy_shopping/screens/side_bar/delivery_man_section/orders_to_deliver.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/add_products.dart';
+import 'package:easy_shopping/screens/side_bar/store_section/best_selling_products.dart';
+import 'package:easy_shopping/screens/side_bar/store_section/income.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/information_section.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/products_section.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/store_sales_section.dart';
@@ -265,6 +267,36 @@ class _NavBar extends State<NavBar> {
                 },
               ),
             if (OptionConditions.storeSales()) const Divider(),
+
+            /// **************  Productos más vendidos  **************
+            if (OptionConditions.bestSellingProducts())
+              ListTile(
+                leading: const Icon(Icons.sell),
+                title: const Text('Los más vendidos'),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const BestSellingProducts(),
+                      ));
+                },
+              ),
+            if (OptionConditions.bestSellingProducts()) const Divider(),
+
+            /// **************  Ganancias  **************
+            if (OptionConditions.income())
+              ListTile(
+                leading: const Icon(Icons.attach_money),
+                title: const Text('Ganancias'),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const Income(),
+                      ));
+                },
+              ),
+            if (OptionConditions.income()) const Divider(),
 
             /// **************  Información  **************
             if (OptionConditions.storeInformation())
