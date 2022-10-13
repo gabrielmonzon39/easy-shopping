@@ -8,6 +8,9 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:easy_shopping/model/category_items.dart';
 import 'package:easy_shopping/widgets/category_item_dart_widget.dart';
 import 'package:easy_shopping/screens/side_bar/project_manager_section/create_stores.dart';
+import 'package:easy_shopping/screens/side_bar/project_manager_section/create_store_managers.dart';
+import 'package:easy_shopping/screens/side_bar/project_manager_section/create_family.dart';
+import 'package:easy_shopping/screens/side_bar/project_manager_section/create_delivery_man.dart';
 
 class ProjectManagerMainScreen extends StatelessWidget {
   int i = 0;
@@ -67,19 +70,49 @@ class ProjectManagerMainScreen extends StatelessWidget {
     return options;
   }
 
+  String projectId = "";
+
+  void getProjectId() async {
+    projectId = await FirebaseFS.getProjectIdForProjectManager(uid);
+  }
+
   void onCategoryItemClicked(BuildContext context, CategoryItem categoryItem2) {
     String categoryItem = categoryItem2.name!;
     switch (categoryItem) {
-      case 'Generar Project Manager':
+      case 'Generar Store Manager':
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const CreateStoresSection()),
+          MaterialPageRoute(
+              builder: (context) => CreateStoreManagersSection(
+                    projectId: projectId,
+                  )),
         );
         break;
       case 'Nueva Tienda':
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const CreateStoresSection()),
+          MaterialPageRoute(
+              builder: (context) => CreateStoresSection(
+                    projectId: projectId,
+                  )),
+        );
+        break;
+      case 'Generar Familia':
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => CreateFamilySection(
+                    projectId: projectId,
+                  )),
+        );
+        break;
+      case 'Generar Delivery Man':
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => CreateDeliveryManSection(
+                    projectId: projectId,
+                  )),
         );
         break;
     }
@@ -87,6 +120,7 @@ class ProjectManagerMainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    getProjectId();
     return SizedBox(
       height: 680,
       child: Column(
