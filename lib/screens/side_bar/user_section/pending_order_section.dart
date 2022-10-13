@@ -95,26 +95,37 @@ class PendingOrderBuilder extends State<PendingOrderSection> {
         await FirebaseFirestore.instance.collection('delivery_processes').get();
     QuerySnapshot snapUsers =
         await FirebaseFirestore.instance.collection('delivery_mans').get();
-    String _delName = "";
-    String _delEmail = "";
     for (var document in snapOrders.docs) {
       try {
         if (document.get('user_id') == uid!) {
           int del = document.get('delivery_processId');
           for (var document2 in snapDelivery.docs) {
             if (document2.id == del.toString() &&
-                document2.get('state') == PREPARING) {
+                (document2.get('state') == PREPARING ||
+                    document2.get('state') == ONTHEWAY)) {
               String delManId = document2.get('delivery_man_id');
+              String _delName = "";
+              String _delEmail = "";
               for (var document3 in snapUsers.docs) {
                 try {
+                  //print("${document3.id} -> $delManId");
+                  if (delManId == NONE) {
+                    _delName = NONE;
+                    _delEmail = NONE;
+                  }
+                  if (delManId == DELIVERY_PENDING) {
+                    _delName = DELIVERY_PENDING;
+                    _delEmail = DELIVERY_PENDING;
+                  }
                   if (document3.id == delManId) {
                     _delName = document3.get('name');
                     _delEmail = document3.get('email');
                   }
-                } catch (Exception) {
+                } catch (e) {
                   continue;
                 }
               }
+              String state = document2.get('state') + "";
               list.add(Column(
                 children: [
                   SizedBox(
@@ -129,7 +140,7 @@ class PendingOrderBuilder extends State<PendingOrderSection> {
                                       date: document.get('date'),
                                       deliverManIdName: _delName,
                                       deliverManIdEmail: _delEmail,
-                                      state: document2.get('state'),
+                                      state: state,
                                     )),
                           );
                         },

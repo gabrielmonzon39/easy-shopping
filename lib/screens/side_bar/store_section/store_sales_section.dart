@@ -461,7 +461,7 @@ class StoreSalesBuilder extends State<StoreSalesSection> {
                                                             data[0],
                                                         deliverManIdEmail:
                                                             data[1],
-                                                        state: state,
+                                                        state: data1[1],
                                                       )),
                                             );
                                           },

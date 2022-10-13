@@ -86,7 +86,7 @@ class OrdersToDeliverViewBuilder extends State<OrdersToDeliverView> {
           .collection('products')
           .doc(productId)
           .get();
-      total = (int.parse(buyQuantity) * productDetails.get('price')) as int?;
+      total = (int.parse(buyQuantity) * product['price']) as int?;
       totalOrder += total!;
       listTemp.add(Container(
         width: double.infinity,
@@ -134,7 +134,7 @@ class OrdersToDeliverViewBuilder extends State<OrdersToDeliverView> {
                           height: 15,
                         ),
                         Text(
-                          'Q${productDetails.get('price').toString()}',
+                          'Q${product['price'].toString()}',
                           textAlign: TextAlign.left,
                           style: const TextStyle(
                               fontWeight: FontWeight.w600,

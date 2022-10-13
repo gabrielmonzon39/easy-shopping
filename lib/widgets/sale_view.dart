@@ -47,11 +47,12 @@ class SaleView extends StatelessWidget {
     for (Map<String, dynamic> product in mapProducts) {
       productId = product['product_id'];
       buyQuantity = product['buy_quantity'].toString();
+
       DocumentSnapshot productDetails = await FirebaseFirestore.instance
           .collection('products')
           .doc(productId)
           .get();
-      total = (int.parse(buyQuantity) * productDetails.get('price')) as int?;
+      total = (int.parse(buyQuantity) * product['price']) as int?;
       totalSale += total!;
       listTemp.add(Container(
         width: double.infinity,
@@ -99,7 +100,7 @@ class SaleView extends StatelessWidget {
                           height: 15,
                         ),
                         Text(
-                          'Q${productDetails.get('price').toString()}',
+                          'Q${product['price'].toString()}',
                           textAlign: TextAlign.left,
                           style: const TextStyle(
                               fontWeight: FontWeight.w600,
@@ -160,6 +161,9 @@ class SaleView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (state == PREPARING) state = "Preparando";
+    if (state == ONTHEWAY) state = "En camino";
+    if (state == SERVED) state = "Finalizado";
     return Scaffold(
         appBar: AppBar(
           backgroundColor: secondaryColor,
@@ -201,18 +205,20 @@ class SaleView extends StatelessWidget {
                 const SizedBox(
                   height: 25,
                 ),
-                if (deliverManIdName! == NONE)
+                if (deliverManIdName == DELIVERY_PENDING)
                   const Text(
-                    'Entregado en tienda',
+                    'Repartidor pendiente',
                     style: TextStyle(fontSize: 19, color: Colors.white),
                   ),
-                if (deliverManIdName! != NONE)
+                if (deliverManIdName! != NONE &&
+                    deliverManIdName != DELIVERY_PENDING)
                   const Text(
-                    'Entregado por: ',
+                    'Repartidor: ',
                     style: TextStyle(fontSize: 19, color: Colors.white),
                   ),
                 ///////////////// DELIVERY MAN CARD ////////////////////////
-                if (deliverManIdName! != NONE)
+                if (deliverManIdName! != NONE &&
+                    deliverManIdName != DELIVERY_PENDING)
                   Card(
                     color: Colors.amber[50],
                     margin: const EdgeInsets.all(15),

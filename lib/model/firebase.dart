@@ -507,6 +507,9 @@ class FirebaseFS {
     if (deliveryManId == NONE) {
       return [NONE, NONE];
     }
+    if (deliveryManId == DELIVERY_PENDING) {
+      return [DELIVERY_PENDING, DELIVERY_PENDING];
+    }
     QuerySnapshot snap =
         await FirebaseFirestore.instance.collection('users').get();
     for (var document in snap.docs) {

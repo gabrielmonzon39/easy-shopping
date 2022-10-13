@@ -238,6 +238,7 @@ class BuyProductBuilder extends State<BuyProduct> {
                                   'product_id': id,
                                   'buy_quantity':
                                       int.parse(buyQuantity.toStringAsFixed(0)),
+                                  'price': int.parse(price!)
                                 };
                                 myShoppingCart!.push(product);
                                 showDialog(

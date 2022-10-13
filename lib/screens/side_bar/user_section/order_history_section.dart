@@ -257,7 +257,7 @@ class OrderHistoryBuilder extends State<OrderHistorySection> {
                                                       deliverManIdName: data[0],
                                                       deliverManIdEmail:
                                                           data[1],
-                                                      state: state,
+                                                      state: data1[1],
                                                     )),
                                           );
                                         },
