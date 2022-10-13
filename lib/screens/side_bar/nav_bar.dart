@@ -323,7 +323,7 @@ class _NavBar extends State<NavBar> {
                   prefs.setBool('isAlreadyLogged', false);
                   GoogleSignInProvider.provider =
                       Provider.of<GoogleSignInProvider>(context, listen: false);
-                  await GoogleSignInProvider.provider!.googleSignOut();
+                  await GoogleSignInProvider.provider!.googleSignOut(context);
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => const MyApp()),
