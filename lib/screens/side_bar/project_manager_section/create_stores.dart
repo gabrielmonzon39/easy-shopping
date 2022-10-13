@@ -8,7 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class CreateStoresSection extends StatefulWidget {
-  const CreateStoresSection({Key? key}) : super(key: key);
+  final String projectId;
+  const CreateStoresSection({Key? key, required this.projectId})
+      : super(key: key);
   @override
   CreateStoresBuilder createState() => CreateStoresBuilder();
 }
@@ -32,7 +34,7 @@ class CreateStoresBuilder extends State<CreateStoresSection> {
       EasyLoading.showError("La imagen del proyecto no puede estar vacía");
       return;
     }
-    String projectId = await FirebaseFS.getProjectIdForProjectManager(uid);
+    String projectId = widget.projectId;
 
     String storeId = await FirebaseFS.generateStore(
         nameController.text, descriptionController.text, projectId);

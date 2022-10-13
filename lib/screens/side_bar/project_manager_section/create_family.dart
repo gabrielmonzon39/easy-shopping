@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -19,18 +18,13 @@ class CreateFamilySection extends StatefulWidget {
 class CreateFamilyBuilder extends State<CreateFamilySection> {
   final addressController = TextEditingController();
   final quantityController = TextEditingController();
-  UploadTask? task;
-  File? file;
 
   String generatedToken = '';
 
   void cleanData() {
     addressController.text = "";
     quantityController.text = "";
-    setState(() {
-      file = null;
-      task = null;
-    });
+    setState(() {});
   }
 
   Future<void> generateToken() async {
