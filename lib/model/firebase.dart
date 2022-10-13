@@ -169,6 +169,20 @@ class FirebaseFS {
     return "0";
   }
 
+  static Stream<QuerySnapshot<Object?>> getProjectStores(
+      String projectId, String? uid) {
+    FirebaseFirestore instance = FirebaseFirestore.instance;
+    try {
+      return instance
+          .collection('stores')
+          .where('project_id', isEqualTo: projectId)
+          .snapshots();
+    } catch (e) {
+      print(e.toString());
+    }
+    throw Exception("Error");
+  }
+
   static Future<DocumentSnapshot?> getStoreDetails(String storeId) async {
     FirebaseFirestore instance = FirebaseFirestore.instance;
     try {
@@ -442,20 +456,62 @@ class FirebaseFS {
     return token.id;
   }
 
+  static Future<String> generateDeliveryManToken(String projectId) async {
+    var token = await FirebaseFirestore.instance.collection('tokens').add({
+      'project_id': projectId,
+      'role': 'delivery_man',
+      'remaining': 1,
+    });
+    return token.id;
+  }
+
+  static Future<String> generateUsersToken(
+      String address, int quantity, String projectId) async {
+    var homeId = await FirebaseFirestore.instance.collection('homes').add({
+      'address': address,
+      'project_id': projectId,
+    });
+
+    var token = await FirebaseFirestore.instance.collection('tokens').add({
+      'home_id': homeId.id,
+      'role': 'user',
+      'remaining': quantity,
+    });
+    return token.id;
+  }
+
+  static Future<String> generateStoreManagerToken(String storeId) async {
+    var token = await FirebaseFirestore.instance.collection('tokens').add({
+      'store_id': storeId,
+      'role': 'store_manager',
+      'remaining': 1,
+    });
+    return token.id;
+  }
+
   static Future<void> generateProject(String projectName) async {
     await FirebaseFirestore.instance.collection('projects').add({
       'name': projectName,
     });
   }
 
-  static Future<void> generateStore(String storeName, String storeDescription,
-      String storeColor, String projectId) async {
-    await FirebaseFirestore.instance.collection('stores').add({
+  static Future<String> generateStore(
+      String storeName, String storeDescription, String projectId) async {
+    DocumentReference docRef =
+        await FirebaseFirestore.instance.collection('stores').add({
       'name': storeName,
       'description': storeDescription,
-      'color': storeColor,
       'project_id': projectId,
     });
+
+    return docRef.id;
+  }
+
+  static Future<void> setStoreImage(String storeId, String image) async {
+    await FirebaseFirestore.instance
+        .collection('stores')
+        .doc(storeId)
+        .update({'image': image});
   }
 
   static bool invalidParam(String param) {
