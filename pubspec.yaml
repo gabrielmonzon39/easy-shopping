@@ -47,6 +47,9 @@ dependencies:
   flutter_easyloading: ^3.0.3
   shared_preferences: ^2.0.15
   month_picker_dialog: ^0.4.0
+  charts_flutter: ^0.12.0
+  fl_chart: ^0.36.1
+  syncfusion_flutter_charts: ^19.1.54
 
   # for getting date
   intl: ^0.17.0
