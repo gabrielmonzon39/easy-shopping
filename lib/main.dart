@@ -1,4 +1,4 @@
-// ignore_for_file: must_call_super
+// ignore_for_file: must_call_super, avoid_print
 
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
@@ -16,9 +16,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   GoogleSignInProvider.firebaseApp = await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(_messageHandler);
   initEasyLoading();
   myShoppingCart = ShoppingCart();
   runApp(const MyApp());
+}
+
+Future<void> _messageHandler(RemoteMessage message) async {
+  print('background message ${message.notification!.body}');
 }
 
 void initEasyLoading() {
@@ -68,11 +73,22 @@ class MyAppStateLess extends State<MyApp> {
   void initState() {
     getData();
     FirebaseMessaging.onMessage.listen((RemoteMessage event) {
-      print("message recieved");
-      print(event.notification!.body);
-    });
-    FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      print('Message clicked!');
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text("Notificación"),
+              content: Text(event.notification!.body!),
+              actions: [
+                TextButton(
+                  child: const Text("Ok"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            );
+          });
     });
   }
 
