@@ -1,4 +1,4 @@
-// ignore_for_file: empty_catches, must_be_immutable
+// ignore_for_file: empty_catches, must_be_immutable, use_build_context_synchronously
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_shopping/constants.dart';
@@ -46,14 +46,14 @@ class IncomeBuilder extends State<Income> {
   List<ColumnSeries<Data, String>> _getRoundedColumnSeries() {
     data.add(Data(
         cantidad: money[0].toDouble(),
-        fecha: "${returnMonth(datePrevious!.month)} ${datePrevious?.year}"));
+        fecha:
+            "${returnMonth(datePreviousPrevious!.month)}\n${datePreviousPrevious?.year}"));
     data.add(Data(
         cantidad: money[1].toDouble(),
-        fecha:
-            "${returnMonth(datePreviousPrevious!.month)} ${datePreviousPrevious?.year}"));
+        fecha: "${returnMonth(datePrevious!.month)}\n${datePrevious?.year}"));
     data.add(Data(
         cantidad: money[2].toDouble(),
-        fecha: "${returnMonth(selectedDate!.month)} ${selectedDate?.year}"));
+        fecha: "${returnMonth(selectedDate!.month)}\n${selectedDate?.year}"));
     final List<Data> chartData = data;
     return <ColumnSeries<Data, String>>[
       ColumnSeries<Data, String>(
@@ -78,13 +78,13 @@ class IncomeBuilder extends State<Income> {
         title: ChartTitle(text: ''),
         primaryXAxis: CategoryAxis(
           labelStyle: const TextStyle(color: Colors.white),
-          axisLine: const AxisLine(width: 0),
+          axisLine: const AxisLine(width: 10),
           labelPosition: ChartDataLabelPosition.inside,
           majorTickLines: const MajorTickLines(width: 0),
           majorGridLines: const MajorGridLines(width: 0),
         ),
-        primaryYAxis:
-            NumericAxis(isVisible: false, minimum: 0, maximum: maxValue + 50),
+        primaryYAxis: NumericAxis(
+            isVisible: true, minimum: 0, maximum: getMaxMoney() + 20),
         series: _getRoundedColumnSeries(),
         tooltipBehavior: TooltipBehavior(
             enable: true,
@@ -108,16 +108,24 @@ class IncomeBuilder extends State<Income> {
     return months[month]!;
   }
 
+  int getMaxMoney() {
+    int max = -1;
+    for (int m in money) {
+      max = m > max ? m : max;
+    }
+    return max;
+  }
+
   int getM() {
     int xy = 0;
     int x = 0, y = 0;
     int x2 = 0;
     int n = money.length;
     for (int i = 0; i < money.length; i++) {
-      xy += (i + 1) * money[i];
-      x += (i + 1);
+      xy += i * money[i];
+      x += i;
       y += money[i];
-      x2 += (i + 1) * (i + 1);
+      x2 += i * i;
     }
     return (n * xy - x * y) ~/ (n * x2 - x * x);
   }
@@ -126,7 +134,7 @@ class IncomeBuilder extends State<Income> {
     int x = 0, y = 0;
     int n = money.length;
     for (int i = 0; i < money.length; i++) {
-      x += (i + 1);
+      x += i;
       y += money[i];
     }
     return (y - getM() * x) ~/ n;
@@ -177,30 +185,31 @@ class IncomeBuilder extends State<Income> {
       }
     }
 
-    print(
+    /*print(
         "Mes: ${returnMonth(selectedDate!.month)}, Año: ${selectedDate?.year} -> ${money[2]}");
     print(
         "Mes: ${returnMonth(datePrevious!.month)}, Año: ${datePrevious?.year} -> ${money[1]}");
     print(
-        "Mes: ${returnMonth(datePreviousPrevious!.month)}, Año: ${datePreviousPrevious?.year} -> ${money[0]}");
+        "Mes: ${returnMonth(datePreviousPrevious!.month)}, Año: ${datePreviousPrevious?.year} -> ${money[0]}");*/
 
     int prediction = getM() * (money.length + 1) + getB();
+    prediction = prediction < 0 ? 0 : prediction;
 
-    result = Container(
-      decoration: const BoxDecoration(
-        color: ternaryColor,
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-      ),
-      child: Column(
-        children: [
-          printChart(),
-          const SizedBox(
-            height: 20,
-          ),
-          Text(
-              "El próximo mes se espera un ingreso de $prediction quetzales en ventas."),
-        ],
-      ),
+    result = Column(
+      children: [
+        const SizedBox(
+          height: 30,
+        ),
+        printChart(),
+        const SizedBox(
+          height: 30,
+        ),
+        Text(
+          "El próximo mes se espera un ingreso de $prediction quetzales en ventas.",
+          style: Theme.of(context).textTheme.headline6,
+          textAlign: TextAlign.center,
+        ),
+      ],
     );
 
     return true;
@@ -209,11 +218,13 @@ class IncomeBuilder extends State<Income> {
   @override
   Widget build(BuildContext context) {
     list = [];
+    money = [0, 0, 0];
     products.clear();
+    data.clear();
     return Scaffold(
         appBar: AppBar(
           backgroundColor: secondaryColor,
-          title: const Text("Productos más vendidos"),
+          title: const Text("Ganancias al mes"),
         ),
         body: Container(
           width: double.infinity,
@@ -261,12 +272,13 @@ class IncomeBuilder extends State<Income> {
                                 if (date != null) {
                                   setState(() {
                                     go = true;
-                                    money = [0, 0, 0];
                                     selectedDate = date;
                                     datePrevious = DateTime(
                                         date.year, date.month - 1, date.day);
                                     datePreviousPrevious = DateTime(
                                         date.year, date.month - 2, date.day);
+                                    print(
+                                        "${selectedDate!.month} -> ${datePrevious!.month} -> ${datePreviousPrevious!.month}");
                                   });
                                 }
                               });
