@@ -66,6 +66,8 @@ class CategoryItemCardWidget extends StatelessWidget {
         return Icons.monetization_on;
       case "4":
         return Icons.info;
+      case "5":
+        return Icons.local_offer;
       default:
         return Icons.close;
     }

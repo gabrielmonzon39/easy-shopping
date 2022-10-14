@@ -20,6 +20,10 @@ var categoryItemsDemo = [
     icon: "3",
   ),
   CategoryItem(
+    name: "Gestionar ofertas",
+    icon: "5",
+  ),
+  CategoryItem(
     name: "Información",
     icon: "4",
   ),
@@ -71,5 +75,16 @@ var projectManagerItemsDemo = [
   CategoryItem(
     name: "Generar Delivery Man",
     icon: "1",
+  ),
+];
+
+var manageOffersItemsDemo = [
+  CategoryItem(
+    name: "Crear Oferta",
+    icon: "1",
+  ),
+  CategoryItem(
+    name: "Mis Ofertas",
+    icon: "2",
   ),
 ];
