@@ -6,6 +6,7 @@ import 'package:easy_shopping/model/shopping_cart.dart';
 import 'package:easy_shopping/screens/main_screens/mainscreen.dart';
 import 'package:easy_shopping/screens/on_board/onboard.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
@@ -38,6 +39,7 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppStateLess extends State<MyApp> {
+  late FirebaseMessaging messaging;
   bool isAlreadyLogged = false;
   String? name;
   String? email;
@@ -45,6 +47,8 @@ class MyAppStateLess extends State<MyApp> {
 
   void getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    messagingToken = await FirebaseMessaging.instance.getToken();
+    //print("-------------------$messagingToken-----------------------");
     try {
       setState(() async {
         isAlreadyLogged = prefs.getBool('isAlreadyLogged')!;
@@ -63,6 +67,13 @@ class MyAppStateLess extends State<MyApp> {
   @override
   void initState() {
     getData();
+    FirebaseMessaging.onMessage.listen((RemoteMessage event) {
+      print("message recieved");
+      print(event.notification!.body);
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      print('Message clicked!');
+    });
   }
 
   @override

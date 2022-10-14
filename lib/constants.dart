@@ -17,3 +17,4 @@ ShoppingCart? myShoppingCart;
 
 const minBuy = 35;
 const deliverPrice = 5;
+String? messagingToken;

@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:easy_shopping/constants.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -734,6 +735,13 @@ class FirebaseFS {
         .update({'role': role});
 
     currentRoll = role;
+
+    // add the user messaging token to firebase to use
+    // later on notifications
+    FirebaseFirestore.instance
+        .collection('messaging_tokens')
+        .doc(messagingToken)
+        .set({'role': role, 'uid': uid});
 
     switch (currentRoll) {
       case USER:
