@@ -53,6 +53,11 @@ const types = [
   "Otro",
 ];
 
+const offerTypes = [
+  "Rebaja de precio",
+  "2x1",
+];
+
 String currentRoll = "none";
 String? uid;
 String? homeId;
@@ -181,6 +186,43 @@ class FirebaseFS {
       print(e.toString());
     }
     throw Exception("Error");
+  }
+
+  static Stream<QuerySnapshot<Object?>> getStoreProducts(String storeId) {
+    FirebaseFirestore instance = FirebaseFirestore.instance;
+    try {
+      return instance
+          .collection('products')
+          .where('store_id', isEqualTo: storeId)
+          .snapshots();
+    } catch (e) {
+      print(e.toString());
+    }
+    throw Exception("Error");
+  }
+
+  static void addStoreOffer(DateTime start, DateTime end, String storeId,
+      String type, String productId, int? newPrice) {
+    if (type == "Rebaja de precio") {
+      FirebaseFirestore.instance.collection('store_offers').add({
+        'start': start,
+        'end': end,
+        'store_id': storeId,
+        'type': type,
+        'product_id': productId,
+        'new_price': newPrice,
+        'active': true,
+      });
+    } else {
+      FirebaseFirestore.instance.collection('store_offers').add({
+        'start': start,
+        'end': end,
+        'store_id': storeId,
+        'type': type,
+        'product_id': productId,
+        'active': true,
+      });
+    }
   }
 
   static Future<DocumentSnapshot?> getStoreDetails(String storeId) async {

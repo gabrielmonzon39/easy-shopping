@@ -4,6 +4,7 @@ import 'package:easy_shopping/screens/side_bar/store_section/add_products.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/information_section.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/products_section.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/store_sales_section.dart';
+import 'package:easy_shopping/screens/side_bar/store_section/manage_offers_section.dart';
 import 'package:easy_shopping/widgets/app_text.dart';
 import 'package:easy_shopping/widgets/category_item_dart_widget.dart';
 import 'package:flutter/material.dart';
@@ -27,9 +28,6 @@ class StoreManagerMainScreen extends StatelessWidget {
   Widget getHeader() {
     return Column(
       children: const [
-        SizedBox(
-          height: 20,
-        ),
         Center(
           child: AppText(
             text: "Menú principal",
@@ -95,26 +93,29 @@ class StoreManagerMainScreen extends StatelessWidget {
               builder: (context) => const StoreInformationSection()),
         );
         break;
+      case 5:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ManageOffersSection()),
+        );
+        break;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 680,
-      child: Column(
-        children: [
-          getHeader(),
-          ListView.builder(
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              itemCount: getStaggeredGridView(context).length,
-              itemBuilder: (context, index) {
-                i++;
-                return getStaggeredGridView(context)[i - 1];
-              })
-        ],
-      ),
+    return Column(
+      children: [
+        getHeader(),
+        ListView.builder(
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            itemCount: getStaggeredGridView(context).length,
+            itemBuilder: (context, index) {
+              i++;
+              return getStaggeredGridView(context)[i - 1];
+            })
+      ],
     );
   }
 }
