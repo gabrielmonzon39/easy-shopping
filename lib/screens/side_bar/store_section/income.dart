@@ -277,8 +277,6 @@ class IncomeBuilder extends State<Income> {
                                         date.year, date.month - 1, date.day);
                                     datePreviousPrevious = DateTime(
                                         date.year, date.month - 2, date.day);
-                                    print(
-                                        "${selectedDate!.month} -> ${datePrevious!.month} -> ${datePreviousPrevious!.month}");
                                   });
                                 }
                               });
