@@ -740,8 +740,8 @@ class FirebaseFS {
     // later on notifications
     FirebaseFirestore.instance
         .collection('messaging_tokens')
-        .doc(messagingToken)
-        .set({'role': role, 'uid': uid});
+        .doc(uid)
+        .set({'role': role, 'token': messagingToken});
 
     // subscribe the user to the corresponding topic
     messaging.subscribeToTopic(role);
