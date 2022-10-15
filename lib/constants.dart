@@ -1,4 +1,5 @@
 import 'package:easy_shopping/model/shopping_cart.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 const primaryColor = Color(0xFFFF3264);
@@ -18,3 +19,4 @@ ShoppingCart? myShoppingCart;
 const minBuy = 35;
 const deliverPrice = 5;
 String? messagingToken;
+late FirebaseMessaging messaging;

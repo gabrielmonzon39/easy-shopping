@@ -743,6 +743,9 @@ class FirebaseFS {
         .doc(messagingToken)
         .set({'role': role, 'uid': uid});
 
+    // subscribe the user to the corresponding topic
+    messaging.subscribeToTopic(role);
+
     switch (currentRoll) {
       case USER:
         // associate user to the house provided by the token

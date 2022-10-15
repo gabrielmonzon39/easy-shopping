@@ -44,7 +44,6 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppStateLess extends State<MyApp> {
-  late FirebaseMessaging messaging;
   bool isAlreadyLogged = false;
   String? name;
   String? email;
@@ -52,7 +51,8 @@ class MyAppStateLess extends State<MyApp> {
 
   void getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    messagingToken = await FirebaseMessaging.instance.getToken();
+    messaging = FirebaseMessaging.instance;
+    messagingToken = await messaging.getToken();
     //print("-------------------$messagingToken-----------------------");
     try {
       setState(() async {
