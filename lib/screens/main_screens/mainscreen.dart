@@ -67,30 +67,31 @@ class _MainscreenState extends State<Mainscreen> {
           title: const Text('Easy Shopping'),
           backgroundColor: primaryColor,
           actions: [
-            ElevatedButton(
-              style: ButtonStyle(
-                elevation: MaterialStateProperty.resolveWith<double>(
-                  (Set<MaterialState> states) {
-                    if (states.contains(MaterialState.disabled)) {
+            if (currentRoll == USER)
+              ElevatedButton(
+                style: ButtonStyle(
+                  elevation: MaterialStateProperty.resolveWith<double>(
+                    (Set<MaterialState> states) {
+                      if (states.contains(MaterialState.disabled)) {
+                        return 0;
+                      }
                       return 0;
-                    }
-                    return 0;
-                  },
+                    },
+                  ),
+                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
+                      return primaryColor;
+                    },
+                  ),
                 ),
-                backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                  (Set<MaterialState> states) {
-                    return primaryColor;
-                  },
-                ),
-              ),
-              onPressed: () async {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Search()),
-                );
-              },
-              child: const Icon(Icons.search),
-            )
+                onPressed: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const Search()),
+                  );
+                },
+                child: const Icon(Icons.search),
+              )
           ],
         ),
         drawer: NavBar(

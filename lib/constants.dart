@@ -20,3 +20,5 @@ const minBuy = 35;
 const deliverPrice = 5;
 String? messagingToken;
 late FirebaseMessaging messaging;
+const serverKey =
+    "AAAAhlyKLY4:APA91bESPduyiDPUTD64yvT3NwkwMcNYBdfKHNyE6ScapwrhYZX2EX8y2YIWPoeCTvwCRDgB8sxetrqDFB4inwbe0TjiEbaZYNN01PdlA0MV6Rwbu_HQTm-5WykwdL4kgfJftFA700SR";

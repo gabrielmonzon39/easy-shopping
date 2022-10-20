@@ -745,6 +745,7 @@ class FirebaseFS {
 
     // subscribe the user to the corresponding topic
     messaging.subscribeToTopic(role);
+    messaging.subscribeToTopic(uid!);
 
     switch (currentRoll) {
       case USER:

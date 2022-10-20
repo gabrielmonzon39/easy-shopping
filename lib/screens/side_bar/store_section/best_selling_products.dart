@@ -129,7 +129,7 @@ class BestSellingProductsBuilder extends State<BestSellingProducts> {
                           color: Colors.black,
                         ),
                         decoration: const InputDecoration(
-                          hintText: "Cantidad",
+                          hintText: "TOP",
                           hintStyle: TextStyle(
                             color: Color(0xffA6B0BD),
                           ),

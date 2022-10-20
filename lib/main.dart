@@ -2,6 +2,7 @@
 
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
+import 'package:easy_shopping/model/notifications.dart';
 import 'package:easy_shopping/model/shopping_cart.dart';
 import 'package:easy_shopping/screens/main_screens/mainscreen.dart';
 import 'package:easy_shopping/screens/on_board/onboard.dart';
@@ -53,7 +54,7 @@ class MyAppStateLess extends State<MyApp> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     messaging = FirebaseMessaging.instance;
     messagingToken = await messaging.getToken();
-    //print("-------------------$messagingToken-----------------------");
+    //print("-------------------FUNCOOOOOOOOO-----------------------");
     try {
       setState(() async {
         isAlreadyLogged = prefs.getBool('isAlreadyLogged')!;
@@ -73,7 +74,7 @@ class MyAppStateLess extends State<MyApp> {
   void initState() {
     getData();
     FirebaseMessaging.onMessage.listen((RemoteMessage event) {
-      showDialog(
+      /*showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
@@ -88,7 +89,10 @@ class MyAppStateLess extends State<MyApp> {
                 )
               ],
             );
-          });
+          });*/
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      print('Message clicked!');
     });
   }
 

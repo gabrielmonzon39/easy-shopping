@@ -133,6 +133,7 @@ class OrdersToDeliverBuilder extends State<OrdersToDeliver> {
                                       deliveryManId: deliveryManId,
                                       date: document.get('date'),
                                       state: document2.get('state'),
+                                      userId: document.get('user_id'),
                                     )),
                           ).then((value) {
                             setState(() {

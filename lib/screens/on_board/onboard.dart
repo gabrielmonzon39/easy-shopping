@@ -147,6 +147,7 @@ class _OnboardState extends State<Onboard> with SingleTickerProviderStateMixin {
 
                 // borrar
                 messaging.subscribeToTopic(currentRoll);
+                messaging.subscribeToTopic(uid!);
 
                 // ignore: use_build_context_synchronously
                 Navigator.push(

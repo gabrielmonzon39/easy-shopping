@@ -191,31 +191,6 @@ class BuyProductBuilder extends State<BuyProduct> {
                     const SizedBox(
                       height: 20,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text("A domicilio:",
-                            style:
-                                TextStyle(fontSize: 18, color: Colors.white)),
-                        Checkbox(
-                          value: selected,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              selected = value!;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                    if (selected)
-                      const Center(
-                        child: Text("Se le agregará Q$deliverPrice de envío",
-                            style:
-                                TextStyle(fontSize: 18, color: Colors.white)),
-                      ),
-                    const SizedBox(
-                      height: 20,
-                    ),
                     Center(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
