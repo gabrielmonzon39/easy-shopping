@@ -23,11 +23,11 @@ class SearchBuilder extends State<Search> {
 
   List<String> stores = [];
 
-  bool selected = true;
+  bool selected = false;
   String selectedOption = types[types.length - 1];
 
   SearchBuilder() {
-    currentMaxView = defaultMaxView;
+    currentMaxView = 0;
   }
 
   bool evalConditions(QueryDocumentSnapshot<Object?>? document) {
@@ -39,7 +39,7 @@ class SearchBuilder extends State<Search> {
     if (count > int.parse(maxViewController.text)) return false;
     //print(count);
 
-    if (selected) {
+    if (!selected) {
       return nameCondition(document);
     } else {
       String fireBaseType = typesFB[types.indexOf(selectedOption)];
@@ -75,17 +75,87 @@ class SearchBuilder extends State<Search> {
 
   @override
   Widget build(BuildContext context) {
-    maxViewController.text = currentMaxView.toString();
+    maxViewController.text = defaultMaxView.toString();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Búsqueda de productos'),
         backgroundColor: primaryColor,
+        actions: [
+          Expanded(
+            child: TextField(
+              keyboardType: TextInputType.text,
+              obscureText: false,
+              controller: nameController,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+                color: Colors.black,
+              ),
+              decoration: const InputDecoration(
+                hintText: "Nombre del producto",
+                hintStyle: TextStyle(
+                  color: Color(0xffA6B0BD),
+                ),
+                fillColor: Colors.white,
+                filled: true,
+                prefixIcon: Icon(
+                  Icons.description,
+                  color: Colors.black,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(50),
+                  ),
+                  borderSide: BorderSide(color: secondaryColor),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(50),
+                  ),
+                  borderSide: BorderSide(color: secondaryColor),
+                ),
+              ),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              if (first) {
+                await getStores();
+              }
+              first = false;
+              setState(() {
+                if (maxViewController.text == "") {
+                  maxViewController.text = defaultMaxView.toString();
+                }
+                currentMaxView = int.parse(maxViewController.text);
+                count = 0;
+              });
+            },
+            style: ButtonStyle(
+              elevation: MaterialStateProperty.resolveWith<double>(
+                (Set<MaterialState> states) {
+                  if (states.contains(MaterialState.disabled)) {
+                    return 0;
+                  }
+                  return 0;
+                },
+              ),
+              backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                (Set<MaterialState> states) {
+                  return primaryColor;
+                },
+              ),
+            ),
+            child: const Icon(
+              Icons.search,
+            ),
+          ),
+        ],
       ),
       body: SafeArea(
         child: Container(
           width: double.infinity,
           margin:
-              const EdgeInsets.only(top: 15, bottom: 15, left: 15, right: 15),
+              const EdgeInsets.only(top: 0, bottom: 15, left: 15, right: 15),
           padding: const EdgeInsets.all(defaultPadding),
           decoration: const BoxDecoration(
             color: Colors.white,
@@ -97,164 +167,124 @@ class SearchBuilder extends State<Search> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Expanded(
-                          child: TextField(
-                            keyboardType: TextInputType.text,
-                            obscureText: false,
-                            controller: nameController,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black,
-                            ),
-                            decoration: const InputDecoration(
-                              hintText: "Nombre del producto",
-                              hintStyle: TextStyle(
-                                color: Color(0xffA6B0BD),
-                              ),
-                              fillColor: Colors.white,
-                              filled: true,
-                              prefixIcon: Icon(
-                                Icons.description,
-                                color: Colors.black,
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(200),
-                                ),
-                                borderSide: BorderSide(color: secondaryColor),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(200),
-                                ),
-                                borderSide: BorderSide(color: secondaryColor),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Center(
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              if (first) {
-                                await getStores();
-                              }
-                              first = false;
-                              setState(() {
-                                if (maxViewController.text == "") {
-                                  maxViewController.text =
-                                      defaultMaxView.toString();
-                                }
-                                currentMaxView =
-                                    int.parse(maxViewController.text);
-                                count = 0;
-                              });
-                            },
-                            style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStateProperty.resolveWith<Color>(
-                                (Set<MaterialState> states) {
-                                  return Colors.green;
-                                },
-                              ),
-                            ),
-                            child: const Icon(
-                              Icons.search,
-                              size: 30,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        const Text("Vista máxima: ",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black,
-                            )),
-                        Expanded(
-                          child: TextField(
-                            keyboardType: TextInputType.number,
-                            obscureText: false,
-                            controller: maxViewController,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black,
-                            ),
-                            decoration: const InputDecoration(
-                              hintStyle: TextStyle(
-                                color: Color(0xffA6B0BD),
-                              ),
-                              fillColor: Colors.white,
-                              filled: true,
-                              prefixIcon: Icon(
-                                Icons.format_list_bulleted,
-                                color: Colors.black,
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(200),
-                                ),
-                                borderSide: BorderSide(color: secondaryColor),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(200),
-                                ),
-                                borderSide: BorderSide(color: secondaryColor),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text("Todo:",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black,
-                            )),
-                        Checkbox(
-                          value: selected,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              selected = value!;
-                            });
-                          },
-                        ),
                         if (!selected)
-                          DropdownButton(
-                            icon: const Icon(Icons.keyboard_arrow_down),
-                            value: selectedOption,
-                            iconEnabledColor: secondaryColor,
-                            // Array list of items
-                            items: types.map((String items) {
-                              return DropdownMenuItem(
-                                value: items,
-                                child: Text(items),
-                              );
-                            }).toList(),
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                selectedOption = newValue!;
-                              });
-                            },
-                          )
+                          SizedBox(
+                            width: 200,
+                            child: TextField(
+                              keyboardType: TextInputType.number,
+                              obscureText: false,
+                              controller: maxViewController,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black,
+                              ),
+                              decoration: const InputDecoration(
+                                hintText: "Vista máxima",
+                                hintStyle: TextStyle(
+                                  color: Color(0xffA6B0BD),
+                                ),
+                                fillColor: Colors.white,
+                                filled: true,
+                                prefixIcon: Icon(
+                                  Icons.format_list_bulleted,
+                                  color: Colors.black,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(200),
+                                  ),
+                                  borderSide: BorderSide(color: secondaryColor),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(200),
+                                  ),
+                                  borderSide: BorderSide(color: secondaryColor),
+                                ),
+                              ),
+                            ),
+                          ),
+                        if (selected)
+                          Expanded(
+                            child: TextField(
+                              keyboardType: TextInputType.number,
+                              obscureText: false,
+                              controller: maxViewController,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black,
+                              ),
+                              decoration: const InputDecoration(
+                                hintText: "Vista máxima",
+                                hintStyle: TextStyle(
+                                  color: Color(0xffA6B0BD),
+                                ),
+                                fillColor: Colors.white,
+                                filled: true,
+                                prefixIcon: Icon(
+                                  Icons.format_list_bulleted,
+                                  color: Colors.black,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(200),
+                                  ),
+                                  borderSide: BorderSide(color: secondaryColor),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(200),
+                                  ),
+                                  borderSide: BorderSide(color: secondaryColor),
+                                ),
+                              ),
+                            ),
+                          ),
+                        Row(
+                          children: [
+                            if (selected)
+                              const SizedBox(
+                                width: 20,
+                              ),
+                            if (!selected)
+                              const Text("Filtro",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.black,
+                                  )),
+                            Checkbox(
+                              value: selected,
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  selected = value!;
+                                });
+                              },
+                            ),
+                            if (selected)
+                              DropdownButton(
+                                icon: const Icon(Icons.keyboard_arrow_down),
+                                value: selectedOption,
+                                iconEnabledColor: secondaryColor,
+                                // Array list of items
+                                items: types.map((String items) {
+                                  return DropdownMenuItem(
+                                    value: items,
+                                    child: Text(items),
+                                  );
+                                }).toList(),
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    selectedOption = newValue!;
+                                  });
+                                },
+                              )
+                          ],
+                        )
                       ],
                     ),
                     const SizedBox(
