@@ -129,7 +129,7 @@ class _NavBar extends State<NavBar> {
             if (OptionConditions.pendingOrder())
               ListTile(
                 leading: const Icon(Icons.timer),
-                title: const Text('Pedidos pendientes por entregar'),
+                title: const Text('Pedidos pendientes de entrega'),
                 onTap: () {
                   Navigator.push(
                       context,

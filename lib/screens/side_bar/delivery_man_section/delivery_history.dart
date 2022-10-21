@@ -91,6 +91,7 @@ class DeliveryHistoryBuilder extends State<DeliveryHistory> {
                 DateTime.parse(endPick).add(const Duration(days: 1)))) {
           await orderByUid(document);
           i++;
+          String buyerName = await FirebaseFS.getName(document.get('user_id'));
           if (valid) {
             list.add(Column(
               children: [
@@ -125,6 +126,14 @@ class DeliveryHistoryBuilder extends State<DeliveryHistory> {
                       ),
                       child: Column(
                         children: [
+                          Text(
+                            buyerName,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
                           Text(
                             "Compra : ${document.id}",
                             style: const TextStyle(

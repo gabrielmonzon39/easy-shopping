@@ -150,7 +150,6 @@ class OrdersToDeliverViewBuilder extends State<OrdersToDeliverView> {
 
   @override
   Widget build(BuildContext context) {
-    listTemp = [];
     if (state == PREPARING) stateText = "Preparando";
     if (state == ONTHEWAY) stateText = "En camino";
     if (state == SERVED) stateText = "Finalizado";
@@ -219,7 +218,10 @@ class OrdersToDeliverViewBuilder extends State<OrdersToDeliverView> {
                                 Navigator.pop(context, true);
                                 return;
                               }
-                              setState(() {});
+                              setState(() {
+                                storeProducts = {};
+                                listTemp = [];
+                              });
                             },
                             child: Container(
                               color: Colors.white,

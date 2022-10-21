@@ -397,6 +397,7 @@ class FirebaseFS {
       String storeId, int orderId, int deliveryProcessId) async {
     if (products.isEmpty) return;
     String now = DateFormat("h:mm a  dd-MM-yyyy").format(DateTime.now());
+    String name = await FirebaseFS.getName(uid!);
     try {
       ////////////////  MAKE THE SALE
       FirebaseFirestore.instance.collection('sales').add({
@@ -406,6 +407,7 @@ class FirebaseFS {
         'user_id': uid,
         'store_id': storeId,
         'order_id': orderId.toString(),
+        'name': name,
       });
     } catch (e) {
       print(e.toString());
@@ -443,17 +445,6 @@ class FirebaseFS {
       ////////////////  MAKE THE SALE(S)
       prepareSales(products, orderId, deliveryProcessId);
 
-      ////////////////  MAKE THE ORDER
-      DocumentReference orderDocument = FirebaseFirestore.instance
-          .collection('orders')
-          .doc(orderId.toString());
-      orderDocument.set({
-        'delivery_processId': deliveryProcessId,
-        'date': now,
-        'products': products,
-        'user_id': uid,
-      });
-
       //////////////// MAKE THE DELIVERY PROCESS
       DocumentReference deliveryProcessDocument = FirebaseFirestore.instance
           .collection('delivery_processes')
@@ -464,6 +455,7 @@ class FirebaseFS {
         'state': (deliver) ? PREPARING : SERVED,
       });
 
+      int totalOrder = 0;
       //////////////// UPDATE THE QUANTITY AVAILABLE FOR EACH PRODUCT
       for (Map<dynamic, dynamic> element in products) {
         DocumentSnapshot productDetail = await FirebaseFirestore.instance
@@ -472,6 +464,8 @@ class FirebaseFS {
             .get();
         int total = productDetail.get('quantity');
         int bought = productDetail.get('bought');
+        totalOrder += int.parse(element['buy_quantity'].toString()) *
+            int.parse(element['price'].toString());
         total -= int.parse(element['buy_quantity'].toString());
         bought += int.parse(element['buy_quantity'].toString());
         FirebaseFirestore.instance
@@ -479,6 +473,19 @@ class FirebaseFS {
             .doc(element['product_id'])
             .update({'quantity': total, 'bought': bought});
       }
+
+      ////////////////  MAKE THE ORDER
+      DocumentReference orderDocument = FirebaseFirestore.instance
+          .collection('orders')
+          .doc(orderId.toString());
+      orderDocument.set({
+        'delivery_processId': deliveryProcessId,
+        'date': now,
+        'products': products,
+        'user_id': uid,
+        'total': totalOrder,
+      });
+
       return true;
     } catch (e) {
       print(e.toString());
@@ -602,7 +609,7 @@ class FirebaseFS {
         continue;
       }
     }
-    return [NONE];
+    return [NONE, SERVED];
   }
 
   static Future<List<String>> getDeliveryManInfo(String deliveryManId) async {

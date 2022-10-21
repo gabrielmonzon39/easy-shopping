@@ -170,6 +170,14 @@ class PendingOrderBuilder extends State<PendingOrderSection> {
                                 color: Colors.white,
                               ),
                             ),
+                            Text(
+                              "Total : Q${document.get('total')}.00",
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
                           ],
                         )),
                   ),

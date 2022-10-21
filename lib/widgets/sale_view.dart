@@ -12,6 +12,7 @@ class SaleView extends StatelessWidget {
   String? deliverManIdName;
   String? deliverManIdEmail;
   String? state;
+  String? buyer;
   int totalSale = 0;
   List<dynamic>? products;
   List<Map<String, dynamic>> mapProducts = [];
@@ -26,6 +27,7 @@ class SaleView extends StatelessWidget {
     @required this.deliverManIdEmail,
     @required this.state,
     @required this.orderId,
+    @required this.buyer,
   }) : super(key: key);
 
   void parse() {
@@ -195,7 +197,19 @@ class SaleView extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(
-                  height: 40,
+                  height: 25,
+                ),
+                Text(
+                  'Comprador: $buyer',
+                  textAlign: TextAlign.left,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                    fontSize: 22,
+                  ),
+                ),
+                const SizedBox(
+                  height: 25,
                 ),
                 Text(
                   'Fecha: $date',

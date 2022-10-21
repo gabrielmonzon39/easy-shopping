@@ -114,6 +114,8 @@ class ActiveOrdersBuilder extends State<ActiveOrders> {
                   await FirebaseFS.getHomeOf(document.get('user_id')));
               String name = await FirebaseFS.getName(document.get('user_id'));
               available = true;
+              String buyerName =
+                  await FirebaseFS.getName(document.get('user_id'));
               list.add(Column(
                 children: [
                   SizedBox(
@@ -148,6 +150,14 @@ class ActiveOrdersBuilder extends State<ActiveOrders> {
                         ),
                         child: Column(
                           children: [
+                            Text(
+                              buyerName,
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
                             Text(
                               "Compra : ${document.id}",
                               style: const TextStyle(

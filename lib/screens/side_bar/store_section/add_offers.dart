@@ -19,7 +19,7 @@ class AddOffersBuilder extends State<AddOffersSection> {
   final priceController = TextEditingController();
   String? selectedProductId;
   int? selectedProductPrice;
-  Map<String, int> products_prices = {};
+  Map<String, int> productPrices = {};
   String selected = offerTypes[0];
   UploadTask? task;
   File? file;
@@ -149,7 +149,7 @@ class AddOffersBuilder extends State<AddOffersSection> {
                                         // Array list of items
                                         items:
                                             snapshot.data?.docs.map((product) {
-                                          products_prices.addEntries([
+                                          productPrices.addEntries([
                                             MapEntry(product.id,
                                                 product.get("price").toInt())
                                           ]);
@@ -165,7 +165,7 @@ class AddOffersBuilder extends State<AddOffersSection> {
                                             () {
                                               selectedProductId = value!;
                                               selectedProductPrice =
-                                                  products_prices[
+                                                  productPrices[
                                                       selectedProductId!];
                                             },
                                           );

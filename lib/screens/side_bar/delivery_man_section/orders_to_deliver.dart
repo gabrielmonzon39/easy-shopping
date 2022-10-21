@@ -116,6 +116,8 @@ class OrdersToDeliverBuilder extends State<OrdersToDeliver> {
                   await FirebaseFS.getHomeOf(document.get('user_id')));
               String name = await FirebaseFS.getName(document.get('user_id'));
               available = true;
+              String buyerName =
+                  await FirebaseFS.getName(document.get('user_id'));
               list.add(Column(
                 children: [
                   SizedBox(
@@ -151,6 +153,14 @@ class OrdersToDeliverBuilder extends State<OrdersToDeliver> {
                         ),
                         child: Column(
                           children: [
+                            Text(
+                              buyerName,
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
                             Text(
                               "Compra : ${document.id}",
                               style: const TextStyle(
