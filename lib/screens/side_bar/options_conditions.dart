@@ -75,6 +75,10 @@ class OptionConditions {
     return currentRoll == STORE_MANAGER;
   }
 
+  static bool settings() {
+    return currentRoll == STORE_MANAGER;
+  }
+
   /////////////////    GENERAL OPTIONS    /////////////////
 
   static bool notifications() {

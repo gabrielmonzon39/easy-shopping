@@ -164,7 +164,6 @@ class FirebaseFS {
   static Future<String> getProjectIdForProjectManager(String? uid) async {
     FirebaseFirestore instance = FirebaseFirestore.instance;
     DocumentSnapshot? documentDetails;
-    String? homeId;
     String? projectId;
     try {
       documentDetails = await instance.collection('users').doc(uid).get();
@@ -573,6 +572,21 @@ class FirebaseFS {
         .collection('stores')
         .doc(storeId)
         .update({'image': image});
+  }
+
+  static Future<void> setStoreName(String storeId, String name) async {
+    await FirebaseFirestore.instance
+        .collection('stores')
+        .doc(storeId)
+        .update({'name': name});
+  }
+
+  static Future<void> setStoreDescription(
+      String storeId, String description) async {
+    await FirebaseFirestore.instance
+        .collection('stores')
+        .doc(storeId)
+        .update({'description': description});
   }
 
   static bool invalidParam(String param) {
