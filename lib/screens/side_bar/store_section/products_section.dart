@@ -50,7 +50,7 @@ class ProductsSectionBuilder extends State<ProductsSection> {
         body: Container(
             width: double.infinity,
             margin:
-                const EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
+                const EdgeInsets.only(top: 20, bottom: 20, left: 0, right: 0),
             padding: const EdgeInsets.all(defaultPadding),
             decoration: const BoxDecoration(
               color: Colors.white,

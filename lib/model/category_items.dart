@@ -43,7 +43,7 @@ var deliveryManItemsDemo = [
     icon: "3",
   ),
   CategoryItem(
-    name: "Notificaciones",
+    name: "Noticias",
     icon: "4",
   ),
 ];

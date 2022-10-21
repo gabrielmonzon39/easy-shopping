@@ -317,11 +317,11 @@ class _NavBar extends State<NavBar> {
             /////////////////    GENERAL OPTIONS    /////////////////
             /////////////////////////////////////////////////////////
 
-            /// **************  Notificaciones  **************
+            /// **************  Noticias  **************
             if (OptionConditions.notifications())
               ListTile(
                 leading: const Icon(Icons.notifications),
-                title: const Text('Notificaciones'),
+                title: const Text('Noticias'),
                 onTap: () {},
               ),
             if (OptionConditions.notifications()) const Divider(),
