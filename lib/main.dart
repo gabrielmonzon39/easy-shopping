@@ -1,6 +1,7 @@
 // ignore_for_file: must_call_super, avoid_print
 
 import 'package:easy_shopping/constants.dart';
+import 'package:easy_shopping/model/colors.dart';
 import 'package:easy_shopping/model/firebase.dart';
 import 'package:easy_shopping/model/notifications.dart';
 import 'package:easy_shopping/model/shopping_cart.dart';

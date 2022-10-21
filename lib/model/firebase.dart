@@ -101,6 +101,30 @@ class FirebaseFS {
     return "0";
   }
 
+  static Future<int> getPrimaryColor(String projectId) async {
+    DocumentSnapshot? colorsDetail = await FirebaseFirestore.instance
+        .collection('colors')
+        .doc(projectId)
+        .get();
+    return colorsDetail.get('primary');
+  }
+
+  static Future<int> getSecondaryColor(String projectId) async {
+    DocumentSnapshot? colorsDetail = await FirebaseFirestore.instance
+        .collection('colors')
+        .doc(projectId)
+        .get();
+    return colorsDetail.get('secondary');
+  }
+
+  static Future<int> getTernaryColor(String projectId) async {
+    DocumentSnapshot? colorsDetail = await FirebaseFirestore.instance
+        .collection('colors')
+        .doc(projectId)
+        .get();
+    return colorsDetail.get('ternary');
+  }
+
   static Future<void> assingDeliverMan(
       String deliveryProcessId, String deliveryManId) async {
     FirebaseFirestore.instance
@@ -159,7 +183,36 @@ class FirebaseFS {
     } catch (e) {
       print(e.toString());
     }
-    return "0";
+    return NONE;
+  }
+
+  static Future<String> getProjectIdForStoreManager(String uid) async {
+    FirebaseFirestore instance = FirebaseFirestore.instance;
+    DocumentSnapshot? documentDetails;
+    try {
+      String storeId = await FirebaseFS.getStoreId(uid);
+      documentDetails = await instance.collection('stores').doc(storeId).get();
+      return documentDetails.get('project_id');
+    } catch (e) {
+      print(e.toString());
+    }
+    return NONE;
+  }
+
+  static Future<String> getProjectIdForDeliveryMan(String uid) async {
+    FirebaseFirestore instance = FirebaseFirestore.instance;
+    DocumentSnapshot? documentDetails;
+    String deliveryManId;
+    try {
+      documentDetails = await instance.collection('users').doc(uid).get();
+      deliveryManId = documentDetails.get('delivery_man_id');
+      documentDetails =
+          await instance.collection('delivery_mans').doc(deliveryManId).get();
+      return documentDetails.get('project_id');
+    } catch (e) {
+      print(e.toString());
+    }
+    return NONE;
   }
 
   static Future<String> getProjectIdForProjectManager(String? uid) async {
