@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
+import 'package:easy_shopping/model/notifications.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -27,7 +28,7 @@ class AddOffersBuilder extends State<AddOffersSection> {
   DateTime initialPick = DateTime.now();
   DateTime finalPick = DateTime.now();
 
-  void ingresarOferta() {
+  void ingresarOferta() async {
     if (selectedProductId == null) {
       EasyLoading.showError("Debe de seleccionar un producto");
       return;
@@ -60,6 +61,11 @@ class AddOffersBuilder extends State<AddOffersSection> {
         selectedProductId!,
         priceController.text.isEmpty ? null : int.parse(priceController.text));
 
+    sendNotifications(
+        USER,
+        selected,
+        "Aprovecha esta gran oferta por tiempo limitado. Entra para ver más detalles.",
+        await FirebaseFS.getImageOfProduct(selectedProductId!));
     EasyLoading.showSuccess("Oferta agregada con éxito");
     cleanData();
   }

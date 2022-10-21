@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:easy_shopping/constants.dart';
+import 'package:easy_shopping/model/notifications.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -486,6 +487,13 @@ class FirebaseFS {
         'total': totalOrder,
       });
 
+      //////////////// SEND THE NOTIFICATIONS TO THE DELIVERY MANS
+      sendNotifications(
+          DELIVERY_MAN,
+          "Nueva solicitud de compra",
+          "Un cliente acaba de realizar un pedido. Toca para ver más detalles",
+          "");
+
       return true;
     } catch (e) {
       print(e.toString());
@@ -650,6 +658,14 @@ class FirebaseFS {
       }
     }
     return result;
+  }
+
+  static Future<String> getImageOfProduct(String productId) async {
+    DocumentSnapshot productDetail = await FirebaseFirestore.instance
+        .collection('products')
+        .doc(productId)
+        .get();
+    return productDetail.get('image');
   }
 
   static Future<List<String>> getSalesByUid(String uid) async {
