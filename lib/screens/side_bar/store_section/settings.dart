@@ -177,7 +177,7 @@ class SettingsSectionBuilder extends State<SettingsSection> {
                 margin: const EdgeInsets.only(
                     top: 20, bottom: 20, left: 20, right: 20),
                 padding: const EdgeInsets.all(defaultPadding),
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
@@ -203,7 +203,7 @@ class SettingsSectionBuilder extends State<SettingsSection> {
                                 fontWeight: FontWeight.w400,
                                 color: Colors.black,
                               ),
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 hintText: "Nuevo nombre",
                                 hintStyle: TextStyle(
                                   color: Color(0xffA6B0BD),
@@ -240,7 +240,7 @@ class SettingsSectionBuilder extends State<SettingsSection> {
                                 fontWeight: FontWeight.w400,
                                 color: Colors.black,
                               ),
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 hintText: "Nueva descripción",
                                 hintStyle: TextStyle(
                                   color: Color(0xffA6B0BD),

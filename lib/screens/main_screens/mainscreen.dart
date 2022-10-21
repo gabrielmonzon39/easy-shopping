@@ -46,7 +46,7 @@ class _MainscreenState extends State<Mainscreen> {
   Text subheading(String title) {
     return Text(
       title,
-      style: const TextStyle(
+      style: TextStyle(
           color: primaryColor,
           fontSize: 20.0,
           fontWeight: FontWeight.w700,
@@ -110,7 +110,7 @@ class _MainscreenState extends State<Mainscreen> {
           margin:
               const EdgeInsets.only(top: 15, bottom: 15, left: 15, right: 15),
           padding: const EdgeInsets.all(defaultPadding),
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),

@@ -66,14 +66,14 @@ class _NavBar extends State<NavBar> {
             UserAccountsDrawerHeader(
               accountName: Text(name),
               accountEmail: Text(email),
-              currentAccountPicture: const CircleAvatar(
+              currentAccountPicture: CircleAvatar(
                 backgroundColor: ternaryColor,
                 radius: 35.0,
-                backgroundImage: AssetImage(
+                backgroundImage: const AssetImage(
                   'assets/images/logo.jpg',
                 ),
               ),
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: secondaryColor,
               ),
             ),

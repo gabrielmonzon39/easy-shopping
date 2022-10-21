@@ -206,7 +206,7 @@ class ProductView extends StatelessWidget {
                                     fontWeight: FontWeight.w400,
                                     color: Colors.black,
                                   ),
-                                  decoration: const InputDecoration(
+                                  decoration: InputDecoration(
                                     hintText: "Nombre",
                                     hintStyle: TextStyle(
                                       color: Color(0xffA6B0BD),
@@ -242,7 +242,7 @@ class ProductView extends StatelessWidget {
                                     fontWeight: FontWeight.w400,
                                     color: Colors.black,
                                   ),
-                                  decoration: const InputDecoration(
+                                  decoration: InputDecoration(
                                     hintText: "Descripción",
                                     hintStyle: TextStyle(
                                       color: Color(0xffA6B0BD),
@@ -283,7 +283,7 @@ class ProductView extends StatelessWidget {
                                           fontWeight: FontWeight.w400,
                                           color: Colors.black,
                                         ),
-                                        decoration: const InputDecoration(
+                                        decoration: InputDecoration(
                                           hintText: "Precio",
                                           hintStyle: TextStyle(
                                             color: Color(0xffA6B0BD),
@@ -321,7 +321,7 @@ class ProductView extends StatelessWidget {
                                           fontWeight: FontWeight.w400,
                                           color: Colors.black,
                                         ),
-                                        decoration: const InputDecoration(
+                                        decoration: InputDecoration(
                                           hintText: "Existencias",
                                           hintStyle: TextStyle(
                                             color: Color(0xffA6B0BD),

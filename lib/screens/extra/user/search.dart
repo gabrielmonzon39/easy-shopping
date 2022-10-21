@@ -92,7 +92,7 @@ class SearchBuilder extends State<Search> {
                 fontWeight: FontWeight.w400,
                 color: Colors.black,
               ),
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 hintText: "Nombre del producto",
                 hintStyle: TextStyle(
                   color: Color(0xffA6B0BD),
@@ -164,7 +164,7 @@ class SearchBuilder extends State<Search> {
           margin:
               const EdgeInsets.only(top: 0, bottom: 15, left: 15, right: 15),
           padding: const EdgeInsets.all(defaultPadding),
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
@@ -188,7 +188,7 @@ class SearchBuilder extends State<Search> {
                                 fontWeight: FontWeight.w400,
                                 color: Colors.black,
                               ),
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 hintText: "Vista máxima",
                                 hintStyle: TextStyle(
                                   color: Color(0xffA6B0BD),
@@ -225,7 +225,7 @@ class SearchBuilder extends State<Search> {
                                 fontWeight: FontWeight.w400,
                                 color: Colors.black,
                               ),
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 hintText: "Vista máxima",
                                 hintStyle: TextStyle(
                                   color: Color(0xffA6B0BD),

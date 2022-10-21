@@ -2,9 +2,14 @@ import 'package:easy_shopping/model/shopping_cart.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
-const primaryColor = Color(0xFFFF3264);
-const secondaryColor = Color(0xFF8200FF);
-const ternaryColor = Colors.orange;
+Color primaryColor = Color(0xFFFF3264);
+Color secondaryColor = Color(0xFF8200FF);
+Color ternaryColor = Colors.orange;
+
+const defaultPrimaryColor = Color(0xFFFF3264);
+const defaultSecondaryColor = Color(0xFF8200FF);
+const defaultTernaryColor = Colors.orange;
+
 const bgColor = Color(0xFFFFFFFF);
 const txtColor = Color(0x00000000);
 

@@ -74,7 +74,7 @@ class CreateFamilyBuilder extends State<CreateFamilySection> {
                 margin: const EdgeInsets.only(
                     top: 20, bottom: 20, left: 20, right: 20),
                 padding: const EdgeInsets.all(defaultPadding),
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
@@ -100,7 +100,7 @@ class CreateFamilyBuilder extends State<CreateFamilySection> {
                                 fontWeight: FontWeight.w400,
                                 color: Colors.black,
                               ),
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 hintText: "Direccion",
                                 hintStyle: TextStyle(
                                   color: Color(0xffA6B0BD),
@@ -137,7 +137,7 @@ class CreateFamilyBuilder extends State<CreateFamilySection> {
                                 fontWeight: FontWeight.w400,
                                 color: Colors.black,
                               ),
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 hintText: "Cantidad de personas en la familia",
                                 hintStyle: TextStyle(
                                   color: Color(0xffA6B0BD),
@@ -205,8 +205,7 @@ class CreateFamilyBuilder extends State<CreateFamilySection> {
                                 ),
                               ),
                               IconButton(
-                                icon: const Icon(Icons.copy,
-                                    color: secondaryColor),
+                                icon: Icon(Icons.copy, color: secondaryColor),
                                 onPressed: () {
                                   Clipboard.setData(
                                       ClipboardData(text: generatedToken));

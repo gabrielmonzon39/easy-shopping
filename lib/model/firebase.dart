@@ -6,13 +6,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 // person role
 const String NONE = "none";
-const String DELIVERY_PENDING = "pending";
 const String USER = "user";
 const String STORE_MANAGER = "store_manager";
 const String PROJECT_MANAGER = "project_manager";
 const String DELIVERY_MAN = "delivery_man";
-const String PROVIDER = "provider";
 const String SUPER_ADMIN = "super_admin";
+
+// order delivery status
+const String DELIVERY_PENDING = "pending";
 
 // product state
 const String PREPARING = "preparing";

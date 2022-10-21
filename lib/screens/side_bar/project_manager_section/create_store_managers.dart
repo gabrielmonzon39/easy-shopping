@@ -84,7 +84,7 @@ class CreateStoreManagersBuilder extends State<CreateStoreManagersSection> {
                 margin: const EdgeInsets.only(
                     top: 20, bottom: 20, left: 20, right: 20),
                 padding: const EdgeInsets.all(defaultPadding),
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
@@ -163,8 +163,7 @@ class CreateStoreManagersBuilder extends State<CreateStoreManagersSection> {
                                 ),
                               ),
                               IconButton(
-                                icon: const Icon(Icons.copy,
-                                    color: secondaryColor),
+                                icon: Icon(Icons.copy, color: secondaryColor),
                                 onPressed: () {
                                   Clipboard.setData(
                                       ClipboardData(text: generatedToken));
