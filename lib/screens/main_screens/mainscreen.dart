@@ -62,6 +62,9 @@ class _MainscreenState extends State<Mainscreen> {
 
   @override
   Widget build(BuildContext context) {
+    searchName = name;
+    searchEmail = email;
+    searchPhoto = photo;
     return Scaffold(
         appBar: AppBar(
           title: const Text('Easy Shopping'),

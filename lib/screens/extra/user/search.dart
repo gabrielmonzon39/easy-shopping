@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
+import 'package:easy_shopping/screens/side_bar/nav_bar.dart';
 import 'package:easy_shopping/widgets/product_view.dart';
 import 'package:flutter/material.dart';
 
@@ -80,7 +81,8 @@ class SearchBuilder extends State<Search> {
       appBar: AppBar(
         backgroundColor: primaryColor,
         actions: [
-          Expanded(
+          SizedBox(
+            width: 290,
             child: TextField(
               keyboardType: TextInputType.text,
               obscureText: false,
@@ -150,6 +152,11 @@ class SearchBuilder extends State<Search> {
             ),
           ),
         ],
+      ),
+      drawer: NavBar(
+        name: searchName!,
+        email: searchEmail!,
+        photo: searchPhoto!,
       ),
       body: SafeArea(
         child: Container(
