@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
+import 'package:easy_shopping/widgets/show_image_button.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -395,16 +396,13 @@ class AddProductsBuilder extends State<AddProductsSection> {
                       height: 15,
                     ),
                     if (file != null)
-                      Text(
-                        fileName,
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black,
-                        ),
+                      ShowImageButton(
+                        imagePath: filePath,
+                        imageName: fileName,
+                        buttonColor: secondaryColor,
                       ),
                     const SizedBox(
-                      height: 45,
+                      height: 35,
                     ),
                     ElevatedButton(
                       onPressed: uploadProduct,

@@ -54,6 +54,9 @@ dependencies:
   # for getting date
   intl: ^0.17.0
 
+  # for permission
+  permission_handler: ^10.2.0
+
   # http
   http: ^0.13.4
 

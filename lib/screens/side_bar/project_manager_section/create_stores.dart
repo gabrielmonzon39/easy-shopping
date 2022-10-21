@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
+import 'package:easy_shopping/widgets/show_image_button.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,9 @@ class CreateStoresSection extends StatefulWidget {
 class CreateStoresBuilder extends State<CreateStoresSection> {
   final nameController = TextEditingController();
   final descriptionController = TextEditingController();
+
+  String? filePath;
+  String? fileName;
 
   Future<void> generateStore() async {
     if (nameController.text == "") {
@@ -39,13 +43,13 @@ class CreateStoresBuilder extends State<CreateStoresSection> {
     String storeId = await FirebaseFS.generateStore(
         nameController.text, descriptionController.text, projectId);
 
-    final filePath = file!.path;
-    final fileList = filePath.split("/");
-    final fileName = fileList[fileList.length - 1];
+    filePath = file!.path;
+    final fileList = filePath!.split("/");
+    fileName = fileList[fileList.length - 1];
 
-    if (!fileName.contains("jpeg") &&
-        !fileName.contains("jpg") &&
-        !fileName.contains("png")) return;
+    if (!fileName!.contains("jpeg") &&
+        !fileName!.contains("jpg") &&
+        !fileName!.contains("png")) return;
 
     final destination = '$projectId/$storeId/$fileName';
     final uploadTask = uploadFile(destination, file!);
@@ -260,6 +264,15 @@ class CreateStoresBuilder extends State<CreateStoresSection> {
                                 ),
                               ),
                             ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            if (file != null)
+                              ShowImageButton(
+                                imagePath: filePath,
+                                imageName: fileName,
+                                buttonColor: secondaryColor,
+                              ),
                           ],
                         )),
                       ],
