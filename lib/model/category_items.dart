@@ -65,7 +65,7 @@ var projectManagerItemsDemo = [
     icon: "1",
   ),
   CategoryItem(
-    name: "Generar Administrador de Tienda",
+    name: "Generar Administrador\nde Tienda",
     icon: "1",
   ),
   CategoryItem(
