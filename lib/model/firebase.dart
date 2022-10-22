@@ -628,6 +628,27 @@ class FirebaseFS {
         .update({'image': image});
   }
 
+  static Future<void> setProjectImage(String projectId, String image) async {
+    await FirebaseFirestore.instance
+        .collection('projects')
+        .doc(projectId)
+        .update({'image': image});
+  }
+
+  static Future<void> setProjectColors(
+      String projectId, int primary, int secondary, int ternary) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('colors')
+          .doc(projectId)
+          .update(
+              {'primary': primary, 'secondary': secondary, 'ternary': ternary});
+    } catch (e) {
+      await FirebaseFirestore.instance.collection('colors').doc(projectId).set(
+          {'primary': primary, 'secondary': secondary, 'ternary': ternary});
+    }
+  }
+
   static Future<void> setStoreName(String storeId, String name) async {
     await FirebaseFirestore.instance
         .collection('stores')

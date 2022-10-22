@@ -7,6 +7,7 @@ import 'package:easy_shopping/model/firebase.dart';
 import 'package:easy_shopping/screens/side_bar/delivery_man_section/active_orders.dart';
 import 'package:easy_shopping/screens/side_bar/delivery_man_section/delivery_history.dart';
 import 'package:easy_shopping/screens/side_bar/delivery_man_section/orders_to_deliver.dart';
+import 'package:easy_shopping/screens/side_bar/project_manager_section/settings_project_manager.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/add_products.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/best_selling_products.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/income.dart';
@@ -332,6 +333,25 @@ class _NavBar extends State<NavBar> {
                 },
               ),
             if (OptionConditions.settings()) const Divider(),
+
+            //////////////////////////////////////////////////////
+            /////////////////   PROJECT MANAGER  /////////////////
+            //////////////////////////////////////////////////////
+
+            /// **************  Configuración  **************
+            if (OptionConditions.settingsProjectManager())
+              ListTile(
+                leading: const Icon(Icons.settings),
+                title: const Text('Configuración'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const SettingsPMSection()),
+                  );
+                },
+              ),
+            if (OptionConditions.settingsProjectManager()) const Divider(),
 
             /////////////////////////////////////////////////////////
             /////////////////    GENERAL OPTIONS    /////////////////

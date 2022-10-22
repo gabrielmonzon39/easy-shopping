@@ -45,7 +45,27 @@ class CreateStoresBuilder extends State<CreateStoresSection> {
 
     if (!fileName!.contains("jpeg") &&
         !fileName!.contains("jpg") &&
-        !fileName!.contains("png")) return;
+        !fileName!.contains("png")) {
+      showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                title: const Text("Ha ocurrido un error al guardar los datos."),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      // dismiss dialog
+                      Navigator.of(ctx).pop();
+                    },
+                    child: Container(
+                      color: Colors.white,
+                      padding: const EdgeInsets.all(14),
+                      child: const Text("Aceptar"),
+                    ),
+                  ),
+                ],
+              ));
+      return;
+    }
 
     final destination = '$projectId/$storeId/$fileName';
     final uploadTask = uploadFile(destination, file!);
