@@ -16,6 +16,7 @@ class SettingsPMSection extends StatefulWidget {
 }
 
 class SettingsPMSectionBuilder extends State<SettingsPMSection> {
+  final nameController = TextEditingController();
   String? filePath;
   String? fileName;
 
@@ -405,6 +406,43 @@ class SettingsPMSectionBuilder extends State<SettingsPMSection> {
                                   child: const Text(""),
                                 ),
                               ],
+                            ),
+                            const SizedBox(
+                              height: 50,
+                            ),
+                            TextField(
+                              keyboardType: TextInputType.text,
+                              obscureText: false,
+                              controller: nameController,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black,
+                              ),
+                              decoration: InputDecoration(
+                                hintText: "Nombre del producto",
+                                hintStyle: const TextStyle(
+                                  color: Color(0xffA6B0BD),
+                                ),
+                                fillColor: Colors.white,
+                                filled: true,
+                                prefixIcon: const Icon(
+                                  Icons.description,
+                                  color: Colors.black,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(50),
+                                  ),
+                                  borderSide: BorderSide(color: secondaryColor),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(50),
+                                  ),
+                                  borderSide: BorderSide(color: secondaryColor),
+                                ),
+                              ),
                             ),
                             const SizedBox(
                               height: 50,
