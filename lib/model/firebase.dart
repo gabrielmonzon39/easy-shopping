@@ -649,6 +649,18 @@ class FirebaseFS {
     }
   }
 
+  static Future<int> getMinBuy() async {
+    try {
+      DocumentSnapshot details = await FirebaseFirestore.instance
+          .collection('constants')
+          .doc("minBuy")
+          .get();
+      return details.get('quantity');
+    } catch (e) {
+      return defaultMinBuy;
+    }
+  }
+
   static Future<void> setStoreName(String storeId, String name) async {
     await FirebaseFirestore.instance
         .collection('stores')

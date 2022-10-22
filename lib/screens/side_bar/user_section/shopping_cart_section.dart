@@ -251,7 +251,7 @@ class ShoppingCartBuilder extends State<ShoppingCartSection> {
                         if (total < minBuy) {
                           showDialog(
                               context: context,
-                              builder: (ctx) => const AlertDialog(
+                              builder: (ctx) => AlertDialog(
                                     title: Text(
                                         "La compra debe ser de mínimo Q$minBuy para efectuarse."),
                                   ));

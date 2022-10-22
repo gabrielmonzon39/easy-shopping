@@ -55,6 +55,7 @@ class MyAppStateLess extends State<MyApp> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     messaging = FirebaseMessaging.instance;
     messagingToken = await messaging.getToken();
+    minBuy = await FirebaseFS.getMinBuy();
     //print("-------------------FUNCOOOOOOOOO-----------------------");
     try {
       setState(() async {
