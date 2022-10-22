@@ -699,6 +699,108 @@ class FirebaseFS {
     return false;
   }
 
+  static Future<List<String>> getTopUserProducts(String uid) async {
+    List<String> result = [];
+    String projectId = await getProjectId(uid);
+    try {
+      DocumentSnapshot user_sales_record = await FirebaseFirestore.instance
+          .collection('users_stores_and_categories_sales')
+          .doc(uid)
+          .get();
+
+      Map<String, int> stores = user_sales_record.get('stores');
+      Map<String, int> categories = user_sales_record.get('categories');
+
+      // Order stores by value
+      List<MapEntry<String, int>> storesSorted = stores.entries.toList();
+      storesSorted.sort((a, b) => b.value.compareTo(a.value));
+      // make it a simple list
+      List<String> storesSortedIds = [];
+      for (var store in storesSorted) {
+        storesSortedIds.add(store.key);
+      }
+
+      //['t3', 't1', 't2']
+
+      // Order categories by value
+      List<MapEntry<String, int>> categoriesSorted =
+          categories.entries.toList();
+      categoriesSorted.sort((a, b) => b.value.compareTo(a.value));
+      // make it a simple list
+      List<String> categoriesSortedIds = [];
+      for (var category in categoriesSorted) {
+        categoriesSortedIds.add(category.key);
+      }
+
+      //['t3', 't1', 't2']
+
+      List<Map<String, int>> final_products = [];
+
+      List<Map<String, String>> products = await getProjectProducts(projectId);
+      for (var product in products) {
+        int storeWeight = storesSortedIds.indexOf(product['store_id']!);
+        int categoryWeight = categoriesSortedIds.indexOf(product['category']!);
+        final_products.add({
+          product['product_id']!: (storeWeight * 2) + categoryWeight,
+        });
+      }
+
+      // order final_products by value
+      final_products.sort((a, b) => b.values.first.compareTo(a.values.first));
+      // make it a simple list
+      List<String> final_productsSortedIds = [];
+      for (var product in final_products) {
+        final_productsSortedIds.add(product.keys.first);
+      }
+
+      return final_productsSortedIds;
+    } catch (e) {
+      print(e.toString());
+    }
+    return result;
+  }
+
+  static Future<List<String>> getProjectStoresIds(String projectId) async {
+    List<String> result = [];
+    QuerySnapshot snap =
+        await FirebaseFirestore.instance.collection('stores').get();
+    for (var document in snap.docs) {
+      try {
+        if (document.get('project_id') == projectId) {
+          result.add(document.id);
+        }
+      } catch (e) {
+        print(e.toString());
+        continue;
+      }
+    }
+    return result;
+  }
+
+  static Future<List<Map<String, String>>> getProjectProducts(
+      String projectId) async {
+    List<String> stores = await getProjectStoresIds(projectId);
+    List<Map<String, String>> result = [];
+    QuerySnapshot snap =
+        await FirebaseFirestore.instance.collection('products').get();
+    for (var document in snap.docs) {
+      try {
+        if (stores.contains(document.get('store_id'))) {
+          var res = <String, String>{};
+          res['id'] = document.id;
+          res['type'] = document.get('type');
+          res['store_id'] = document.get('store_id');
+
+          result.add(res);
+        }
+      } catch (e) {
+        print(e.toString());
+        continue;
+      }
+    }
+    return result;
+  }
+
   static Future<bool> addToken(String token) async {
     token = token.trim();
     DocumentSnapshot tokenDetail =
