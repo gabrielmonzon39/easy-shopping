@@ -61,111 +61,92 @@ class ProductView extends StatelessWidget {
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.resolveWith<Color>(
             (Set<MaterialState> states) {
-              return ternaryColor;
+              return Colors.white;
             },
           ),
         ),
-        child: Column(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            const SizedBox(
-              height: 20,
-            ),
             Center(
               child: Image.network(
                 imageURL!,
                 height: 100,
+                width: 100,
               ),
             ),
             const SizedBox(
               height: 20,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 16, top: 8, bottom: 8),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          name!,
-                          textAlign: TextAlign.left,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
-                            fontSize: 22,
-                          ),
-                        ),
-                        Text(
-                          description!,
-                          textAlign: TextAlign.left,
-                          style: const TextStyle(
-                              fontSize: 14, color: Colors.white),
-                        ),
-                      ],
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 16, top: 8, bottom: 8),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      name!,
+                      textAlign: TextAlign.left,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                        fontSize: 22,
+                      ),
                     ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 16, top: 8),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: <Widget>[
-                      Text(
-                        'Q$price',
-                        textAlign: TextAlign.left,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 22,
-                          color: Colors.black,
-                        ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    /*Text(
+                      description!,
+                      textAlign: TextAlign.left,
+                      style: const TextStyle(fontSize: 14, color: Colors.white),
+                    ),*/
+                    Text(
+                      'Q$price.00',
+                      textAlign: TextAlign.left,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                        color: Colors.black,
                       ),
-                      Text(
-                        '$quantity unidades',
-                        style:
-                            const TextStyle(fontSize: 14, color: Colors.white),
-                      ),
-                    ],
-                  ),
+                    ),
+                    Text(
+                      '$quantity unidades',
+                      style: const TextStyle(fontSize: 14, color: Colors.black),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            const SizedBox(
-              height: 20,
+              ),
             ),
           ],
         ),
       );
     }
     return Container(
-      width: 330,
-      color: ternaryColor,
+      decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(
+            color: Colors.grey,
+            width: 2,
+          )),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           const SizedBox(
-            height: 20,
-          ),
-          Center(
-            child: Image.network(
-              imageURL!,
-              height: 100,
-            ),
-          ),
-          const SizedBox(
-            height: 20,
+            height: 5,
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Image.network(
+                imageURL!,
+                height: 100,
+                width: 100,
+              ),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.only(left: 16, top: 8, bottom: 8),
@@ -181,279 +162,215 @@ class ProductView extends StatelessWidget {
                           fontSize: 22,
                         ),
                       ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            description!,
-                            style: const TextStyle(
-                                fontSize: 14, color: Colors.white),
-                          ),
-                          const SizedBox(
-                            width: 4,
-                          ),
-                        ],
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        'Q$price.00',
+                        textAlign: TextAlign.left,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
+                      ),
+                      Text(
+                        '$quantity unidades',
+                        style:
+                            const TextStyle(fontSize: 14, color: Colors.black),
                       ),
                     ],
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(right: 16, top: 8),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
-                    Text(
-                      'Q$price',
-                      textAlign: TextAlign.left,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 22,
-                      ),
-                    ),
-                    Text(
-                      '$quantity unidades',
-                      style: const TextStyle(fontSize: 14, color: Colors.white),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ElevatedButton(
-                onPressed: () async {
-                  showDialog(
-                    context: context,
-                    builder: (ctx) => AlertDialog(
-                      title: const Text("Modifique los siguientes campos"),
-                      content: SizedBox(
-                        height: 190,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            TextField(
-                              keyboardType: TextInputType.text,
-                              obscureText: false,
-                              controller: nameController,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black,
-                              ),
-                              decoration: const InputDecoration(
-                                hintText: "Nombre",
-                                hintStyle: TextStyle(
-                                  color: Color(0xffA6B0BD),
-                                ),
-                                fillColor: Colors.white,
-                                filled: true,
-                                prefixIcon: Icon(
-                                  Icons.production_quantity_limits,
-                                  color: Colors.black,
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(200),
-                                  ),
-                                  borderSide: BorderSide(color: secondaryColor),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(200),
-                                  ),
-                                  borderSide: BorderSide(color: secondaryColor),
-                                ),
-                              ),
-                            ),
-                            TextField(
-                              keyboardType: TextInputType.text,
-                              obscureText: false,
-                              controller: descriptionController,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black,
-                              ),
-                              decoration: const InputDecoration(
-                                hintText: "Descripción",
-                                hintStyle: TextStyle(
-                                  color: Color(0xffA6B0BD),
-                                ),
-                                fillColor: Colors.white,
-                                filled: true,
-                                prefixIcon: Icon(
-                                  Icons.production_quantity_limits,
-                                  color: Colors.black,
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(200),
-                                  ),
-                                  borderSide: BorderSide(color: secondaryColor),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(200),
-                                  ),
-                                  borderSide: BorderSide(color: secondaryColor),
-                                ),
-                              ),
-                            ),
-                            Row(
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ElevatedButton(
+                    onPressed: () async {
+                      showDialog(
+                        context: context,
+                        builder: (ctx) => AlertDialog(
+                          title: const Text("Modifique los siguientes campos"),
+                          content: SizedBox(
+                            height: 190,
+                            child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Expanded(
-                                  child: TextField(
-                                    keyboardType: TextInputType.number,
-                                    obscureText: false,
-                                    controller: priceController,
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w400,
+                                TextField(
+                                  keyboardType: TextInputType.text,
+                                  obscureText: false,
+                                  controller: nameController,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.black,
+                                  ),
+                                  decoration: InputDecoration(
+                                    hintText: "Nombre",
+                                    hintStyle: TextStyle(
+                                      color: Color(0xffA6B0BD),
+                                    ),
+                                    fillColor: Colors.white,
+                                    filled: true,
+                                    prefixIcon: Icon(
+                                      Icons.production_quantity_limits,
                                       color: Colors.black,
                                     ),
-                                    decoration: const InputDecoration(
-                                      hintText: "Precio",
-                                      hintStyle: TextStyle(
-                                        color: Color(0xffA6B0BD),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(200),
                                       ),
-                                      fillColor: Colors.white,
-                                      filled: true,
-                                      prefixIcon: Icon(
-                                        Icons.production_quantity_limits,
-                                        color: Colors.black,
+                                      borderSide:
+                                          BorderSide(color: secondaryColor),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(200),
                                       ),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(200),
-                                        ),
-                                        borderSide:
-                                            BorderSide(color: secondaryColor),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(200),
-                                        ),
-                                        borderSide:
-                                            BorderSide(color: secondaryColor),
-                                      ),
+                                      borderSide:
+                                          BorderSide(color: secondaryColor),
                                     ),
                                   ),
                                 ),
-                                Expanded(
-                                  child: TextField(
-                                    keyboardType: TextInputType.number,
-                                    obscureText: false,
-                                    controller: quantityController,
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w400,
+                                TextField(
+                                  keyboardType: TextInputType.text,
+                                  obscureText: false,
+                                  controller: descriptionController,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.black,
+                                  ),
+                                  decoration: InputDecoration(
+                                    hintText: "Descripción",
+                                    hintStyle: TextStyle(
+                                      color: Color(0xffA6B0BD),
+                                    ),
+                                    fillColor: Colors.white,
+                                    filled: true,
+                                    prefixIcon: Icon(
+                                      Icons.production_quantity_limits,
                                       color: Colors.black,
                                     ),
-                                    decoration: const InputDecoration(
-                                      hintText: "Existencias",
-                                      hintStyle: TextStyle(
-                                        color: Color(0xffA6B0BD),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(200),
                                       ),
-                                      fillColor: Colors.white,
-                                      filled: true,
-                                      prefixIcon: Icon(
-                                        Icons.production_quantity_limits,
-                                        color: Colors.black,
+                                      borderSide:
+                                          BorderSide(color: secondaryColor),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(200),
                                       ),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(200),
-                                        ),
-                                        borderSide:
-                                            BorderSide(color: secondaryColor),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(200),
-                                        ),
-                                        borderSide:
-                                            BorderSide(color: secondaryColor),
-                                      ),
+                                      borderSide:
+                                          BorderSide(color: secondaryColor),
                                     ),
                                   ),
                                 ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: TextField(
+                                        keyboardType: TextInputType.number,
+                                        obscureText: false,
+                                        controller: priceController,
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.black,
+                                        ),
+                                        decoration: InputDecoration(
+                                          hintText: "Precio",
+                                          hintStyle: TextStyle(
+                                            color: Color(0xffA6B0BD),
+                                          ),
+                                          fillColor: Colors.white,
+                                          filled: true,
+                                          prefixIcon: Icon(
+                                            Icons.production_quantity_limits,
+                                            color: Colors.black,
+                                          ),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(200),
+                                            ),
+                                            borderSide: BorderSide(
+                                                color: secondaryColor),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(200),
+                                            ),
+                                            borderSide: BorderSide(
+                                                color: secondaryColor),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: TextField(
+                                        keyboardType: TextInputType.number,
+                                        obscureText: false,
+                                        controller: quantityController,
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.black,
+                                        ),
+                                        decoration: InputDecoration(
+                                          hintText: "Existencias",
+                                          hintStyle: TextStyle(
+                                            color: Color(0xffA6B0BD),
+                                          ),
+                                          fillColor: Colors.white,
+                                          filled: true,
+                                          prefixIcon: Icon(
+                                            Icons.production_quantity_limits,
+                                            color: Colors.black,
+                                          ),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(200),
+                                            ),
+                                            borderSide: BorderSide(
+                                                color: secondaryColor),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(200),
+                                            ),
+                                            borderSide: BorderSide(
+                                                color: secondaryColor),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
                               ],
-                            )
-                          ],
-                        ),
-                      ),
-                      actions: <Widget>[
-                        TextButton(
-                          onPressed: () async {
-                            await FirebaseFS.updateProduct(
-                                id!,
-                                priceController.text,
-                                quantityController.text,
-                                descriptionController.text,
-                                nameController.text);
-                            Navigator.pop(context);
-                            Navigator.pop(context);
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const ProductsSection(),
-                                ));
-                          },
-                          child: Container(
-                            color: Colors.white,
-                            padding: const EdgeInsets.all(14),
-                            child: const Text("Aceptar"),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
-                      return Colors.green;
-                    },
-                  ),
-                ),
-                child: const Text(
-                  "Editar",
-                  style: TextStyle(
-                    fontSize: 23,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              const SizedBox(
-                width: 20,
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  BuildContext dialogContext;
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        dialogContext = context;
-                        return AlertDialog(
-                          title: Text("Borrar producto $name"),
-                          content: const Text(
-                              "Si borra el producto, ya no podrá recuperar sus datos y nos será visible para sus clientes."),
                           actions: <Widget>[
                             TextButton(
                               onPressed: () async {
-                                await FirebaseFS.deleteProduct(id!);
-                                Navigator.pop(dialogContext);
+                                await FirebaseFS.updateProduct(
+                                    id!,
+                                    priceController.text,
+                                    quantityController.text,
+                                    descriptionController.text,
+                                    nameController.text);
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const ProductsSection(),
+                                    ));
                               },
                               child: Container(
                                 color: Colors.white,
@@ -462,29 +379,63 @@ class ProductView extends StatelessWidget {
                               ),
                             ),
                           ],
-                        );
-                      });
-                },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
-                      return Colors.red;
+                        ),
+                      );
                     },
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        (Set<MaterialState> states) {
+                          return const Color.fromARGB(255, 156, 146, 48);
+                        },
+                      ),
+                    ),
+                    child: const Icon(Icons.edit),
                   ),
-                ),
-                child: const Text(
-                  "Eliminar",
-                  style: TextStyle(
-                    fontSize: 23,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
+                  const SizedBox(
+                    width: 20,
                   ),
-                ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      BuildContext dialogContext;
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            dialogContext = context;
+                            return AlertDialog(
+                              title: Text("Borrar producto $name"),
+                              content: const Text(
+                                  "Si borra el producto, ya no podrá recuperar sus datos y nos será visible para sus clientes."),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () async {
+                                    await FirebaseFS.deleteProduct(id!);
+                                    Navigator.pop(dialogContext);
+                                  },
+                                  child: Container(
+                                    color: Colors.white,
+                                    padding: const EdgeInsets.all(14),
+                                    child: const Text("Aceptar"),
+                                  ),
+                                ),
+                              ],
+                            );
+                          });
+                    },
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        (Set<MaterialState> states) {
+                          return Colors.red;
+                        },
+                      ),
+                    ),
+                    child: const Icon(Icons.close),
+                  ),
+                ],
               ),
             ],
           ),
           const SizedBox(
-            height: 20,
+            height: 5,
           ),
         ],
       ),

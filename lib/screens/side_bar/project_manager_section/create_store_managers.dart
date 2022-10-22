@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -85,7 +84,7 @@ class CreateStoreManagersBuilder extends State<CreateStoreManagersSection> {
                 margin: const EdgeInsets.only(
                     top: 20, bottom: 20, left: 20, right: 20),
                 padding: const EdgeInsets.all(defaultPadding),
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
@@ -164,8 +163,7 @@ class CreateStoreManagersBuilder extends State<CreateStoreManagersSection> {
                                 ),
                               ),
                               IconButton(
-                                icon: const Icon(Icons.copy,
-                                    color: secondaryColor),
+                                icon: Icon(Icons.copy, color: secondaryColor),
                                 onPressed: () {
                                   Clipboard.setData(
                                       ClipboardData(text: generatedToken));

@@ -69,9 +69,9 @@ class StoreSalesBuilder extends State<StoreSalesSection> {
         width: double.infinity,
         margin: const EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
         padding: const EdgeInsets.all(defaultPadding),
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: ternaryColor,
-          borderRadius: BorderRadius.all(Radius.circular(10)),
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -160,98 +160,6 @@ class StoreSalesBuilder extends State<StoreSalesSection> {
     deliveryProcessId = document.get('delivery_processId').toString();
     await getDeliveryManAndState();
 
-    /*final sales = await FirebaseFS.getSalesByUid(uid!);
-    for (String sale in sales) {
-      DocumentSnapshot saleDetails =
-          await FirebaseFirestore.instance.collection('sales').doc(sale).get();
-      
-      String fecha = saleDetails.get('date').toString();
-      products = saleDetails.get('products');
-      
-      parse();
-      listTemp.add(
-        const SizedBox(
-          height: 15,
-        ),
-      );
-      listTemp.add(Text(
-        'Número de compra: $deliveryProcessId',
-        textAlign: TextAlign.left,
-        style: const TextStyle(
-          fontWeight: FontWeight.w700,
-          color: Colors.white,
-          fontSize: 22,
-        ),
-      ));
-      listTemp.add(const SizedBox(
-        height: 40,
-      ));
-      listTemp.add(Text(
-        'Fecha: $fecha',
-        textAlign: TextAlign.left,
-        style: const TextStyle(fontSize: 19, color: Colors.white),
-      ));
-      listTemp.add(const SizedBox(
-        height: 25,
-      ));
-      listTemp.add(const Text(
-        'Entregado por: ',
-        style: TextStyle(fontSize: 19, color: Colors.white),
-      ));
-      ///////////////// DELIVERY MAN CARD ////////////////////////
-      listTemp.add(Card(
-        color: Colors.amber[50],
-        margin: const EdgeInsets.all(15),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(25.0),
-        ),
-        elevation: 5,
-        shadowColor: Colors.pink[50],
-        child: Container(
-          margin: const EdgeInsets.all(2),
-          child: ListTile(
-            leading: const Icon(
-              Icons.face,
-              size: 50,
-            ),
-            title: Text(
-              deliverManIdName!,
-              style: const TextStyle(fontSize: 19, color: Colors.black),
-            ),
-            subtitle: Text(
-              deliverManIdEmail!,
-              style: const TextStyle(fontSize: 13, color: Colors.black),
-            ),
-          ),
-        ),
-      ));
-      ////////////////////////////////////////////////////////////
-      listTemp.add(const SizedBox(
-        height: 20,
-      ));
-      listTemp.add(Text(
-        'Estado: $state',
-        style: const TextStyle(fontSize: 19, color: Colors.white),
-      ));
-      listTemp.add(
-        const SizedBox(
-          height: 20,
-        ),
-      );
-      await getOrderedProducts();
-      listTemp.add(Text(
-        'Total de venta: ${total.toString()}',
-        style: const TextStyle(fontSize: 19, color: Colors.white),
-      ));
-      list.add(Container(
-        color: secondaryColor,
-        child: Column(children: listTemp),
-      ));
-      list.add(const SizedBox(
-        height: 20,
-      ));
-      listTemp = [];
-    }*/
     result = Column(
       children: list,
     );
@@ -261,6 +169,7 @@ class StoreSalesBuilder extends State<StoreSalesSection> {
   Future<void> getDeliveryManAndState() async {
     List<String> data =
         await FirebaseFS.getDeliveryManIdAndStateFromOrder(deliveryProcessId!);
+    //print("$deliveryProcessId -> ${data[0]}");
     deliverManId = data[0];
     state = data[1];
     if (state == PREPARING) state = "Preparando";
@@ -285,7 +194,7 @@ class StoreSalesBuilder extends State<StoreSalesSection> {
           margin:
               const EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
           padding: const EdgeInsets.all(defaultPadding),
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
@@ -462,6 +371,8 @@ class StoreSalesBuilder extends State<StoreSalesSection> {
                                                         deliverManIdEmail:
                                                             data[1],
                                                         state: data1[1],
+                                                        buyer: document
+                                                            .get('name'),
                                                       )),
                                             );
                                           },
@@ -476,6 +387,14 @@ class StoreSalesBuilder extends State<StoreSalesSection> {
                                           ),
                                           child: Column(
                                             children: [
+                                              Text(
+                                                document.get('name'),
+                                                style: const TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
                                               Text(
                                                 "Venta : ${document.get('order_id')}",
                                                 style: const TextStyle(

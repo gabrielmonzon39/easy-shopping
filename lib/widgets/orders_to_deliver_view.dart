@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
+import 'package:easy_shopping/model/notifications.dart';
 import 'package:easy_shopping/model/product_infor.dart';
 import 'package:easy_shopping/widgets/store_products_in_order_view.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ class OrdersToDeliverView extends StatefulWidget {
   String? deliveryProcessId;
   String? deliveryManId;
   String? state;
+  String? userId;
 
   OrdersToDeliverView({
     Key? key,
@@ -25,6 +27,7 @@ class OrdersToDeliverView extends StatefulWidget {
     @required this.deliveryProcessId,
     @required this.date,
     @required this.state,
+    @required this.userId,
   }) : super(key: key);
 
   @override
@@ -36,6 +39,7 @@ class OrdersToDeliverView extends StatefulWidget {
         deliveryManId: deliveryManId,
         date: date,
         state: state,
+        userId: userId,
       );
 }
 
@@ -47,6 +51,7 @@ class OrdersToDeliverViewBuilder extends State<OrdersToDeliverView> {
   String? deliveryProcessId;
   String? deliveryManId;
   String? state;
+  String? userId;
   String stateText = "";
   int totalOrder = 0;
   List<dynamic>? products;
@@ -54,6 +59,7 @@ class OrdersToDeliverViewBuilder extends State<OrdersToDeliverView> {
   List<Widget> listTemp = [];
   Widget? result;
   Map<String, List<ProductInfo>?> storeProducts = {};
+  String? imageNotification;
 
   OrdersToDeliverViewBuilder({
     Key? key,
@@ -64,6 +70,7 @@ class OrdersToDeliverViewBuilder extends State<OrdersToDeliverView> {
     @required this.deliveryProcessId,
     @required this.date,
     @required this.state,
+    @required this.userId,
   });
 
   void parse() {
@@ -104,6 +111,7 @@ class OrdersToDeliverViewBuilder extends State<OrdersToDeliverView> {
       productName = productDetails.get('name');
       storeId = productDetails.get('store_id');
       image = productDetails.get('image');
+      imageNotification = image;
 
       // acceder a los detalles del prodcuto
       DocumentSnapshot storeDetails = await FirebaseFirestore.instance
@@ -169,12 +177,17 @@ class OrdersToDeliverViewBuilder extends State<OrdersToDeliverView> {
               onPressed: () async {
                 BuildContext dialogContext;
                 String? title, description;
+
                 if (state == PREPARING) {
+                  sendNotifications(userId!, "Compra $id",
+                      "Su compra está en en camino.", imageNotification!);
                   title = "Pedido preparado";
                   description =
                       "¿Desea notificarle al usuario ${name!} que su pedido ya va en camino?";
                 }
                 if (state == ONTHEWAY || state == SERVED) {
+                  sendNotifications(userId!, "Compra $id",
+                      "Su compra ha sido entregada.", imageNotification!);
                   title = "Finalizar pedido";
                   description =
                       "¿Desea finalizar el pedido de la persona ${name!}?";
@@ -205,7 +218,10 @@ class OrdersToDeliverViewBuilder extends State<OrdersToDeliverView> {
                                 Navigator.pop(context, true);
                                 return;
                               }
-                              setState(() {});
+                              setState(() {
+                                storeProducts = {};
+                                listTemp = [];
+                              });
                             },
                             child: Container(
                               color: Colors.white,
@@ -226,7 +242,7 @@ class OrdersToDeliverViewBuilder extends State<OrdersToDeliverView> {
           margin:
               const EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
           padding: const EdgeInsets.all(defaultPadding),
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             color: secondaryColor,
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),

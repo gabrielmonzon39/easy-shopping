@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
 import 'package:easy_shopping/widgets/show_image_button.dart';
@@ -8,15 +7,14 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-class CreateStoresSection extends StatefulWidget {
+class SettingsSection extends StatefulWidget {
   final String projectId;
-  const CreateStoresSection({Key? key, required this.projectId})
-      : super(key: key);
+  const SettingsSection({Key? key, required this.projectId}) : super(key: key);
   @override
-  CreateStoresBuilder createState() => CreateStoresBuilder();
+  SettingsSectionBuilder createState() => SettingsSectionBuilder();
 }
 
-class CreateStoresBuilder extends State<CreateStoresSection> {
+class SettingsSectionBuilder extends State<SettingsSection> {
   final nameController = TextEditingController();
   final descriptionController = TextEditingController();
 
@@ -24,32 +22,66 @@ class CreateStoresBuilder extends State<CreateStoresSection> {
   String? fileName;
 
   Future<void> generateStore() async {
-    if (nameController.text == "") {
-      EasyLoading.showError("El nombre del proyecto no puede estar vacío");
-      return;
+    String storeId = await FirebaseFS.getStoreId(uid!);
+
+    if (nameController.text != "") {
+      FirebaseFS.setStoreName(storeId, nameController.text.trim());
     }
 
-    if (descriptionController.text == "") {
-      EasyLoading.showError("La descripción del proyecto no puede estar vacía");
-      return;
+    if (descriptionController.text != "") {
+      FirebaseFS.setStoreDescription(
+          storeId, descriptionController.text.trim());
     }
 
-    if (file == null) {
-      EasyLoading.showError("La imagen del proyecto no puede estar vacía");
-      return;
+    if (file != null) {
+      String projectId = widget.projectId;
+
+      if (!fileName!.contains("jpeg") &&
+          !fileName!.contains("jpg") &&
+          !fileName!.contains("png")) {
+        showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+                  title:
+                      const Text("Ha ocurrido un error al guardar los datos."),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        // dismiss dialog
+                        Navigator.of(ctx).pop();
+                      },
+                      child: Container(
+                        color: Colors.white,
+                        padding: const EdgeInsets.all(14),
+                        child: const Text("Aceptar"),
+                      ),
+                    ),
+                  ],
+                ));
+        return;
+      }
+
+      final destination = '$projectId/$storeId/$fileName';
+      final uploadTask = uploadFile(destination, file!);
+      if (uploadTask == null) return;
+
+      setState(() {
+        task = uploadTask;
+      });
+
+      final snapshot = await uploadTask.whenComplete(() {});
+      final urlDownload = await snapshot.ref.getDownloadURL();
+
+      await FirebaseFS.setStoreImage(storeId, urlDownload);
     }
-    String projectId = widget.projectId;
 
-    String storeId = await FirebaseFS.generateStore(
-        nameController.text, descriptionController.text, projectId);
-
-    if (!fileName!.contains("jpeg") &&
-        !fileName!.contains("jpg") &&
-        !fileName!.contains("png")) {
+    if (file == null &&
+        nameController.text == "" &&
+        descriptionController.text == "") {
       showDialog(
           context: context,
           builder: (ctx) => AlertDialog(
-                title: const Text("Ha ocurrido un error al guardar los datos."),
+                title: const Text("Parece que no hay nada por guardar."),
                 actions: <Widget>[
                   TextButton(
                     onPressed: () {
@@ -64,42 +96,28 @@ class CreateStoresBuilder extends State<CreateStoresSection> {
                   ),
                 ],
               ));
-      return;
+    } else {
+      showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                title: const Text("¡Cambios guardados con éxito!"),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      // dismiss dialog
+                      Navigator.of(ctx).pop();
+                    },
+                    child: Container(
+                      color: Colors.white,
+                      padding: const EdgeInsets.all(14),
+                      child: const Text("Aceptar"),
+                    ),
+                  ),
+                ],
+              ));
     }
 
-    final destination = '$projectId/$storeId/$fileName';
-    final uploadTask = uploadFile(destination, file!);
-    if (uploadTask == null) return;
-
-    setState(() {
-      task = uploadTask;
-    });
-
-    final snapshot = await uploadTask.whenComplete(() {});
-    final urlDownload = await snapshot.ref.getDownloadURL();
-
-    await FirebaseFS.setStoreImage(storeId, urlDownload);
-
     cleanData();
-
-    showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-              title: const Text("Tienda generada con éxito!"),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    // dismiss dialog
-                    Navigator.of(ctx).pop();
-                  },
-                  child: Container(
-                    color: Colors.white,
-                    padding: const EdgeInsets.all(14),
-                    child: const Text("Aceptar"),
-                  ),
-                ),
-              ],
-            ));
   }
 
   void cleanData() {
@@ -168,7 +186,7 @@ class CreateStoresBuilder extends State<CreateStoresSection> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: secondaryColor,
-          title: const Text("Generar Tienda"),
+          title: const Text("Configuración"),
         ),
         body: SafeArea(
             child: Container(
@@ -203,7 +221,7 @@ class CreateStoresBuilder extends State<CreateStoresSection> {
                                 color: Colors.black,
                               ),
                               decoration: InputDecoration(
-                                hintText: "Nombre de la tienda",
+                                hintText: "Nuevo nombre",
                                 hintStyle: TextStyle(
                                   color: Color(0xffA6B0BD),
                                 ),
@@ -240,7 +258,7 @@ class CreateStoresBuilder extends State<CreateStoresSection> {
                                 color: Colors.black,
                               ),
                               decoration: InputDecoration(
-                                hintText: "Descripción de la tienda",
+                                hintText: "Nueva descripción",
                                 hintStyle: TextStyle(
                                   color: Color(0xffA6B0BD),
                                 ),
@@ -263,6 +281,9 @@ class CreateStoresBuilder extends State<CreateStoresSection> {
                                   borderSide: BorderSide(color: secondaryColor),
                                 ),
                               ),
+                            ),
+                            const SizedBox(
+                              height: 20,
                             ),
                             ElevatedButton(
                               onPressed: selectFile,
@@ -310,7 +331,7 @@ class CreateStoresBuilder extends State<CreateStoresSection> {
                         ),
                       ),
                       child: const Text(
-                        "Generar Tienda",
+                        "Guardar cambios",
                         style: TextStyle(
                           fontSize: 23,
                           fontWeight: FontWeight.w600,

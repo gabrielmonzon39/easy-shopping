@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
+import 'package:easy_shopping/widgets/show_image_button.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -74,7 +75,27 @@ class AddProductsBuilder extends State<AddProductsSection> {
 
     if (!fileName.contains("jpeg") &&
         !fileName.contains("jpg") &&
-        !fileName.contains("png")) return;
+        !fileName.contains("png")) {
+      showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                title: const Text("Ha ocurrido un error al guardar los datos."),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      // dismiss dialog
+                      Navigator.of(ctx).pop();
+                    },
+                    child: Container(
+                      color: Colors.white,
+                      padding: const EdgeInsets.all(14),
+                      child: const Text("Aceptar"),
+                    ),
+                  ),
+                ],
+              ));
+      return;
+    }
 
     String storeId = await FirebaseFS.getStoreId(uid!);
     DocumentSnapshot? storeDetails = await FirebaseFS.getStoreDetails(storeId);
@@ -160,7 +181,7 @@ class AddProductsBuilder extends State<AddProductsSection> {
                 margin: const EdgeInsets.only(
                     top: 20, bottom: 20, left: 20, right: 20),
                 padding: const EdgeInsets.all(defaultPadding),
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
@@ -189,7 +210,7 @@ class AddProductsBuilder extends State<AddProductsSection> {
                                 fontWeight: FontWeight.w400,
                                 color: Colors.black,
                               ),
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 hintText: "Nombre del producto",
                                 hintStyle: TextStyle(
                                   color: Color(0xffA6B0BD),
@@ -226,7 +247,7 @@ class AddProductsBuilder extends State<AddProductsSection> {
                                 fontWeight: FontWeight.w400,
                                 color: Colors.black,
                               ),
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 hintText: "Descripción del producto",
                                 hintStyle: TextStyle(
                                   color: Color(0xffA6B0BD),
@@ -266,7 +287,7 @@ class AddProductsBuilder extends State<AddProductsSection> {
                                     fontWeight: FontWeight.w400,
                                     color: Colors.black,
                                   ),
-                                  decoration: const InputDecoration(
+                                  decoration: InputDecoration(
                                     hintText: "Precio",
                                     hintStyle: TextStyle(
                                       color: Color(0xffA6B0BD),
@@ -303,7 +324,7 @@ class AddProductsBuilder extends State<AddProductsSection> {
                                       fontWeight: FontWeight.w400,
                                       color: Colors.black,
                                     ),
-                                    decoration: const InputDecoration(
+                                    decoration: InputDecoration(
                                       hintText: "Existencias",
                                       hintStyle: TextStyle(
                                         color: Color(0xffA6B0BD),
@@ -395,16 +416,13 @@ class AddProductsBuilder extends State<AddProductsSection> {
                       height: 15,
                     ),
                     if (file != null)
-                      Text(
-                        fileName,
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black,
-                        ),
+                      ShowImageButton(
+                        imagePath: filePath,
+                        imageName: fileName,
+                        buttonColor: secondaryColor,
                       ),
                     const SizedBox(
-                      height: 45,
+                      height: 35,
                     ),
                     ElevatedButton(
                       onPressed: uploadProduct,

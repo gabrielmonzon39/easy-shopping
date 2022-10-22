@@ -66,7 +66,7 @@ class BuyProductBuilder extends State<BuyProduct> {
           margin:
               const EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
           padding: const EdgeInsets.all(defaultPadding),
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             color: secondaryColor,
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
@@ -188,31 +188,6 @@ class BuyProductBuilder extends State<BuyProduct> {
                         ),
                       ],
                     ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text("A domicilio:",
-                            style:
-                                TextStyle(fontSize: 18, color: Colors.white)),
-                        Checkbox(
-                          value: selected,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              selected = value!;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                    if (selected)
-                      const Center(
-                        child: Text("Se le agregará Q$deliverPrice de envío",
-                            style:
-                                TextStyle(fontSize: 18, color: Colors.white)),
-                      ),
                     const SizedBox(
                       height: 20,
                     ),

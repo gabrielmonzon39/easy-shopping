@@ -55,7 +55,7 @@ class OrderView extends StatelessWidget {
         width: double.infinity,
         margin: const EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
         padding: const EdgeInsets.all(defaultPadding),
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: ternaryColor,
           borderRadius: BorderRadius.all(Radius.circular(10)),
         ),
@@ -182,9 +182,9 @@ class OrderView extends StatelessWidget {
           margin:
               const EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
           padding: const EdgeInsets.all(defaultPadding),
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             color: secondaryColor,
-            borderRadius: BorderRadius.all(Radius.circular(10)),
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
           ),
           child: SingleChildScrollView(
             child: Column(

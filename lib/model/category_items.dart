@@ -43,7 +43,7 @@ var deliveryManItemsDemo = [
     icon: "3",
   ),
   CategoryItem(
-    name: "Notificaciones",
+    name: "Noticias",
     icon: "4",
   ),
 ];
@@ -54,7 +54,7 @@ var superAdminItemsDemo = [
     icon: "1",
   ),
   CategoryItem(
-    name: "Generar Project Manager",
+    name: "Generar Administrador de Proyecto",
     icon: "1",
   ),
 ];
@@ -65,7 +65,7 @@ var projectManagerItemsDemo = [
     icon: "1",
   ),
   CategoryItem(
-    name: "Generar Store Manager",
+    name: "Generar Administrador\nde Tienda",
     icon: "1",
   ),
   CategoryItem(
@@ -73,7 +73,7 @@ var projectManagerItemsDemo = [
     icon: "1",
   ),
   CategoryItem(
-    name: "Generar Delivery Man",
+    name: "Generar Repartidor",
     icon: "1",
   ),
 ];

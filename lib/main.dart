@@ -1,11 +1,14 @@
-// ignore_for_file: must_call_super
+// ignore_for_file: must_call_super, avoid_print
 
 import 'package:easy_shopping/constants.dart';
+import 'package:easy_shopping/model/colors.dart';
 import 'package:easy_shopping/model/firebase.dart';
+import 'package:easy_shopping/model/notifications.dart';
 import 'package:easy_shopping/model/shopping_cart.dart';
 import 'package:easy_shopping/screens/main_screens/mainscreen.dart';
 import 'package:easy_shopping/screens/on_board/onboard.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
@@ -15,9 +18,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   GoogleSignInProvider.firebaseApp = await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(_messageHandler);
   initEasyLoading();
   myShoppingCart = ShoppingCart();
   runApp(const MyApp());
+}
+
+Future<void> _messageHandler(RemoteMessage message) async {
+  print('background message ${message.notification!.body}');
 }
 
 void initEasyLoading() {
@@ -45,6 +53,10 @@ class MyAppStateLess extends State<MyApp> {
 
   void getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    messaging = FirebaseMessaging.instance;
+    messagingToken = await messaging.getToken();
+    minBuy = await FirebaseFS.getMinBuy();
+    //print("-------------------FUNCOOOOOOOOO-----------------------");
     try {
       setState(() async {
         isAlreadyLogged = prefs.getBool('isAlreadyLogged')!;
@@ -63,6 +75,27 @@ class MyAppStateLess extends State<MyApp> {
   @override
   void initState() {
     getData();
+    FirebaseMessaging.onMessage.listen((RemoteMessage event) {
+      /*showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text("Notificación"),
+              content: Text(event.notification!.body!),
+              actions: [
+                TextButton(
+                  child: const Text("Ok"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            );
+          });*/
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      print('Message clicked!');
+    });
   }
 
   @override

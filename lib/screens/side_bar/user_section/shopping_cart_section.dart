@@ -33,7 +33,7 @@ class ShoppingCartBuilder extends State<ShoppingCartSection> {
         width: double.infinity,
         margin: const EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
         padding: const EdgeInsets.all(defaultPadding),
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: ternaryColor,
           borderRadius: BorderRadius.all(Radius.circular(10)),
         ),
@@ -57,12 +57,7 @@ class ShoppingCartBuilder extends State<ShoppingCartSection> {
                 ElevatedButton(
                     onPressed: () {
                       myShoppingCart!.remove(productId);
-                      Navigator.pop(context);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const ShoppingCartSection(),
-                          ));
+                      setState(() {});
                     },
                     child: const Icon(
                       Icons.close,
@@ -173,160 +168,211 @@ class ShoppingCartBuilder extends State<ShoppingCartSection> {
         backgroundColor: secondaryColor,
         title: const Text("Carrito de compras"),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 20,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              if (!myShoppingCart!.isEmpty())
-                ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (Set<MaterialState> states) {
-                          return Colors.red;
-                        },
-                      ),
-                    ),
-                    onPressed: () {
-                      myShoppingCart!.clear();
-                      Navigator.pop(context);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const ShoppingCartSection(),
-                          ));
-                    },
-                    child: const Text(
-                      'Cancelar',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    )),
-              if (!myShoppingCart!.isEmpty())
-                ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (Set<MaterialState> states) {
-                          return Colors.green;
-                        },
-                      ),
-                    ),
-                    onPressed: () async {
-                      int total = 0;
-                      for (Map<String, dynamic> product
-                          in myShoppingCart!.get()) {
-                        String id = product['product_id'];
-                        String quantity = product['buy_quantity'].toString();
-                        DocumentSnapshot productDetails =
-                            await FirebaseFirestore.instance
-                                .collection('products')
-                                .doc(id)
-                                .get();
-                        int? totalProduct = (int.parse(quantity) *
-                            productDetails.get('price')) as int?;
-                        total += totalProduct!;
-                      }
-                      if (total < minBuy) {
-                        showDialog(
-                            context: context,
-                            builder: (ctx) => const AlertDialog(
-                                  title: Text(
-                                      "La compra debe ser de mínimo Q$minBuy para efectuarse."),
-                                ));
-                        return;
-                      }
-                      // pendiente
-                      bool result = await FirebaseFS.buyProducts(
-                          myShoppingCart!.get(), selected);
-                      myShoppingCart!.clear();
-                      if (!result) {
-                        showDialog(
-                            context: context,
-                            builder: (ctx) => const AlertDialog(
-                                  title: Text("Ha ocurrido un error"),
-                                ));
-                        return;
-                      }
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: const Text("Productos comprados"),
-                              content: Text(
-                                  "Sus productos han sido comprados, el total a cancelar es de Q${total.toString()}"),
-                              actions: <Widget>[
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context, rootNavigator: true)
-                                        .pop(true);
-                                    Navigator.pop(context, true);
-                                  },
-                                  child: Container(
-                                    color: Colors.white,
-                                    padding: const EdgeInsets.all(14),
-                                    child: const Text("Aceptar"),
-                                  ),
-                                ),
-                              ],
-                            );
-                          });
-                    },
-                    child: const Text(
-                      'Comprar',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    )),
-            ],
-          ),
-          if (!myShoppingCart!.isEmpty())
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text("A domicilio:",
-                    style: TextStyle(fontSize: 18, color: Colors.black)),
-                Checkbox(
-                  value: selected,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      selected = value!;
-                    });
-                  },
+      body: Container(
+        margin: const EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(
+              height: 20,
+            ),
+            if (myShoppingCart!.isEmpty())
+              Center(
+                  child: Column(children: const [
+                SizedBox(
+                  height: 100,
                 ),
+                Text(
+                  "¡Ups! Parece que no tiene productos en su carrito. Las compras que haga en las tiendas aparecerán aquí.",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black,
+                  ),
+                ),
+                SizedBox(
+                  height: 100,
+                ),
+                Icon(
+                  Icons.sentiment_very_dissatisfied,
+                  size: 100,
+                ),
+              ])),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                if (!myShoppingCart!.isEmpty())
+                  ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                            return Colors.red;
+                          },
+                        ),
+                      ),
+                      onPressed: () {
+                        myShoppingCart!.clear();
+                        setState(() {});
+                      },
+                      child: const Text(
+                        'Cancelar',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      )),
+                if (!myShoppingCart!.isEmpty())
+                  ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                            return Colors.green;
+                          },
+                        ),
+                      ),
+                      onPressed: () async {
+                        int total = 0;
+                        for (Map<String, dynamic> product
+                            in myShoppingCart!.get()) {
+                          String id = product['product_id'];
+                          String quantity = product['buy_quantity'].toString();
+                          DocumentSnapshot productDetails =
+                              await FirebaseFirestore.instance
+                                  .collection('products')
+                                  .doc(id)
+                                  .get();
+                          int? totalProduct = (int.parse(quantity) *
+                              productDetails.get('price')) as int?;
+                          total += totalProduct!;
+                        }
+                        if (total < minBuy) {
+                          showDialog(
+                              context: context,
+                              builder: (ctx) => AlertDialog(
+                                    title: Text(
+                                        "La compra debe ser de mínimo Q$minBuy para efectuarse."),
+                                  ));
+                          return;
+                        }
+                        // pendiente
+                        bool result = await FirebaseFS.buyProducts(
+                            myShoppingCart!.get(), selected);
+                        myShoppingCart!.clear();
+                        if (!result) {
+                          showDialog(
+                              context: context,
+                              builder: (ctx) => const AlertDialog(
+                                    title: Text("Ha ocurrido un error"),
+                                  ));
+                          return;
+                        }
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              total = (selected) ? total + deliverPrice : total;
+                              return AlertDialog(
+                                title: const Text("Productos comprados"),
+                                content: Text(
+                                    "Sus productos han sido comprados, el total a cancelar es de Q${total.toString()}"),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context, rootNavigator: true)
+                                          .pop(true);
+                                      setState(() {});
+                                    },
+                                    child: Container(
+                                      color: Colors.white,
+                                      padding: const EdgeInsets.all(14),
+                                      child: const Text("Aceptar"),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            });
+                      },
+                      child: const Text(
+                        'Comprar',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      )),
               ],
             ),
-          if (selected && !myShoppingCart!.isEmpty())
-            const Center(
-              child: Text("Se le agregará Q4.00 de envío",
-                  style: TextStyle(fontSize: 18, color: Colors.black)),
+            if (!myShoppingCart!.isEmpty())
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("A domicilio:",
+                      style: TextStyle(fontSize: 18, color: Colors.black)),
+                  Checkbox(
+                    value: selected,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        selected = value!;
+                      });
+                    },
+                  ),
+                ],
+              ),
+            if (selected && !myShoppingCart!.isEmpty())
+              const Center(
+                child: Text("Se le agregará Q$deliverPrice de envío",
+                    style: TextStyle(fontSize: 18, color: Colors.black)),
+              ),
+            const SizedBox(
+              height: 20,
             ),
-          const SizedBox(
-            height: 20,
-          ),
-          ////////////////////////////////////////////////////////////////
-          Expanded(
-              child: SingleChildScrollView(
-            child: FutureBuilder<bool>(
-                future: getProducts(),
-                builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                  if (!snapshot.hasData) {
-                    // not loaded
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else if (snapshot.hasError) {
-                    // some error
-                    return Column(children: const [
+            ////////////////////////////////////////////////////////////////
+            Expanded(
+                child: SingleChildScrollView(
+              child: FutureBuilder<bool>(
+                  future: getProducts(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                    if (!snapshot.hasData) {
+                      // not loaded
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else if (snapshot.hasError) {
+                      // some error
+                      return Column(children: const [
+                        Text(
+                          "Lo sentimos, ha ocurrido un error",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 100,
+                        ),
+                        Icon(
+                          Icons.close,
+                          size: 100,
+                        ),
+                      ]);
+                    } else {
+                      // loaded
+                      bool? valid = snapshot.data;
+                      if (valid!) {
+                        return result!;
+                      }
+                    }
+                    return Center(
+                        child: Column(children: const [
+                      SizedBox(
+                        height: 100,
+                      ),
                       Text(
-                        "Lo sentimos, ha ocurrido un error",
+                        "¡Ups! Ha ocurrido un error al obtener los datos.",
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w600,
@@ -337,44 +383,17 @@ class ShoppingCartBuilder extends State<ShoppingCartSection> {
                         height: 100,
                       ),
                       Icon(
-                        Icons.close,
+                        Icons.sentiment_very_dissatisfied,
                         size: 100,
                       ),
-                    ]);
-                  } else {
-                    // loaded
-                    bool? valid = snapshot.data;
-                    if (valid!) {
-                      return result!;
-                    }
-                  }
-                  return Center(
-                      child: Column(children: const [
-                    SizedBox(
-                      height: 100,
-                    ),
-                    Text(
-                      "¡Ups! Ha ocurrido un error al obtener los datos.",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 100,
-                    ),
-                    Icon(
-                      Icons.sentiment_very_dissatisfied,
-                      size: 100,
-                    ),
-                  ]));
-                }),
-          )),
-          const SizedBox(
-            height: 20,
-          ),
-        ],
+                    ]));
+                  }),
+            )),
+            const SizedBox(
+              height: 20,
+            ),
+          ],
+        ),
       ),
     );
   }

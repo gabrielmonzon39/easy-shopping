@@ -31,7 +31,7 @@ class StoreProductsInOrderView extends StatelessWidget {
       children: [
         Container(
           width: double.infinity,
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             color: ternaryColor,
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),

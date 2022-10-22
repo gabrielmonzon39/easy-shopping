@@ -1,10 +1,7 @@
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:easy_shopping/model/notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
@@ -19,15 +16,13 @@ class AddOffersBuilder extends State<AddOffersSection> {
   final priceController = TextEditingController();
   String? selectedProductId;
   int? selectedProductPrice;
-  Map<String, int> products_prices = {};
+  Map<String, int> productPrices = {};
   String selected = offerTypes[0];
-  UploadTask? task;
-  File? file;
 
   DateTime initialPick = DateTime.now();
   DateTime finalPick = DateTime.now();
 
-  void ingresarOferta() {
+  void ingresarOferta() async {
     if (selectedProductId == null) {
       EasyLoading.showError("Debe de seleccionar un producto");
       return;
@@ -60,6 +55,11 @@ class AddOffersBuilder extends State<AddOffersSection> {
         selectedProductId!,
         priceController.text.isEmpty ? null : int.parse(priceController.text));
 
+    sendNotifications(
+        USER,
+        selected,
+        "Aprovecha esta gran oferta por tiempo limitado. Entra para ver más detalles.",
+        await FirebaseFS.getImageOfProduct(selectedProductId!));
     EasyLoading.showSuccess("Oferta agregada con éxito");
     cleanData();
   }
@@ -113,7 +113,7 @@ class AddOffersBuilder extends State<AddOffersSection> {
                 margin: const EdgeInsets.only(
                     top: 20, bottom: 20, left: 20, right: 20),
                 padding: const EdgeInsets.all(defaultPadding),
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
@@ -149,7 +149,7 @@ class AddOffersBuilder extends State<AddOffersSection> {
                                         // Array list of items
                                         items:
                                             snapshot.data?.docs.map((product) {
-                                          products_prices.addEntries([
+                                          productPrices.addEntries([
                                             MapEntry(product.id,
                                                 product.get("price").toInt())
                                           ]);
@@ -165,7 +165,7 @@ class AddOffersBuilder extends State<AddOffersSection> {
                                             () {
                                               selectedProductId = value!;
                                               selectedProductPrice =
-                                                  products_prices[
+                                                  productPrices[
                                                       selectedProductId!];
                                             },
                                           );
@@ -285,7 +285,7 @@ class AddOffersBuilder extends State<AddOffersSection> {
                                       fontWeight: FontWeight.w400,
                                       color: Colors.black,
                                     ),
-                                    decoration: const InputDecoration(
+                                    decoration: InputDecoration(
                                       hintText: "Nuevo Precio",
                                       hintStyle: TextStyle(
                                         color: Color(0xffA6B0BD),

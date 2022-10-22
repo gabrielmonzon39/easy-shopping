@@ -75,6 +75,16 @@ class OptionConditions {
     return currentRoll == STORE_MANAGER;
   }
 
+  static bool settings() {
+    return currentRoll == STORE_MANAGER;
+  }
+
+  /////////////////    PROJECT MANGER     /////////////////
+  
+  static bool settingsProjectManager() {
+    return currentRoll == PROJECT_MANAGER;
+  }
+
   /////////////////    GENERAL OPTIONS    /////////////////
 
   static bool notifications() {

@@ -91,6 +91,7 @@ class DeliveryHistoryBuilder extends State<DeliveryHistory> {
                 DateTime.parse(endPick).add(const Duration(days: 1)))) {
           await orderByUid(document);
           i++;
+          String buyerName = await FirebaseFS.getName(document.get('user_id'));
           if (valid) {
             list.add(Column(
               children: [
@@ -125,6 +126,14 @@ class DeliveryHistoryBuilder extends State<DeliveryHistory> {
                       ),
                       child: Column(
                         children: [
+                          Text(
+                            buyerName,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
                           Text(
                             "Compra : ${document.id}",
                             style: const TextStyle(
@@ -174,7 +183,7 @@ class DeliveryHistoryBuilder extends State<DeliveryHistory> {
           width: double.infinity,
           margin:
               const EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
@@ -302,7 +311,7 @@ class DeliveryHistoryBuilder extends State<DeliveryHistory> {
                           (BuildContext context, AsyncSnapshot<bool> snapshot) {
                         if (!snapshot.hasData) {
                           // not loaded
-                          return const Center(
+                          return Center(
                             child: CircularProgressIndicator(
                                 valueColor: AlwaysStoppedAnimation<Color>(
                                     primaryColor)),

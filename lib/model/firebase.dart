@@ -1,16 +1,19 @@
 import 'dart:math';
+import 'package:easy_shopping/constants.dart';
+import 'package:easy_shopping/model/notifications.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 // person role
 const String NONE = "none";
-const String DELIVERY_PENDING = "pending";
 const String USER = "user";
 const String STORE_MANAGER = "store_manager";
 const String PROJECT_MANAGER = "project_manager";
 const String DELIVERY_MAN = "delivery_man";
-const String PROVIDER = "provider";
 const String SUPER_ADMIN = "super_admin";
+
+// order delivery status
+const String DELIVERY_PENDING = "pending";
 
 // product state
 const String PREPARING = "preparing";
@@ -98,6 +101,30 @@ class FirebaseFS {
     return "0";
   }
 
+  static Future<int> getPrimaryColor(String projectId) async {
+    DocumentSnapshot? colorsDetail = await FirebaseFirestore.instance
+        .collection('colors')
+        .doc(projectId)
+        .get();
+    return colorsDetail.get('primary');
+  }
+
+  static Future<int> getSecondaryColor(String projectId) async {
+    DocumentSnapshot? colorsDetail = await FirebaseFirestore.instance
+        .collection('colors')
+        .doc(projectId)
+        .get();
+    return colorsDetail.get('secondary');
+  }
+
+  static Future<int> getTernaryColor(String projectId) async {
+    DocumentSnapshot? colorsDetail = await FirebaseFirestore.instance
+        .collection('colors')
+        .doc(projectId)
+        .get();
+    return colorsDetail.get('ternary');
+  }
+
   static Future<void> assingDeliverMan(
       String deliveryProcessId, String deliveryManId) async {
     FirebaseFirestore.instance
@@ -156,13 +183,41 @@ class FirebaseFS {
     } catch (e) {
       print(e.toString());
     }
-    return "0";
+    return NONE;
+  }
+
+  static Future<String> getProjectIdForStoreManager(String uid) async {
+    FirebaseFirestore instance = FirebaseFirestore.instance;
+    DocumentSnapshot? documentDetails;
+    try {
+      String storeId = await FirebaseFS.getStoreId(uid);
+      documentDetails = await instance.collection('stores').doc(storeId).get();
+      return documentDetails.get('project_id');
+    } catch (e) {
+      print(e.toString());
+    }
+    return NONE;
+  }
+
+  static Future<String> getProjectIdForDeliveryMan(String uid) async {
+    FirebaseFirestore instance = FirebaseFirestore.instance;
+    DocumentSnapshot? documentDetails;
+    String deliveryManId;
+    try {
+      documentDetails = await instance.collection('users').doc(uid).get();
+      deliveryManId = documentDetails.get('delivery_man_id');
+      documentDetails =
+          await instance.collection('delivery_mans').doc(deliveryManId).get();
+      return documentDetails.get('project_id');
+    } catch (e) {
+      print(e.toString());
+    }
+    return NONE;
   }
 
   static Future<String> getProjectIdForProjectManager(String? uid) async {
     FirebaseFirestore instance = FirebaseFirestore.instance;
     DocumentSnapshot? documentDetails;
-    String? homeId;
     String? projectId;
     try {
       documentDetails = await instance.collection('users').doc(uid).get();
@@ -396,6 +451,7 @@ class FirebaseFS {
       String storeId, int orderId, int deliveryProcessId) async {
     if (products.isEmpty) return;
     String now = DateFormat("h:mm a  dd-MM-yyyy").format(DateTime.now());
+    String name = await FirebaseFS.getName(uid!);
     try {
       ////////////////  MAKE THE SALE
       FirebaseFirestore.instance.collection('sales').add({
@@ -405,6 +461,7 @@ class FirebaseFS {
         'user_id': uid,
         'store_id': storeId,
         'order_id': orderId.toString(),
+        'name': name,
       });
     } catch (e) {
       print(e.toString());
@@ -442,17 +499,6 @@ class FirebaseFS {
       ////////////////  MAKE THE SALE(S)
       prepareSales(products, orderId, deliveryProcessId);
 
-      ////////////////  MAKE THE ORDER
-      DocumentReference orderDocument = FirebaseFirestore.instance
-          .collection('orders')
-          .doc(orderId.toString());
-      orderDocument.set({
-        'delivery_processId': deliveryProcessId,
-        'date': now,
-        'products': products,
-        'user_id': uid,
-      });
-
       //////////////// MAKE THE DELIVERY PROCESS
       DocumentReference deliveryProcessDocument = FirebaseFirestore.instance
           .collection('delivery_processes')
@@ -463,6 +509,7 @@ class FirebaseFS {
         'state': (deliver) ? PREPARING : SERVED,
       });
 
+      int totalOrder = 0;
       //////////////// UPDATE THE QUANTITY AVAILABLE FOR EACH PRODUCT
       for (Map<dynamic, dynamic> element in products) {
         DocumentSnapshot productDetail = await FirebaseFirestore.instance
@@ -471,6 +518,8 @@ class FirebaseFS {
             .get();
         int total = productDetail.get('quantity');
         int bought = productDetail.get('bought');
+        totalOrder += int.parse(element['buy_quantity'].toString()) *
+            int.parse(element['price'].toString());
         total -= int.parse(element['buy_quantity'].toString());
         bought += int.parse(element['buy_quantity'].toString());
         FirebaseFirestore.instance
@@ -478,6 +527,26 @@ class FirebaseFS {
             .doc(element['product_id'])
             .update({'quantity': total, 'bought': bought});
       }
+
+      ////////////////  MAKE THE ORDER
+      DocumentReference orderDocument = FirebaseFirestore.instance
+          .collection('orders')
+          .doc(orderId.toString());
+      orderDocument.set({
+        'delivery_processId': deliveryProcessId,
+        'date': now,
+        'products': products,
+        'user_id': uid,
+        'total': totalOrder,
+      });
+
+      //////////////// SEND THE NOTIFICATIONS TO THE DELIVERY MANS
+      sendNotifications(
+          DELIVERY_MAN,
+          "Nueva solicitud de compra",
+          "Un cliente acaba de realizar un pedido. Toca para ver más detalles",
+          "");
+
       return true;
     } catch (e) {
       print(e.toString());
@@ -559,6 +628,54 @@ class FirebaseFS {
         .update({'image': image});
   }
 
+  static Future<void> setProjectImage(String projectId, String image) async {
+    await FirebaseFirestore.instance
+        .collection('projects')
+        .doc(projectId)
+        .update({'image': image});
+  }
+
+  static Future<void> setProjectColors(
+      String projectId, int primary, int secondary, int ternary) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('colors')
+          .doc(projectId)
+          .update(
+              {'primary': primary, 'secondary': secondary, 'ternary': ternary});
+    } catch (e) {
+      await FirebaseFirestore.instance.collection('colors').doc(projectId).set(
+          {'primary': primary, 'secondary': secondary, 'ternary': ternary});
+    }
+  }
+
+  static Future<int> getMinBuy() async {
+    try {
+      DocumentSnapshot details = await FirebaseFirestore.instance
+          .collection('constants')
+          .doc("minBuy")
+          .get();
+      return details.get('quantity');
+    } catch (e) {
+      return defaultMinBuy;
+    }
+  }
+
+  static Future<void> setStoreName(String storeId, String name) async {
+    await FirebaseFirestore.instance
+        .collection('stores')
+        .doc(storeId)
+        .update({'name': name});
+  }
+
+  static Future<void> setStoreDescription(
+      String storeId, String description) async {
+    await FirebaseFirestore.instance
+        .collection('stores')
+        .doc(storeId)
+        .update({'description': description});
+  }
+
   static bool invalidParam(String param) {
     return param == "";
   }
@@ -601,7 +718,7 @@ class FirebaseFS {
         continue;
       }
     }
-    return [NONE];
+    return [NONE, SERVED];
   }
 
   static Future<List<String>> getDeliveryManInfo(String deliveryManId) async {
@@ -642,6 +759,14 @@ class FirebaseFS {
       }
     }
     return result;
+  }
+
+  static Future<String> getImageOfProduct(String productId) async {
+    DocumentSnapshot productDetail = await FirebaseFirestore.instance
+        .collection('products')
+        .doc(productId)
+        .get();
+    return productDetail.get('image');
   }
 
   static Future<List<String>> getSalesByUid(String uid) async {
@@ -836,6 +961,17 @@ class FirebaseFS {
         .update({'role': role});
 
     currentRoll = role;
+
+    // add the user messaging token to firebase to use
+    // later on notifications
+    FirebaseFirestore.instance
+        .collection('messaging_tokens')
+        .doc(uid)
+        .set({'role': role, 'token': messagingToken});
+
+    // subscribe the user to the corresponding topic
+    messaging.subscribeToTopic(role);
+    messaging.subscribeToTopic(uid!);
 
     switch (currentRoll) {
       case USER:

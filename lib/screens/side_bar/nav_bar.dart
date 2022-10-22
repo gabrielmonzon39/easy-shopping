@@ -3,14 +3,17 @@
 import 'package:easy_shopping/auth/google_sign_in_provider.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/main.dart';
+import 'package:easy_shopping/model/firebase.dart';
 import 'package:easy_shopping/screens/side_bar/delivery_man_section/active_orders.dart';
 import 'package:easy_shopping/screens/side_bar/delivery_man_section/delivery_history.dart';
 import 'package:easy_shopping/screens/side_bar/delivery_man_section/orders_to_deliver.dart';
+import 'package:easy_shopping/screens/side_bar/project_manager_section/settings_project_manager.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/add_products.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/best_selling_products.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/income.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/information_section.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/products_section.dart';
+import 'package:easy_shopping/screens/side_bar/store_section/settings.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/store_sales_section.dart';
 import 'package:easy_shopping/screens/side_bar/user_section/family_section.dart';
 import 'package:easy_shopping/screens/side_bar/options_conditions.dart';
@@ -64,14 +67,14 @@ class _NavBar extends State<NavBar> {
             UserAccountsDrawerHeader(
               accountName: Text(name),
               accountEmail: Text(email),
-              currentAccountPicture: const CircleAvatar(
+              currentAccountPicture: CircleAvatar(
                 backgroundColor: ternaryColor,
                 radius: 35.0,
-                backgroundImage: AssetImage(
+                backgroundImage: const AssetImage(
                   'assets/images/logo.jpg',
                 ),
               ),
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: secondaryColor,
               ),
             ),
@@ -129,7 +132,7 @@ class _NavBar extends State<NavBar> {
             if (OptionConditions.pendingOrder())
               ListTile(
                 leading: const Icon(Icons.timer),
-                title: const Text('Pedidos pendientes'),
+                title: const Text('Pedidos pendientes de entrega'),
                 onTap: () {
                   Navigator.push(
                       context,
@@ -313,15 +316,52 @@ class _NavBar extends State<NavBar> {
               ),
             if (OptionConditions.storeInformation()) const Divider(),
 
+            /// **************  Configuración  **************
+            if (OptionConditions.settings())
+              ListTile(
+                leading: const Icon(Icons.settings),
+                title: const Text('Configuración'),
+                onTap: () async {
+                  String projectId = await FirebaseFS.getProjectId(uid!);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SettingsSection(
+                              projectId: projectId,
+                            )),
+                  );
+                },
+              ),
+            if (OptionConditions.settings()) const Divider(),
+
+            //////////////////////////////////////////////////////
+            /////////////////   PROJECT MANAGER  /////////////////
+            //////////////////////////////////////////////////////
+
+            /// **************  Configuración  **************
+            if (OptionConditions.settingsProjectManager())
+              ListTile(
+                leading: const Icon(Icons.settings),
+                title: const Text('Configuración'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const SettingsPMSection()),
+                  );
+                },
+              ),
+            if (OptionConditions.settingsProjectManager()) const Divider(),
+
             /////////////////////////////////////////////////////////
             /////////////////    GENERAL OPTIONS    /////////////////
             /////////////////////////////////////////////////////////
 
-            /// **************  Notificaciones  **************
+            /// **************  Noticias  **************
             if (OptionConditions.notifications())
               ListTile(
                 leading: const Icon(Icons.notifications),
-                title: const Text('Notificaciones'),
+                title: const Text('Noticias'),
                 onTap: () {},
               ),
             if (OptionConditions.notifications()) const Divider(),

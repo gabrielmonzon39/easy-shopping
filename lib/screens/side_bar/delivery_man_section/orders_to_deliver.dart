@@ -116,6 +116,8 @@ class OrdersToDeliverBuilder extends State<OrdersToDeliver> {
                   await FirebaseFS.getHomeOf(document.get('user_id')));
               String name = await FirebaseFS.getName(document.get('user_id'));
               available = true;
+              String buyerName =
+                  await FirebaseFS.getName(document.get('user_id'));
               list.add(Column(
                 children: [
                   SizedBox(
@@ -133,6 +135,7 @@ class OrdersToDeliverBuilder extends State<OrdersToDeliver> {
                                       deliveryManId: deliveryManId,
                                       date: document.get('date'),
                                       state: document2.get('state'),
+                                      userId: document.get('user_id'),
                                     )),
                           ).then((value) {
                             setState(() {
@@ -150,6 +153,14 @@ class OrdersToDeliverBuilder extends State<OrdersToDeliver> {
                         ),
                         child: Column(
                           children: [
+                            Text(
+                              buyerName,
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
                             Text(
                               "Compra : ${document.id}",
                               style: const TextStyle(
@@ -226,7 +237,7 @@ class OrdersToDeliverBuilder extends State<OrdersToDeliver> {
           width: double.infinity,
           margin:
               const EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
