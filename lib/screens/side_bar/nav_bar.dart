@@ -158,21 +158,6 @@ class _NavBar extends State<NavBar> {
               ),
             if (OptionConditions.orderHistory()) const Divider(),
 
-            /// **************  Información  **************
-            if (OptionConditions.userInformation())
-              ListTile(
-                leading: const Icon(Icons.info),
-                title: const Text('Información'),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const UserInformationSection()),
-                  );
-                },
-              ),
-            if (OptionConditions.userInformation()) const Divider(),
-
             ///////////////////////////////////////////////////////////////
             /////////////////    DELIVERY MAN OPTIONS     /////////////////
             ///////////////////////////////////////////////////////////////
@@ -356,6 +341,21 @@ class _NavBar extends State<NavBar> {
             /////////////////////////////////////////////////////////
             /////////////////    GENERAL OPTIONS    /////////////////
             /////////////////////////////////////////////////////////
+
+            /// **************  Información  **************
+            if (OptionConditions.userInformation())
+              ListTile(
+                leading: const Icon(Icons.info),
+                title: const Text('Información'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const UserInformationSection()),
+                  );
+                },
+              ),
+            if (OptionConditions.userInformation()) const Divider(),
 
             /// **************  Noticias  **************
             if (OptionConditions.notifications())

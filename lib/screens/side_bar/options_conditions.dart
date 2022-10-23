@@ -31,10 +31,6 @@ class OptionConditions {
     return currentRoll == USER;
   }
 
-  static bool userInformation() {
-    return currentRoll == USER;
-  }
-
   /////////////////    DELIVERY MAN  OPTIONS    /////////////////
 
   static bool ordersToDeliver() {
@@ -80,12 +76,16 @@ class OptionConditions {
   }
 
   /////////////////    PROJECT MANGER     /////////////////
-  
+
   static bool settingsProjectManager() {
     return currentRoll == PROJECT_MANAGER;
   }
 
   /////////////////    GENERAL OPTIONS    /////////////////
+
+  static bool userInformation() {
+    return currentRoll == USER || currentRoll == DELIVERY_MAN;
+  }
 
   static bool notifications() {
     return currentRoll != NONE;
