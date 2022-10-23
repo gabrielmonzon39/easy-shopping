@@ -179,15 +179,11 @@ class OrdersToDeliverViewBuilder extends State<OrdersToDeliverView> {
                 String? title, description;
 
                 if (state == PREPARING) {
-                  sendNotifications(userId!, "Compra $id",
-                      "Su compra está en en camino.", imageNotification!);
                   title = "Pedido preparado";
                   description =
                       "¿Desea notificarle al usuario ${name!} que su pedido ya va en camino?";
                 }
                 if (state == ONTHEWAY || state == SERVED) {
-                  sendNotifications(userId!, "Compra $id",
-                      "Su compra ha sido entregada.", imageNotification!);
                   title = "Finalizar pedido";
                   description =
                       "¿Desea finalizar el pedido de la persona ${name!}?";
@@ -203,8 +199,18 @@ class OrdersToDeliverViewBuilder extends State<OrdersToDeliverView> {
                           TextButton(
                             onPressed: () async {
                               if (state == PREPARING) {
+                                sendNotifications(
+                                    userId!,
+                                    "Compra $id",
+                                    "Su compra está en camino.",
+                                    imageNotification!);
                                 state = ONTHEWAY;
                               } else if (state == ONTHEWAY) {
+                                sendNotifications(
+                                    userId!,
+                                    "Compra $id",
+                                    "Su compra ha sido entregada.",
+                                    imageNotification!);
                                 state = SERVED;
                               } else if (state == SERVED) {
                                 state = SERVED;
@@ -214,7 +220,6 @@ class OrdersToDeliverViewBuilder extends State<OrdersToDeliverView> {
                               Navigator.of(context, rootNavigator: true)
                                   .pop(true);
                               if (state == SERVED) {
-                                Navigator.pop(context, true);
                                 Navigator.pop(context, true);
                                 return;
                               }

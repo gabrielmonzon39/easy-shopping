@@ -11,6 +11,7 @@ Future<void> getAndSetColors() async {
     secondaryColor = Color(await FirebaseFS.getSecondaryColor(projectId));
     ternaryColor = Color(await FirebaseFS.getTernaryColor(projectId));
   } catch (e) {
+    print("-----------ERROR----------------");
     primaryColor = defaultPrimaryColor;
     secondaryColor = defaultSecondaryColor;
     ternaryColor = defaultTernaryColor;
@@ -25,14 +26,16 @@ Future<String> getProjectId() async {
       case USER:
         return await FirebaseFS.getProjectId(uid!);
       case DELIVERY_MAN:
-        return FirebaseFS.getProjectIdForDeliveryMan(uid!);
+        return await FirebaseFS.getProjectIdForDeliveryMan(uid!);
       case STORE_MANAGER:
-        return FirebaseFS.getProjectIdForStoreManager(uid!);
+        return await FirebaseFS.getProjectIdForStoreManager(uid!);
       case PROJECT_MANAGER:
         return await FirebaseFS.getProjectIdForProjectManager(uid!);
       case SUPER_ADMIN:
         return NONE;
     }
-  } catch (e) {}
+  } catch (e) {
+    print("-----------ERROR----------------");
+  }
   return NONE;
 }

@@ -66,6 +66,7 @@ class MyAppStateLess extends State<MyApp> {
         uid = prefs.getString('uid');
         currentRoll = prefs.getString('role')!;
         await FirebaseFS.saveHomeId();
+        await getAndSetColors();
       });
     } catch (e) {
       isAlreadyLogged = false;
@@ -96,6 +97,9 @@ class MyAppStateLess extends State<MyApp> {
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       print('Message clicked!');
     });
+    print("${primaryColor.value}");
+    print("${secondaryColor.value}");
+    print("${ternaryColor.value}");
   }
 
   @override

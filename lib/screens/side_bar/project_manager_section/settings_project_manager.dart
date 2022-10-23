@@ -72,7 +72,7 @@ class SettingsPMSectionBuilder extends State<SettingsPMSection> {
 
     await FirebaseFS.setProjectColors(projectId, localPrimaryColor.value,
         localSecondaryColor.value, localTernaryColor.value);
-    await getAndSetColors();
+    //await getAndSetColors();
     showDialog(
         context: context,
         builder: (ctx) => AlertDialog(

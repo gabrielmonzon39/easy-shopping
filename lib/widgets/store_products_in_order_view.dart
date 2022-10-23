@@ -62,6 +62,7 @@ class StoreProductsInOrderView extends StatelessWidget {
                       Image.network(
                         pi.image!,
                         height: 120,
+                        width: 120,
                       ),
                       Expanded(
                         child: Padding(

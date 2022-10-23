@@ -227,6 +227,8 @@ class OrdersToDeliverBuilder extends State<OrdersToDeliver> {
   Widget build(BuildContext context) {
     deliversNames.clear();
     deliversEmails.clear();
+    list.clear();
+    listTemp.clear();
     //if (state == null && document != null) getState(document!);
     return Scaffold(
         appBar: AppBar(

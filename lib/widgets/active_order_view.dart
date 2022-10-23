@@ -3,12 +3,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
+import 'package:easy_shopping/model/notifications.dart';
 import 'package:easy_shopping/model/product_infor.dart';
 import 'package:easy_shopping/widgets/store_products_in_order_view.dart';
 import 'package:flutter/material.dart';
 
 class ActiveOrderView extends StatelessWidget {
   String? id;
+  String? userId;
   String? name;
   String? home;
   String? date;
@@ -21,10 +23,12 @@ class ActiveOrderView extends StatelessWidget {
   List<Widget> listTemp = [];
   Widget? result;
   Map<String, List<ProductInfo>?> storeProducts = {};
+  String? imageNotification;
 
   ActiveOrderView({
     Key? key,
     @required this.id,
+    @required this.userId,
     @required this.name,
     @required this.home,
     @required this.deliveryManId,
@@ -71,6 +75,9 @@ class ActiveOrderView extends StatelessWidget {
       productName = productDetails.get('name');
       storeId = productDetails.get('store_id');
       image = productDetails.get('image');
+
+      // use any image to send to user's notifications
+      imageNotification = image;
 
       // acceder a los detalles del prodcuto
       DocumentSnapshot storeDetails = await FirebaseFirestore.instance
@@ -146,11 +153,15 @@ class ActiveOrderView extends StatelessWidget {
                         actions: <Widget>[
                           TextButton(
                             onPressed: () async {
+                              sendNotifications(
+                                  userId!,
+                                  "Compra $id",
+                                  "Su compra será entregada en unos minutos.",
+                                  imageNotification!);
                               await FirebaseFS.assingDeliverMan(
                                   deliveryProcessId!, deliveryManId!);
                               Navigator.of(context, rootNavigator: true)
                                   .pop(true);
-                              Navigator.pop(context, true);
                               Navigator.pop(context, true);
                             },
                             child: Container(

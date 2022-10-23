@@ -2,6 +2,7 @@
 
 import 'package:easy_shopping/components/bottom_navigation_bar/uset.dart';
 import 'package:easy_shopping/constants.dart';
+import 'package:easy_shopping/model/colors.dart';
 import 'package:easy_shopping/model/firebase.dart';
 import 'package:easy_shopping/screens/extra/user/search.dart';
 import 'package:easy_shopping/screens/main_screens/delivery_man.dart';
@@ -37,6 +38,7 @@ class _MainscreenState extends State<Mainscreen> {
   var photo;
   var uid;
   int currentIndex = 0;
+  bool first = true;
 
   _MainscreenState({
     @required this.name,
@@ -57,6 +59,12 @@ class _MainscreenState extends State<Mainscreen> {
   }
 
   Future<bool> validUser() async {
+    if (first) {
+      await getAndSetColors();
+      setState(() {
+        first = false;
+      });
+    }
     bool valid = await FirebaseFS.isAssociatedUser(uid);
     FirebaseFS.saveHomeId();
     return valid;
@@ -74,7 +82,7 @@ class _MainscreenState extends State<Mainscreen> {
               onTap: (index) => setState(() {
                     currentIndex = index;
                   }),
-              items: userBNBItems),
+              items: getUserBNBItems(primaryColor)),
           appBar: AppBar(
             title: const Text('Easy Shopping'),
             backgroundColor: primaryColor,

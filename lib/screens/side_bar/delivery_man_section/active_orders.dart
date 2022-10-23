@@ -127,6 +127,7 @@ class ActiveOrdersBuilder extends State<ActiveOrders> {
                             MaterialPageRoute(
                                 builder: (context) => ActiveOrderView(
                                       id: document.id,
+                                      userId: document.get('user_id'),
                                       name: name,
                                       home: home,
                                       deliveryProcessId: del.toString(),
@@ -224,6 +225,8 @@ class ActiveOrdersBuilder extends State<ActiveOrders> {
   Widget build(BuildContext context) {
     deliversNames.clear();
     deliversEmails.clear();
+    list.clear();
+    listTemp.clear();
     //if (state == null && document != null) getState(document!);
     return Scaffold(
         appBar: AppBar(
