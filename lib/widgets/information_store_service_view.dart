@@ -19,6 +19,20 @@ class InformationStoreServiceView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
+        Center(
+          child: Text(
+            name!,
+            textAlign: TextAlign.left,
+            style: const TextStyle(
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+              fontSize: 35,
+            ),
+          ),
+        ),
+        const SizedBox(
+          height: 30,
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -26,28 +40,6 @@ class InformationStoreServiceView extends StatelessWidget {
             Image.network(
               imageURL!,
               width: 200,
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 16, top: 8, bottom: 8),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Center(
-                      child: Text(
-                        name!,
-                        textAlign: TextAlign.left,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                          fontSize: 35,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
             ),
           ],
         ),

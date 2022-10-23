@@ -52,8 +52,7 @@ class InformationSectionBuilder extends State<StoreInformationSection> {
             color: ternaryColor,
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
-          child: SizedBox(
-            height: 680,
+          child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

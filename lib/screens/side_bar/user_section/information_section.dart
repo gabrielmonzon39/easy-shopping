@@ -46,8 +46,7 @@ class InformationSectionBuilder extends State<UserInformationSection> {
             color: ternaryColor,
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
-          child: SizedBox(
-            height: 680,
+          child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -72,7 +71,7 @@ class InformationSectionBuilder extends State<UserInformationSection> {
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.w600,
-                                  color: Colors.black,
+                                  color: Colors.white,
                                 ),
                               ),
                               SizedBox(
@@ -105,7 +104,7 @@ class InformationSectionBuilder extends State<UserInformationSection> {
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w600,
-                                color: Colors.black,
+                                color: Colors.white,
                               ),
                             ),
                             SizedBox(

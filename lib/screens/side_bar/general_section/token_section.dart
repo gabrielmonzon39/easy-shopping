@@ -32,7 +32,7 @@ class TokenSection extends StatelessWidget {
               const EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
           padding: const EdgeInsets.all(defaultPadding),
           decoration: BoxDecoration(
-            color: secondaryColor,
+            color: ternaryColor,
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
           child: SingleChildScrollView(

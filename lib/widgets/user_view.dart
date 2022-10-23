@@ -50,6 +50,7 @@ class InformationUserView extends StatelessWidget {
                         textAlign: TextAlign.left,
                         style: const TextStyle(
                           fontWeight: FontWeight.w600,
+                          color: Colors.white,
                           fontSize: 35,
                         ),
                       ),
@@ -68,6 +69,7 @@ class InformationUserView extends StatelessWidget {
           textAlign: TextAlign.left,
           style: const TextStyle(
             fontWeight: FontWeight.w600,
+            color: Colors.white,
             fontSize: 20,
           ),
         ),
@@ -79,6 +81,7 @@ class InformationUserView extends StatelessWidget {
           textAlign: TextAlign.left,
           style: const TextStyle(
             fontWeight: FontWeight.w600,
+            color: Colors.white,
             fontSize: 15,
           ),
         ),
@@ -90,6 +93,7 @@ class InformationUserView extends StatelessWidget {
           textAlign: TextAlign.left,
           style: const TextStyle(
             fontWeight: FontWeight.w600,
+            color: Colors.white,
             fontSize: 15,
           ),
         )

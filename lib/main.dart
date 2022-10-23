@@ -97,9 +97,6 @@ class MyAppStateLess extends State<MyApp> {
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       print('Message clicked!');
     });
-    print("${primaryColor.value}");
-    print("${secondaryColor.value}");
-    print("${ternaryColor.value}");
   }
 
   @override
