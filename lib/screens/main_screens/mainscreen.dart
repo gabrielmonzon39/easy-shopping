@@ -4,6 +4,7 @@ import 'package:easy_shopping/components/bottom_navigation_bar/uset.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/colors.dart';
 import 'package:easy_shopping/model/firebase.dart';
+import 'package:easy_shopping/model/name_and_logo.dart';
 import 'package:easy_shopping/screens/extra/user/search.dart';
 import 'package:easy_shopping/screens/main_screens/delivery_man.dart';
 import 'package:easy_shopping/screens/main_screens/project_manager.dart';
@@ -61,6 +62,7 @@ class _MainscreenState extends State<Mainscreen> {
   Future<bool> validUser() async {
     if (first) {
       await getAndSetColors();
+      await getAndSetNameImage();
       setState(() {
         first = false;
       });
@@ -84,7 +86,7 @@ class _MainscreenState extends State<Mainscreen> {
                   }),
               items: getUserBNBItems(primaryColor)),
           appBar: AppBar(
-            title: const Text('Easy Shopping'),
+            title: Text(projectName),
             backgroundColor: primaryColor,
             actions: [
               if (currentRoll == USER)
@@ -214,7 +216,7 @@ class _MainscreenState extends State<Mainscreen> {
     }
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Easy Shopping'),
+          title: Text(projectName),
           backgroundColor: primaryColor,
           actions: [
             if (currentRoll == USER)

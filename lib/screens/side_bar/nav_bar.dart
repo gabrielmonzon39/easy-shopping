@@ -7,6 +7,7 @@ import 'package:easy_shopping/model/firebase.dart';
 import 'package:easy_shopping/screens/side_bar/delivery_man_section/active_orders.dart';
 import 'package:easy_shopping/screens/side_bar/delivery_man_section/delivery_history.dart';
 import 'package:easy_shopping/screens/side_bar/delivery_man_section/orders_to_deliver.dart';
+import 'package:easy_shopping/screens/side_bar/project_manager_section/information.dart';
 import 'package:easy_shopping/screens/side_bar/project_manager_section/settings_project_manager.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/add_products.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/best_selling_products.dart';
@@ -64,18 +65,27 @@ class _NavBar extends State<NavBar> {
           // Remove padding
           padding: EdgeInsets.zero,
           children: [
-            UserAccountsDrawerHeader(
-              accountName: Text(name),
-              accountEmail: Text(email),
-              currentAccountPicture: CircleAvatar(
-                backgroundColor: ternaryColor,
-                radius: 35.0,
-                backgroundImage: const AssetImage(
-                  'assets/images/logo.jpg',
-                ),
-              ),
-              decoration: BoxDecoration(
-                color: secondaryColor,
+            Container(
+              color: secondaryColor,
+              child: Column(
+                children: [
+                  Image.network(
+                    projectImage,
+                    width: 190,
+                    height: 190,
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.account_circle),
+                    title: Text(
+                      "$name\n$email",
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    onTap: () {},
+                  ),
+                ],
               ),
             ),
 
@@ -337,6 +347,22 @@ class _NavBar extends State<NavBar> {
                 },
               ),
             if (OptionConditions.settingsProjectManager()) const Divider(),
+
+            /// **************  Información  **************
+            if (OptionConditions.informationProjectManager())
+              ListTile(
+                leading: const Icon(Icons.info),
+                title: const Text('Información'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            const ProjectInformationSection()),
+                  );
+                },
+              ),
+            if (OptionConditions.informationProjectManager()) const Divider(),
 
             /////////////////////////////////////////////////////////
             /////////////////    GENERAL OPTIONS    /////////////////

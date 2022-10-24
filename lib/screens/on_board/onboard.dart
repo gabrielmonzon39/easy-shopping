@@ -3,6 +3,7 @@
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/colors.dart';
 import 'package:easy_shopping/model/firebase.dart';
+import 'package:easy_shopping/model/name_and_logo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -151,6 +152,10 @@ class _OnboardState extends State<Onboard> with SingleTickerProviderStateMixin {
                 messaging.subscribeToTopic(uid!);
 
                 await getAndSetColors();
+
+                await getAndSetNameImage();
+                prefs.setString('project_name', projectName);
+                prefs.setString('project_image', projectImage);
 
                 // ignore: use_build_context_synchronously
                 Navigator.push(

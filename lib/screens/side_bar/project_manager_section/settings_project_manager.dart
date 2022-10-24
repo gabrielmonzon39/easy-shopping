@@ -70,9 +70,15 @@ class SettingsPMSectionBuilder extends State<SettingsPMSection> {
       await FirebaseFS.setProjectImage(projectId, urlDownload);
     }
 
+    if (nameController.text != "") {
+      await FirebaseFS.setProjectName(projectId, nameController.text);
+    }
+
     await FirebaseFS.setProjectColors(projectId, localPrimaryColor.value,
         localSecondaryColor.value, localTernaryColor.value);
+
     //await getAndSetColors();
+
     showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
@@ -420,7 +426,7 @@ class SettingsPMSectionBuilder extends State<SettingsPMSection> {
                                 color: Colors.black,
                               ),
                               decoration: InputDecoration(
-                                hintText: "Nombre del producto",
+                                hintText: "Nombre del proyecto",
                                 hintStyle: const TextStyle(
                                   color: Color(0xffA6B0BD),
                                 ),

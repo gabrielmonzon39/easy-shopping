@@ -101,6 +101,22 @@ class FirebaseFS {
     return "0";
   }
 
+  static Future<String> getProjectName(String projectId) async {
+    DocumentSnapshot? projectDetail = await FirebaseFirestore.instance
+        .collection('projects')
+        .doc(projectId)
+        .get();
+    return projectDetail.get('name');
+  }
+
+  static Future<String> getProjectImage(String projectId) async {
+    DocumentSnapshot? projectDetail = await FirebaseFirestore.instance
+        .collection('projects')
+        .doc(projectId)
+        .get();
+    return projectDetail.get('image');
+  }
+
   static Future<int> getPrimaryColor(String projectId) async {
     DocumentSnapshot? colorsDetail = await FirebaseFirestore.instance
         .collection('colors')
@@ -284,6 +300,16 @@ class FirebaseFS {
     FirebaseFirestore instance = FirebaseFirestore.instance;
     try {
       return await instance.collection('stores').doc(storeId).get();
+    } catch (e) {
+      print(e.toString());
+    }
+    return null;
+  }
+
+  static Future<DocumentSnapshot?> getProjectDetails(String projectId) async {
+    FirebaseFirestore instance = FirebaseFirestore.instance;
+    try {
+      return await instance.collection('projects').doc(projectId).get();
     } catch (e) {
       print(e.toString());
     }
@@ -633,6 +659,13 @@ class FirebaseFS {
         .collection('projects')
         .doc(projectId)
         .update({'image': image});
+  }
+
+  static Future<void> setProjectName(String projectId, String name) async {
+    await FirebaseFirestore.instance
+        .collection('projects')
+        .doc(projectId)
+        .update({'name': name});
   }
 
   static Future<void> setProjectColors(

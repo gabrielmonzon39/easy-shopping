@@ -1,5 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api
 
+import 'package:easy_shopping/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_shopping/components/fading_sliding_widget.dart';
 
@@ -90,17 +91,16 @@ class _WelcomeState extends State<WelcomePage>
                       ),
                     ),
                     child: Container(
-                      width: width * 0.3,
-                      height: width * 0.3,
                       decoration: ShapeDecoration(
                         color: const Color(0xFFFFFFFF),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(width * 0.08),
                         ),
                       ),
-                      child: Image.asset(
-                        'assets/images/logo.jpg',
-                        scale: 1,
+                      child: Image.network(
+                        projectImage,
+                        width: 200,
+                        height: 200,
                       ),
                     ),
                   ),
@@ -113,7 +113,7 @@ class _WelcomeState extends State<WelcomePage>
                 animationController: _animationController,
                 interval: const Interval(0.5, 0.9),
                 child: Text(
-                  'Easy Shopping',
+                  projectName,
                   style: TextStyle(
                     color: const Color(0xFFFFFFFF),
                     fontSize: width * 0.08,
@@ -122,7 +122,7 @@ class _WelcomeState extends State<WelcomePage>
                 ),
               ),
               SizedBox(
-                height: height * 0.2,
+                height: height * 0.15,
               ),
               SizedBox(
                 width: width * 0.9,

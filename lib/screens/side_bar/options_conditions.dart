@@ -81,6 +81,10 @@ class OptionConditions {
     return currentRoll == PROJECT_MANAGER;
   }
 
+  static bool informationProjectManager() {
+    return currentRoll == PROJECT_MANAGER;
+  }
+
   /////////////////    GENERAL OPTIONS    /////////////////
 
   static bool userInformation() {

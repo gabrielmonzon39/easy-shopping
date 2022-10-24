@@ -3,7 +3,7 @@
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/colors.dart';
 import 'package:easy_shopping/model/firebase.dart';
-import 'package:easy_shopping/model/notifications.dart';
+import 'package:easy_shopping/model/name_and_logo.dart';
 import 'package:easy_shopping/model/shopping_cart.dart';
 import 'package:easy_shopping/screens/main_screens/mainscreen.dart';
 import 'package:easy_shopping/screens/on_board/onboard.dart';
@@ -70,6 +70,14 @@ class MyAppStateLess extends State<MyApp> {
       });
     } catch (e) {
       isAlreadyLogged = false;
+    }
+
+    try {
+      projectName = prefs.getString('project_name')!;
+      projectImage = prefs.getString('project_image')!;
+    } catch (e) {
+      projectName = defaultProjectName;
+      projectImage = defaultProjectImage;
     }
   }
 

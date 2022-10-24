@@ -19,11 +19,20 @@ const secondaryColorDarkM = Color(0xFF2A2D3E);
 const bgColorDarkM = Color(0xFF212332);
 
 const defaultPadding = 16.0;
+
 ShoppingCart? myShoppingCart;
 
 int minBuy = 35;
 const defaultMinBuy = 35;
 const deliverPrice = 5;
+
+String projectName = defaultProjectName;
+String projectImage = defaultProjectImage;
+
+const defaultProjectName = 'Easy Shopping';
+const defaultProjectImage =
+    'https://firebasestorage.googleapis.com/v0/b/easy-shopping-01.appspot.com/o/logo.jpg?alt=media&token=cc5dec8b-3838-4a9d-a569-e6ac6f87668c';
+
 String? messagingToken;
 late FirebaseMessaging messaging;
 const serverKey =
