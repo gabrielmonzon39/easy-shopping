@@ -8,12 +8,14 @@ import 'package:easy_shopping/screens/side_bar/delivery_man_section/active_order
 import 'package:easy_shopping/screens/side_bar/delivery_man_section/delivery_history.dart';
 import 'package:easy_shopping/screens/side_bar/delivery_man_section/orders_to_deliver.dart';
 import 'package:easy_shopping/screens/side_bar/project_manager_section/information.dart';
+import 'package:easy_shopping/screens/side_bar/project_manager_section/manage_publicity.dart';
 import 'package:easy_shopping/screens/side_bar/project_manager_section/settings_project_manager.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/add_products.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/best_selling_products.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/income.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/information_section.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/products_section.dart';
+import 'package:easy_shopping/screens/side_bar/project_manager_section/publicity.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/settings.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/store_sales_section.dart';
 import 'package:easy_shopping/screens/side_bar/user_section/family_section.dart';
@@ -296,6 +298,21 @@ class _NavBar extends State<NavBar> {
               ),
             if (OptionConditions.income()) const Divider(),
 
+            /// **************  Publicidad  **************
+            if (OptionConditions.publicity())
+              ListTile(
+                leading: const Icon(Icons.public),
+                title: const Text('Publicidad'),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const PublicitySection(),
+                      ));
+                },
+              ),
+            if (OptionConditions.publicity()) const Divider(),
+
             /// **************  Información  **************
             if (OptionConditions.storeInformation())
               ListTile(
@@ -332,6 +349,21 @@ class _NavBar extends State<NavBar> {
             //////////////////////////////////////////////////////
             /////////////////   PROJECT MANAGER  /////////////////
             //////////////////////////////////////////////////////
+
+            /// **************  Configuración  **************
+            if (OptionConditions.managePublicity())
+              ListTile(
+                leading: const Icon(Icons.touch_app),
+                title: const Text('Solicitudes de publicidad'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ManagePublicitySection()),
+                  );
+                },
+              ),
+            if (OptionConditions.managePublicity()) const Divider(),
 
             /// **************  Configuración  **************
             if (OptionConditions.settingsProjectManager())

@@ -20,6 +20,10 @@ const String PREPARING = "preparing";
 const String ONTHEWAY = "on the way";
 const String SERVED = "served";
 
+// general states
+const String PENDING = "pending";
+const String READY = "ready";
+
 const maxValue = 1000000;
 
 // type of products
@@ -296,6 +300,26 @@ class FirebaseFS {
     }
   }
 
+  static void addPublicity(String storeId, int count, DateTime start) {
+    FirebaseFirestore.instance
+        .collection('publicity')
+        .doc(storeId)
+        .set({'active': true, 'days': count, 'start': start, 'state': PENDING});
+  }
+
+  static Future<bool> hasPublicity(String storeId) async {
+    DocumentSnapshot details = await FirebaseFirestore.instance
+        .collection('publicity')
+        .doc(storeId)
+        .get();
+    try {
+      details.get('state');
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   static Future<DocumentSnapshot?> getStoreDetails(String storeId) async {
     FirebaseFirestore instance = FirebaseFirestore.instance;
     try {
@@ -303,6 +327,7 @@ class FirebaseFS {
     } catch (e) {
       print(e.toString());
     }
+    print("Sotreeee ID:::::::: $storeId");
     return null;
   }
 
@@ -587,6 +612,13 @@ class FirebaseFS {
         .delete();
   }
 
+  static Future<void> deletePublicityRequest(String requestId) async {
+    await FirebaseFirestore.instance
+        .collection('publicity')
+        .doc(requestId)
+        .delete();
+  }
+
   static Future<String> generateProjectManagerToken(String projectId) async {
     var token = await FirebaseFirestore.instance.collection('tokens').add({
       'project_id': projectId,
@@ -735,6 +767,20 @@ class FirebaseFS {
         .collection('products')
         .doc(productId)
         .update(params);
+  }
+
+  static Future<void> updatePublicityRequest(String requestId) async {
+    await FirebaseFirestore.instance
+        .collection('publicity')
+        .doc(requestId)
+        .update({'state': READY, 'start': DateTime.now()});
+  }
+
+  static Future<void> inactiveRequest(String requestId) async {
+    await FirebaseFirestore.instance
+        .collection('publicity')
+        .doc(requestId)
+        .update({'active': false});
   }
 
   static Future<List<String>> getDeliveryManIdAndStateFromOrder(
