@@ -61,7 +61,7 @@ var superAdminItemsDemo = [
 
 var projectManagerItemsDemo = [
   CategoryItem(
-    name: "Nueva Tienda",
+    name: "Administrar Tiendas",
     icon: "1",
   ),
   CategoryItem(
@@ -75,6 +75,17 @@ var projectManagerItemsDemo = [
   CategoryItem(
     name: "Generar Repartidor",
     icon: "1",
+  ),
+];
+
+var projectManagerStoreManagementItemsDemo = [
+  CategoryItem(
+    name: "Nueva Tienda",
+    icon: "1",
+  ),
+  CategoryItem(
+    name: "Ocultar/Mostrar Tiendas",
+    icon: "6",
   ),
 ];
 

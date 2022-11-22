@@ -68,6 +68,8 @@ class CategoryItemCardWidget extends StatelessWidget {
         return Icons.info;
       case "5":
         return Icons.local_offer;
+      case "6":
+        return Icons.edit;
       default:
         return Icons.close;
     }
