@@ -91,6 +91,17 @@ class FirebaseFS {
         .collection('stores')
         .doc(storeId)
         .update({'visible': visibleState});
+
+    // update store products visibility
+    await FirebaseFirestore.instance
+        .collection('products')
+        .where('store_id', isEqualTo: storeId)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        doc.reference.set({'visible': visibleState});
+      });
+    });
   }
 
   static Future<String> getHomeOf(String uid) async {
