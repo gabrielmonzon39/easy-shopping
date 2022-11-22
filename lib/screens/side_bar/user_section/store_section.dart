@@ -132,6 +132,7 @@ class StoresSectionBuilder extends State<StoresSection> {
                         StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance
                       .collection('stores')
+                      .where('visible', isEqualTo: true)
                       .snapshots(),
                   builder: (ctx, AsyncSnapshot<QuerySnapshot> usersnapshot) {
                     if (usersnapshot.connectionState ==
