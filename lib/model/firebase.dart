@@ -73,6 +73,22 @@ class FirebaseFS {
     return userDetail.get('role') != "none";
   }
 
+  static Future<bool> getStoreVisibleState(String storeId) async {
+    DocumentSnapshot storeDetail = await FirebaseFirestore.instance
+        .collection('stores')
+        .doc(storeId)
+        .get();
+
+    return storeDetail.get('visible');
+  }
+
+  static void setStoreVisibleState(String storeId, bool visibleState) async {
+    await FirebaseFirestore.instance
+        .collection('stores')
+        .doc(storeId)
+        .update({'visible': visibleState});
+  }
+
   static Future<String> getHomeOf(String uid) async {
     FirebaseFirestore instance = FirebaseFirestore.instance;
     DocumentSnapshot? userDetail;
