@@ -1,3 +1,7 @@
+import 'package:easy_shopping/screens/side_bar/user_section/information_section.dart';
+import 'package:easy_shopping/screens/side_bar/user_section/pending_order_section.dart';
+import 'package:easy_shopping/screens/side_bar/user_section/shopping_cart_section.dart';
+import 'package:easy_shopping/screens/side_bar/user_section/store_section.dart';
 import 'package:flutter/material.dart';
 
 List<BottomNavigationBarItem> getUserBNBItems(Color col) {
@@ -18,3 +22,10 @@ List<BottomNavigationBarItem> getUserBNBItems(Color col) {
         backgroundColor: col),
   ];
 }
+
+final screens = <Widget>[
+  const UserInformationSection(),
+  const StoresSection(),
+  const PendingOrderSection(),
+  const ShoppingCartSection()
+];

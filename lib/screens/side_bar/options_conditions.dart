@@ -67,6 +67,10 @@ class OptionConditions {
     return currentRoll == STORE_MANAGER;
   }
 
+  static bool publicity() {
+    return currentRoll == STORE_MANAGER;
+  }
+
   static bool storeInformation() {
     return currentRoll == STORE_MANAGER;
   }
@@ -76,6 +80,14 @@ class OptionConditions {
   }
 
   /////////////////    PROJECT MANGER     /////////////////
+
+  static bool managePublicity() {
+    return currentRoll == PROJECT_MANAGER;
+  }
+
+  static bool emitNews() {
+    return currentRoll == PROJECT_MANAGER;
+  }
 
   static bool settingsProjectManager() {
     return currentRoll == PROJECT_MANAGER;

@@ -41,3 +41,5 @@ const serverKey =
 String? searchName;
 String? searchEmail;
 String? searchPhoto;
+
+const publicityPrice = 25;
