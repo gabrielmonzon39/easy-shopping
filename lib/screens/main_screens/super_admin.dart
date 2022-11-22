@@ -71,7 +71,7 @@ class SuperAdminMainScreen extends StatelessWidget {
   void onCategoryItemClicked(BuildContext context, CategoryItem categoryItem2) {
     String categoryItem = categoryItem2.name!;
     switch (categoryItem) {
-      case 'Generar Project Manager':
+      case 'Generar Administrador de Proyecto':
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const CreateTokensSection()),

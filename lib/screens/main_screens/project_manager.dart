@@ -11,6 +11,7 @@ import 'package:easy_shopping/screens/side_bar/project_manager_section/create_st
 import 'package:easy_shopping/screens/side_bar/project_manager_section/create_store_managers.dart';
 import 'package:easy_shopping/screens/side_bar/project_manager_section/create_family.dart';
 import 'package:easy_shopping/screens/side_bar/project_manager_section/create_delivery_man.dart';
+import 'package:easy_shopping/screens/side_bar/project_manager_section/stores_manager.dart';
 
 class ProjectManagerMainScreen extends StatelessWidget {
   int i = 0;
@@ -79,7 +80,7 @@ class ProjectManagerMainScreen extends StatelessWidget {
   void onCategoryItemClicked(BuildContext context, CategoryItem categoryItem2) {
     String categoryItem = categoryItem2.name!;
     switch (categoryItem) {
-      case 'Generar Store Manager':
+      case 'Generar Administrador\nde Tienda':
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -88,11 +89,11 @@ class ProjectManagerMainScreen extends StatelessWidget {
                   )),
         );
         break;
-      case 'Nueva Tienda':
+      case 'Administrar Tiendas':
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => CreateStoresSection(
+              builder: (context) => StoresManagerSection(
                     projectId: projectId,
                   )),
         );
@@ -106,7 +107,7 @@ class ProjectManagerMainScreen extends StatelessWidget {
                   )),
         );
         break;
-      case 'Generar Delivery Man':
+      case 'Generar Repartidor':
         Navigator.push(
           context,
           MaterialPageRoute(
