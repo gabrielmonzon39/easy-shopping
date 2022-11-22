@@ -16,22 +16,31 @@ class ManagePublicitySectionBuilder extends State<ManagePublicitySection> {
   List<Widget> list = [];
   Widget? result;
 
-  Future<void> getStoreDetails(String storeId) async {}
+  //Future<void> getStoreDetails(String storeId) async {}
 
   Future<bool> getRequests() async {
     QuerySnapshot pubCollection =
         await FirebaseFirestore.instance.collection('publicity').get();
+
+    String projectId = await FirebaseFS.getProjectIdForProjectManager(uid!);
+
     for (var document in pubCollection.docs) {
+      String storeId = document.id;
+
+      if (await FirebaseFS.getProjectIdFromStore(storeId) != projectId) {
+        continue;
+      }
+
       if (document.get('state') == READY) {
         list.add(const SizedBox(
           width: 0,
           height: 0,
         ));
+        continue;
       }
 
       if (document.get('active')) {
         details = await FirebaseFS.getStoreDetails(document.id);
-        if (details == null) print("UNUUUUUUUUU");
         list.add(PublicityRequestView(
             id: document.id,
             name: details!.get('name'),
@@ -56,6 +65,8 @@ class ManagePublicitySectionBuilder extends State<ManagePublicitySection> {
 
   @override
   Widget build(BuildContext context) {
+    list = [];
+    result = null;
     return Scaffold(
         appBar: AppBar(
           backgroundColor: secondaryColor,

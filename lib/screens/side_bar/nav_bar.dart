@@ -7,6 +7,7 @@ import 'package:easy_shopping/model/firebase.dart';
 import 'package:easy_shopping/screens/side_bar/delivery_man_section/active_orders.dart';
 import 'package:easy_shopping/screens/side_bar/delivery_man_section/delivery_history.dart';
 import 'package:easy_shopping/screens/side_bar/delivery_man_section/orders_to_deliver.dart';
+import 'package:easy_shopping/screens/side_bar/project_manager_section/emit_news.dart';
 import 'package:easy_shopping/screens/side_bar/project_manager_section/information.dart';
 import 'package:easy_shopping/screens/side_bar/project_manager_section/manage_publicity.dart';
 import 'package:easy_shopping/screens/side_bar/project_manager_section/settings_project_manager.dart';
@@ -350,7 +351,7 @@ class _NavBar extends State<NavBar> {
             /////////////////   PROJECT MANAGER  /////////////////
             //////////////////////////////////////////////////////
 
-            /// **************  Configuración  **************
+            /// **************  Solicitudes de publicidad  **************
             if (OptionConditions.managePublicity())
               ListTile(
                 leading: const Icon(Icons.touch_app),
@@ -364,6 +365,21 @@ class _NavBar extends State<NavBar> {
                 },
               ),
             if (OptionConditions.managePublicity()) const Divider(),
+
+            /// **************  Emitir Noticias  **************
+            if (OptionConditions.emitNews())
+              ListTile(
+                leading: const Icon(Icons.email),
+                title: const Text('Emitir comunicado'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const EmitNewsSection()),
+                  );
+                },
+              ),
+            if (OptionConditions.emitNews()) const Divider(),
 
             /// **************  Configuración  **************
             if (OptionConditions.settingsProjectManager())

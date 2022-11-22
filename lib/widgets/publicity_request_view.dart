@@ -2,6 +2,7 @@
 
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
+import 'package:easy_shopping/model/notifications.dart';
 import 'package:easy_shopping/screens/side_bar/project_manager_section/manage_publicity.dart';
 import 'package:flutter/material.dart';
 
@@ -102,42 +103,54 @@ class PublicityRequestView extends StatelessWidget {
                 children: [
                   ElevatedButton(
                     onPressed: () async {
+                      BuildContext dialogContext;
                       showDialog(
                         context: context,
-                        builder: (ctx) => AlertDialog(
-                          title: const Text("Aprobar solicitud"),
-                          content: Text(
-                              "Se aprobará la solicitud de publicidad de $name por $count días."),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () async {
-                                await FirebaseFS.updatePublicityRequest(id!);
-                                Navigator.pop(context);
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const ManagePublicitySection(),
-                                    ));
-                              },
-                              child: Container(
-                                color: Colors.white,
-                                padding: const EdgeInsets.all(14),
-                                child: const Text("Aprobar"),
+                        builder: (BuildContext context) {
+                          dialogContext = context;
+                          return AlertDialog(
+                            title: const Text("Aprobar solicitud"),
+                            content: Text(
+                                "Se aprobará la solicitud de publicidad de $name por $count días."),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () async {
+                                  await FirebaseFS.updatePublicityRequest(id!);
+                                  String storeManagerUid = await FirebaseFS
+                                      .getStoreManagerUidFromStoreId(id!);
+                                  sendNotifications(
+                                      storeManagerUid,
+                                      "Solicitud de publicidad",
+                                      "Su solicitud de publicidad ha sido aprobada. Su tienda le aparecerá a los usuarios por $count días.",
+                                      "");
+                                  Navigator.pop(dialogContext);
+                                  Navigator.pop(context);
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const ManagePublicitySection(),
+                                      ));
+                                },
+                                child: Container(
+                                  color: Colors.white,
+                                  padding: const EdgeInsets.all(14),
+                                  child: const Text("Aprobar"),
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
+                            ],
+                          );
+                        },
                       );
                     },
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
                         (Set<MaterialState> states) {
-                          return const Color.fromARGB(255, 156, 146, 48);
+                          return Colors.green;
                         },
                       ),
                     ),
-                    child: const Icon(Icons.edit),
+                    child: const Icon(Icons.check),
                   ),
                   const SizedBox(
                     width: 20,
@@ -159,6 +172,13 @@ class PublicityRequestView extends StatelessWidget {
                                     await FirebaseFS.deletePublicityRequest(
                                         id!);
                                     Navigator.pop(dialogContext);
+                                    Navigator.pop(context);
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const ManagePublicitySection(),
+                                        ));
                                   },
                                   child: Container(
                                     color: Colors.white,
