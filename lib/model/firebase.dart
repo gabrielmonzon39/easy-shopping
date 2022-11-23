@@ -975,8 +975,14 @@ class FirebaseFS {
           .doc(uid)
           .get();
 
-      Map<String, int> stores = user_sales_record.get('stores');
-      Map<String, int> categories = user_sales_record.get('categories');
+      Map<String, dynamic> storesDynamic = user_sales_record.get('stores');
+      Map<String, dynamic> categoriesDynamic =
+          user_sales_record.get('categories');
+
+      Map<String, int> stores =
+          storesDynamic.map((key, value) => MapEntry(key, value as int));
+      Map<String, int> categories =
+          categoriesDynamic.map((key, value) => MapEntry(key, value as int));
 
       // Order stores by value
       List<MapEntry<String, int>> storesSorted = stores.entries.toList();
@@ -1001,14 +1007,23 @@ class FirebaseFS {
 
       //['t3', 't1', 't2']
 
-      List<Map<String, int>> final_products = [];
+      List<Map<String, double>> final_products = [];
 
       List<Map<String, String>> products = await getProjectProducts(projectId);
       for (var product in products) {
-        int storeWeight = storesSortedIds.indexOf(product['store_id']!);
-        int categoryWeight = categoriesSortedIds.indexOf(product['category']!);
+        if (!product.containsKey('store_id') ||
+            !product.containsKey('type') ||
+            !product.containsKey('id')) continue;
+
+        String storeId = product.putIfAbsent('store_id', () => '0');
+        String type = product.putIfAbsent('type', () => '0');
+        String id = product.putIfAbsent('id', () => '0');
+
+        int storeWeight = storesSortedIds.indexOf(storeId);
+        int categoryWeight = categoriesSortedIds.indexOf(type);
         final_products.add({
-          product['product_id']!: (storeWeight * 2) + categoryWeight,
+          id: ((1 - (1 / product.length - 1)) * storeWeight * 2) +
+              ((1 - (1 / product.length - 1)) * categoryWeight),
         });
       }
 
@@ -1020,7 +1035,7 @@ class FirebaseFS {
         final_productsSortedIds.add(product.keys.first);
       }
 
-      return final_productsSortedIds;
+      return final_productsSortedIds.reversed.toList();
     } catch (e) {
       print(e.toString());
     }

@@ -13,50 +13,15 @@ class UserMainScreen extends StatefulWidget {
 
 class UserBuilder extends State<UserMainScreen> {
   final nameController = TextEditingController();
-  final maxViewController = TextEditingController();
-  final defaultMaxView = 10;
-  int currentMaxView = 0;
-  int count = 0;
   bool valid = true;
 
-  bool selected = true;
   String selectedOption = types[types.length - 1];
-
-  UserBuilder() {
-    currentMaxView = defaultMaxView;
-  }
 
   bool evalConditions(QueryDocumentSnapshot<Object?>? document) {
     if (document == null) return false;
     if (document.id == "8NSZ1ielRBQyriNRwXdx") return false;
     if (document.get('quantity') <= 0) return false;
 
-    count++;
-    if (count > int.parse(maxViewController.text)) return false;
-    //print(count);
-
-    if (selected) {
-      return nameCondition(document);
-    } else {
-      String fireBaseType = typesFB[types.indexOf(selectedOption)];
-      if (document.get('type') != fireBaseType) {
-        count--;
-        return false;
-      }
-      return nameCondition(document);
-    }
-  }
-
-  bool nameCondition(QueryDocumentSnapshot<Object?>? document) {
-    if (nameController.text == "") return true;
-    if (!document!
-        .get('name')
-        .toString()
-        .toLowerCase()
-        .contains(nameController.text.toLowerCase())) {
-      count--;
-      return false;
-    }
     return true;
   }
 
@@ -65,8 +30,61 @@ class UserBuilder extends State<UserMainScreen> {
     valid = await FirebaseFS.checkProjectofProduct(document!.get('store_id'));
   }
 
+  int count2 = 0;
+  List<String> topProducts = [];
+  Future<void> topUserProducts() async {
+    if (count2 != 0) return;
+    topProducts = await FirebaseFS.getTopUserProducts(uid!);
+    count2++;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Text("Aqui poner ofertas");
+    topUserProducts();
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance.collection('products').snapshots(),
+      builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else {
+          return ListView.builder(
+            shrinkWrap: true,
+            itemCount: snapshot.data!.docs.length,
+            itemBuilder: (context, index) {
+              QueryDocumentSnapshot<Object?>? document =
+                  snapshot.data?.docs[index];
+              try {
+                if (evalConditions(document!) &&
+                    topProducts.contains(document.id)) {
+                  return Column(
+                    children: [
+                      ProductView(
+                        id: document.id,
+                        name: document.get('name'),
+                        description: document.get('description'),
+                        price: document.get('price').toString(),
+                        quantity: document.get('quantity').toString(),
+                        imageURL: document.get('image'),
+                        isUser: true,
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                    ],
+                  );
+                }
+              } catch (e) {
+                print(e.toString());
+              }
+              return const SizedBox(
+                width: 0,
+                height: 0,
+              );
+            },
+          );
+        }
+      },
+    );
   }
 }
