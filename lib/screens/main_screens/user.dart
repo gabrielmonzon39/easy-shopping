@@ -66,6 +66,8 @@ class UserBuilder extends State<UserMainScreen> {
                         quantity: document.get('quantity').toString(),
                         imageURL: document.get('image'),
                         isUser: true,
+                        hasOffer: document.get('has_offer'),
+                        offerPrice: document.get('new_price').toString(),
                       ),
                       const SizedBox(
                         height: 10,

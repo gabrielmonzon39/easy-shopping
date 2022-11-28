@@ -23,6 +23,7 @@ class SearchBuilder extends State<Search> {
   bool valid = true;
 
   List<String> stores = [];
+  Map<String, int> offers = {};
 
   bool selected = false;
   String selectedOption = types[types.length - 1];
@@ -73,6 +74,11 @@ class SearchBuilder extends State<Search> {
         stores.add(document.id);
       }
     }
+    /*QuerySnapshot offerSnap =
+        await FirebaseFirestore.instance.collection('store_offers').get();
+    for (var document in offerSnap.docs) {
+      offers[document.get('product_id')] = document.get('new_price');
+    }*/
   }
 
   @override
@@ -316,6 +322,10 @@ class SearchBuilder extends State<Search> {
                                     if (evalConditions(document) &&
                                         stores.contains(
                                             document!.get('store_id'))) {
+                                      /*int newPrice = -1;
+                                      if (offers.containsKey(document.id)) {
+                                        newPrice = offers[document.id]!;
+                                      }*/
                                       return Column(
                                         children: [
                                           ProductView(
@@ -331,6 +341,10 @@ class SearchBuilder extends State<Search> {
                                                 .toString(),
                                             imageURL: document.get('image'),
                                             isUser: true,
+                                            hasOffer: document.get('has_offer'),
+                                            offerPrice: document
+                                                .get('new_price')
+                                                .toString(),
                                           ),
                                           const SizedBox(
                                             height: 10,

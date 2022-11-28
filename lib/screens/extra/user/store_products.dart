@@ -2,6 +2,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_shopping/constants.dart';
+import 'package:easy_shopping/model/firebase.dart';
 import 'package:easy_shopping/widgets/product_view.dart';
 import 'package:flutter/material.dart';
 
@@ -163,6 +164,9 @@ class StoreProductBuilder extends State<StoreProduct> {
                                         document.get('quantity').toString(),
                                     imageURL: document.get('image'),
                                     isUser: true,
+                                    hasOffer: document.get('has_offer'),
+                                    offerPrice:
+                                        document.get('new_price').toString(),
                                   ),
                                   const SizedBox(
                                     height: 20,

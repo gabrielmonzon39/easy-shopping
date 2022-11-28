@@ -366,6 +366,10 @@ class FirebaseFS {
         'new_price': newPrice,
         'active': true,
       });
+      FirebaseFirestore.instance
+          .collection('products')
+          .doc(productId)
+          .update({'has_offer': true, 'new_price': newPrice});
     } else {
       FirebaseFirestore.instance.collection('store_offers').add({
         'start': start,
@@ -376,6 +380,29 @@ class FirebaseFS {
         'active': true,
       });
     }
+  }
+
+  static Future<int> getOfferPrice(String productId) async {
+    QuerySnapshot<Map<String, dynamic>> offers = await FirebaseFirestore
+        .instance
+        .collection('store_offers')
+        .where('product_id', isEqualTo: productId)
+        .get();
+    for (var offer in offers.docs) {
+      try {
+        if (!offer.get('active')) {
+          return -1;
+        }
+        Timestamp startTS = offer.get('start');
+        DateTime start = startTS.toDate();
+        Timestamp endTS = offer.get('end');
+        DateTime end = endTS.toDate();
+        if (start.isBefore(DateTime.now()) && end.isBefore(DateTime.now())) {
+          return offer.get('new_price');
+        }
+      } catch (e) {}
+    }
+    return -1;
   }
 
   static void addPublicity(String storeId, int count, DateTime start) {
@@ -560,6 +587,8 @@ class FirebaseFS {
       'type': fireBaseType,
       'bought': 0,
       'visible': true,
+      'has_offer': false,
+      'new_price': -1,
     });
   }
 
@@ -648,8 +677,15 @@ class FirebaseFS {
             .get();
         int total = productDetail.get('quantity');
         int bought = productDetail.get('bought');
-        totalOrder += int.parse(element['buy_quantity'].toString()) *
-            int.parse(element['price'].toString());
+
+        if (productDetail.get('has_offer')) {
+          totalOrder += int.parse(element['buy_quantity'].toString()) *
+              productDetail.get('new_price') as int;
+        } else {
+          totalOrder += int.parse(element['buy_quantity'].toString()) *
+              int.parse(element['price'].toString());
+        }
+
         total -= int.parse(element['buy_quantity'].toString());
         bought += int.parse(element['buy_quantity'].toString());
         FirebaseFirestore.instance

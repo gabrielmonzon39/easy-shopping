@@ -161,6 +161,10 @@ class ProductsSectionBuilder extends State<ProductsSection> {
                                             document.get('quantity').toString(),
                                         imageURL: document.get('image'),
                                         isUser: false,
+                                        hasOffer: document.get('has_offer'),
+                                        offerPrice: document
+                                            .get('new_price')
+                                            .toString(),
                                       ),
                                       const SizedBox(
                                         height: 20,

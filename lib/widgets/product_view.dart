@@ -13,7 +13,12 @@ class ProductView extends StatelessWidget {
   String? price;
   String? quantity;
   String? imageURL;
+
   bool? isUser;
+
+  bool? hasOffer;
+  String? offerPrice;
+
   final quantityController = TextEditingController();
   final priceController = TextEditingController();
   final descriptionController = TextEditingController();
@@ -29,6 +34,8 @@ class ProductView extends StatelessWidget {
     @required this.quantity,
     @required this.imageURL,
     @required this.isUser,
+    @required this.hasOffer,
+    @required this.offerPrice,
   }) : super(key: key);
 
   void manageDescription() {
@@ -41,6 +48,7 @@ class ProductView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int price_ = hasOffer! ? int.parse(offerPrice!) : int.parse(price!);
     manageDescription();
     if (isUser!) {
       return ElevatedButton(
@@ -52,7 +60,7 @@ class ProductView extends StatelessWidget {
                   id: id,
                   name: name,
                   description: originalDescription,
-                  price: price,
+                  price: price_.toString(),
                   quantity: quantity,
                   imageURL: imageURL,
                 ),
@@ -103,14 +111,33 @@ class ProductView extends StatelessWidget {
                       textAlign: TextAlign.left,
                       style: const TextStyle(fontSize: 14, color: Colors.white),
                     ),*/
-                    Text(
-                      'Q$price.00',
-                      textAlign: TextAlign.left,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14,
-                        color: Colors.black,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Q$price_.00',
+                          textAlign: TextAlign.left,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        if (hasOffer!)
+                          Text(
+                            'Q$price.00',
+                            textAlign: TextAlign.left,
+                            style: const TextStyle(
+                              decoration: TextDecoration.lineThrough,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                              color: Colors.red,
+                            ),
+                          ),
+                      ],
                     ),
                     Text(
                       '$quantity unidades',
