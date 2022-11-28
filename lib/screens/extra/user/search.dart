@@ -154,11 +154,6 @@ class SearchBuilder extends State<Search> {
           ),
         ],
       ),
-      drawer: NavBar(
-        name: searchName!,
-        email: searchEmail!,
-        photo: searchPhoto!,
-      ),
       body: SafeArea(
         child: Container(
           width: double.infinity,
