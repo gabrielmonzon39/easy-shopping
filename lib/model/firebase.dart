@@ -148,12 +148,27 @@ class FirebaseFS {
   }
 
   static Future<void> addNew(
-      String projectId, String title, String body) async {
-    FirebaseFirestore.instance.collection('news').add({
+      String projectId, String title, String body, String image) async {
+    DocumentSnapshot newsId = await FirebaseFirestore.instance
+        .collection('constants')
+        .doc('newsId')
+        .get();
+    int id = newsId.get('id');
+
+    FirebaseFirestore.instance.collection('news').doc(id.toString()).set({
       'title': title,
       'body': body,
       'project_id': projectId,
+      'image': image,
+      'date': DateTime.now(),
     });
+
+    id--;
+
+    FirebaseFirestore.instance
+        .collection('constants')
+        .doc('newsId')
+        .update({'id': id});
   }
 
   static Future<String> getProjectName(String projectId) async {
@@ -390,7 +405,7 @@ class FirebaseFS {
     } catch (e) {
       print(e.toString());
     }
-    print("Sotreeee ID:::::::: $storeId");
+    //print("Sotreeee ID:::::::: $storeId");
     return null;
   }
 

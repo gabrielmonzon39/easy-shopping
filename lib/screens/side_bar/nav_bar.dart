@@ -7,6 +7,7 @@ import 'package:easy_shopping/model/firebase.dart';
 import 'package:easy_shopping/screens/side_bar/delivery_man_section/active_orders.dart';
 import 'package:easy_shopping/screens/side_bar/delivery_man_section/delivery_history.dart';
 import 'package:easy_shopping/screens/side_bar/delivery_man_section/orders_to_deliver.dart';
+import 'package:easy_shopping/screens/side_bar/general_section/news.dart';
 import 'package:easy_shopping/screens/side_bar/project_manager_section/emit_news.dart';
 import 'package:easy_shopping/screens/side_bar/project_manager_section/information.dart';
 import 'package:easy_shopping/screens/side_bar/project_manager_section/manage_publicity.dart';
@@ -436,7 +437,13 @@ class _NavBar extends State<NavBar> {
               ListTile(
                 leading: const Icon(Icons.notifications),
                 title: const Text('Noticias'),
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const NewsSection()),
+                  );
+                },
               ),
             if (OptionConditions.notifications()) const Divider(),
 

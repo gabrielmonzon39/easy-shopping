@@ -161,7 +161,7 @@ class SettingsSectionBuilder extends State<SettingsSection> {
             final progress = snap.bytesTransferred / snap.totalBytes;
             final porcentage = (progress * 100).toStringAsFixed(2);
             return Text(
-              '$porcentage%',
+              'Completado al: $porcentage%',
               style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
