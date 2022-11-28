@@ -30,6 +30,7 @@ class UserBuilder extends State<UserMainScreen> {
 
   int count2 = 0;
   List<String> topProducts = [];
+
   Future<void> topUserProducts() async {
     if (count2 != 0) return;
     topProducts = await FirebaseFS.getTopUserProducts(uid!);

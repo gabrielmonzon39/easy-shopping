@@ -99,7 +99,7 @@ class FirebaseFS {
         .get()
         .then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) {
-        doc.reference.set({'visible': visibleState});
+        doc.reference.update({'visible': visibleState});
       });
     });
   }
@@ -559,6 +559,7 @@ class FirebaseFS {
       'image': image,
       'type': fireBaseType,
       'bought': 0,
+      'visible': true,
     });
   }
 
@@ -985,14 +986,14 @@ class FirebaseFS {
     List<String> result = [];
     String projectId = await getProjectId(uid);
     try {
-      DocumentSnapshot user_sales_record = await FirebaseFirestore.instance
+      DocumentSnapshot userSalesRecord = await FirebaseFirestore.instance
           .collection('users_stores_and_categories_sales')
           .doc(uid)
           .get();
 
-      Map<String, dynamic> storesDynamic = user_sales_record.get('stores');
+      Map<String, dynamic> storesDynamic = userSalesRecord.get('stores');
       Map<String, dynamic> categoriesDynamic =
-          user_sales_record.get('categories');
+          userSalesRecord.get('categories');
 
       Map<String, int> stores =
           storesDynamic.map((key, value) => MapEntry(key, value as int));
@@ -1029,6 +1030,10 @@ class FirebaseFS {
         if (!product.containsKey('store_id') ||
             !product.containsKey('type') ||
             !product.containsKey('id')) continue;
+
+        if (product['visible'] == 'false') {
+          continue;
+        }
 
         String storeId = product.putIfAbsent('store_id', () => '0');
         String type = product.putIfAbsent('type', () => '0');
@@ -1087,6 +1092,7 @@ class FirebaseFS {
           res['id'] = document.id;
           res['type'] = document.get('type');
           res['store_id'] = document.get('store_id');
+          res['visible'] = document.get('visible').toString();
 
           result.add(res);
         }

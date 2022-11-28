@@ -35,6 +35,7 @@ class SearchBuilder extends State<Search> {
     if (document == null) return false;
     if (document.id == "8NSZ1ielRBQyriNRwXdx") return false;
     if (document.get('quantity') <= 0) return false;
+    if (document.get('visible') == false) return false;
 
     count++;
     if (count > int.parse(maxViewController.text)) return false;
