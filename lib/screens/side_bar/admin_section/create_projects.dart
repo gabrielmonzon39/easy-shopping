@@ -141,7 +141,7 @@ class CreateProjectsBuilder extends State<CreateProjectsSection> {
                         ),
                       ),
                       child: const Text(
-                        "Generar Token",
+                        "Generar",
                         style: TextStyle(
                           fontSize: 23,
                           fontWeight: FontWeight.w600,

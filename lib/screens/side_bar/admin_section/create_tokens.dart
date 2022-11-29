@@ -5,6 +5,7 @@ import 'package:easy_shopping/model/firebase.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class CreateTokensSection extends StatefulWidget {
@@ -185,13 +186,31 @@ class CreateTokensBuilder extends State<CreateTokensSection> {
                     const SizedBox(
                       height: 15,
                     ),
-                    Text(
-                      generatedToken,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: generatedToken == ''
+                          ? []
+                          : [
+                              Text(
+                                generatedToken,
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.copy, color: secondaryColor),
+                                onPressed: () {
+                                  Clipboard.setData(
+                                      ClipboardData(text: generatedToken));
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content:
+                                              Text('Copiado al portapapeles')));
+                                },
+                              )
+                            ],
                     ),
                   ],
                 )))));
