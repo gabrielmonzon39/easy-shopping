@@ -791,6 +791,7 @@ class FirebaseFS {
       'name': storeName,
       'description': storeDescription,
       'project_id': projectId,
+      'visible': true,
     });
 
     return docRef.id;
