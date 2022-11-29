@@ -4,6 +4,8 @@ import 'package:easy_shopping/model/notifications.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'dart:developer' as dev;
+
 // person role
 const String NONE = "none";
 const String USER = "user";
@@ -1019,14 +1021,17 @@ class FirebaseFS {
         String type = product.putIfAbsent('type', () => '0');
         String id = product.putIfAbsent('id', () => '0');
 
-        int storeWeight = storesSortedIds.indexOf(storeId);
-        int categoryWeight = categoriesSortedIds.indexOf(type);
+        int storeWeight = storesSortedIds.reversed.toList().indexOf(storeId);
+        int categoryWeight =
+            categoriesSortedIds.reversed.toList().indexOf(type);
         final_products.add({
           id: ((1 - (1 / product.length - 1)) * storeWeight * 2) +
               ((1 - (1 / product.length - 1)) * categoryWeight),
         });
       }
 
+      dev.log("prueba");
+      dev.log(final_products.toString());
       // order final_products by value
       final_products.sort((a, b) => b.values.first.compareTo(a.values.first));
       // make it a simple list
@@ -1035,7 +1040,9 @@ class FirebaseFS {
         final_productsSortedIds.add(product.keys.first);
       }
 
-      return final_productsSortedIds.reversed.toList();
+      dev.log(final_productsSortedIds.toString());
+
+      return final_productsSortedIds;
     } catch (e) {
       print(e.toString());
     }
