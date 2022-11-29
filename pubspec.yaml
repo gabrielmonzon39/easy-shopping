@@ -51,6 +51,9 @@ dependencies:
   fl_chart: ^0.36.1
   syncfusion_flutter_charts: ^19.1.54
   flutter_colorpicker: ^1.0.3
+  
+  # Swiper
+  flutter_swiper: ^1.1.6
 
   # for getting date
   intl: ^0.17.0

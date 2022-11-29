@@ -101,7 +101,7 @@ class FirebaseFS {
         .get()
         .then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) {
-        doc.reference.set({'visible': visibleState});
+        doc.reference.update({'visible': visibleState});
       });
     });
   }
@@ -150,12 +150,27 @@ class FirebaseFS {
   }
 
   static Future<void> addNew(
-      String projectId, String title, String body) async {
-    FirebaseFirestore.instance.collection('news').add({
+      String projectId, String title, String body, String image) async {
+    DocumentSnapshot newsId = await FirebaseFirestore.instance
+        .collection('constants')
+        .doc('newsId')
+        .get();
+    int id = newsId.get('id');
+
+    FirebaseFirestore.instance.collection('news').doc(id.toString()).set({
       'title': title,
       'body': body,
       'project_id': projectId,
+      'image': image,
+      'date': DateTime.now(),
     });
+
+    id--;
+
+    FirebaseFirestore.instance
+        .collection('constants')
+        .doc('newsId')
+        .update({'id': id});
   }
 
   static Future<String> getProjectName(String projectId) async {
@@ -353,6 +368,10 @@ class FirebaseFS {
         'new_price': newPrice,
         'active': true,
       });
+      FirebaseFirestore.instance
+          .collection('products')
+          .doc(productId)
+          .update({'has_offer': true, 'new_price': newPrice});
     } else {
       FirebaseFirestore.instance.collection('store_offers').add({
         'start': start,
@@ -363,6 +382,29 @@ class FirebaseFS {
         'active': true,
       });
     }
+  }
+
+  static Future<int> getOfferPrice(String productId) async {
+    QuerySnapshot<Map<String, dynamic>> offers = await FirebaseFirestore
+        .instance
+        .collection('store_offers')
+        .where('product_id', isEqualTo: productId)
+        .get();
+    for (var offer in offers.docs) {
+      try {
+        if (!offer.get('active')) {
+          return -1;
+        }
+        Timestamp startTS = offer.get('start');
+        DateTime start = startTS.toDate();
+        Timestamp endTS = offer.get('end');
+        DateTime end = endTS.toDate();
+        if (start.isBefore(DateTime.now()) && end.isBefore(DateTime.now())) {
+          return offer.get('new_price');
+        }
+      } catch (e) {}
+    }
+    return -1;
   }
 
   static void addPublicity(String storeId, int count, DateTime start) {
@@ -392,7 +434,7 @@ class FirebaseFS {
     } catch (e) {
       print(e.toString());
     }
-    print("Sotreeee ID:::::::: $storeId");
+    //print("Sotreeee ID:::::::: $storeId");
     return null;
   }
 
@@ -546,6 +588,9 @@ class FirebaseFS {
       'image': image,
       'type': fireBaseType,
       'bought': 0,
+      'visible': true,
+      'has_offer': false,
+      'new_price': -1,
     });
   }
 
@@ -634,8 +679,15 @@ class FirebaseFS {
             .get();
         int total = productDetail.get('quantity');
         int bought = productDetail.get('bought');
-        totalOrder += int.parse(element['buy_quantity'].toString()) *
-            int.parse(element['price'].toString());
+
+        if (productDetail.get('has_offer')) {
+          totalOrder += int.parse(element['buy_quantity'].toString()) *
+              productDetail.get('new_price') as int;
+        } else {
+          totalOrder += int.parse(element['buy_quantity'].toString()) *
+              int.parse(element['price'].toString());
+        }
+
         total -= int.parse(element['buy_quantity'].toString());
         bought += int.parse(element['buy_quantity'].toString());
         FirebaseFirestore.instance
@@ -972,14 +1024,14 @@ class FirebaseFS {
     List<String> result = [];
     String projectId = await getProjectId(uid);
     try {
-      DocumentSnapshot user_sales_record = await FirebaseFirestore.instance
+      DocumentSnapshot userSalesRecord = await FirebaseFirestore.instance
           .collection('users_stores_and_categories_sales')
           .doc(uid)
           .get();
 
-      Map<String, dynamic> storesDynamic = user_sales_record.get('stores');
+      Map<String, dynamic> storesDynamic = userSalesRecord.get('stores');
       Map<String, dynamic> categoriesDynamic =
-          user_sales_record.get('categories');
+          userSalesRecord.get('categories');
 
       Map<String, int> stores =
           storesDynamic.map((key, value) => MapEntry(key, value as int));
@@ -1016,6 +1068,10 @@ class FirebaseFS {
         if (!product.containsKey('store_id') ||
             !product.containsKey('type') ||
             !product.containsKey('id')) continue;
+
+        if (product['visible'] == 'false') {
+          continue;
+        }
 
         String storeId = product.putIfAbsent('store_id', () => '0');
         String type = product.putIfAbsent('type', () => '0');
@@ -1079,6 +1135,7 @@ class FirebaseFS {
           res['id'] = document.id;
           res['type'] = document.get('type');
           res['store_id'] = document.get('store_id');
+          res['visible'] = document.get('visible').toString();
 
           result.add(res);
         }

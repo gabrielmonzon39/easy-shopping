@@ -1,5 +1,4 @@
 import 'package:easy_shopping/screens/main_screens/user.dart';
-import 'package:easy_shopping/screens/side_bar/user_section/information_section.dart';
 import 'package:easy_shopping/screens/side_bar/user_section/pending_order_section.dart';
 import 'package:easy_shopping/screens/side_bar/user_section/shopping_cart_section.dart';
 import 'package:easy_shopping/screens/side_bar/user_section/store_section.dart';
@@ -26,7 +25,6 @@ List<BottomNavigationBarItem> getUserBNBItems(Color col) {
 
 final screens = <Widget>[
   const UserMainScreen(),
-  const UserInformationSection(),
   const StoresSection(),
   const PendingOrderSection(),
   const ShoppingCartSection()
