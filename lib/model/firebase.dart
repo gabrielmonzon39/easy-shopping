@@ -624,6 +624,56 @@ class FirebaseFS {
         'order_id': orderId.toString(),
         'name': name,
       });
+      // Get all store categories
+
+      List<String> storeCategories = [];
+      for (Map<dynamic, dynamic> product in products) {
+        dev.log(product.toString());
+        String category = product['category'];
+        if (!storeCategories.contains(category)) {
+          storeCategories.add(category);
+        }
+      }
+      // Make storeCategories a map with value 1
+      Map<String, int> storeCategoriesMap = {};
+      for (String category in storeCategories) {
+        storeCategoriesMap[category] = 1;
+      }
+
+      DocumentSnapshot userSales = await FirebaseFirestore.instance
+          .collection('users_stores_and_categories_sales')
+          .doc(uid)
+          .get();
+      if (userSales.exists) {
+        Map<String, dynamic> stores = userSales['stores'];
+        Map<String, dynamic> categories = userSales['categories'];
+        if (stores.containsKey(storeId)) {
+          stores[storeId] = (stores[storeId]! + 1);
+        } else {
+          stores[storeId] = 1;
+        }
+        for (String category in storeCategories) {
+          if (categories.containsKey(category)) {
+            categories[category] = categories[category]! + 1;
+          } else {
+            categories[category] = 1;
+          }
+        }
+        FirebaseFirestore.instance
+            .collection('users_stores_and_categories_sales')
+            .doc(uid)
+            .update({'stores': stores, 'categories': categories});
+      } else {
+        dev.log('5');
+        dev.log(storeCategoriesMap.toString());
+        await FirebaseFirestore.instance
+            .collection('users_stores_and_categories_sales')
+            .doc(uid)
+            .set({
+          'stores': {storeId: 1},
+          'categories': storeCategoriesMap
+        });
+      }
     } catch (e) {
       print(e.toString());
     }
