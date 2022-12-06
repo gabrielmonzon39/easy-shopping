@@ -159,6 +159,7 @@ class StoreProductBuilder extends State<StoreProduct> {
                                     id: document.id,
                                     name: document.get('name'),
                                     description: document.get('description'),
+                                    category: document.get('type'),
                                     price: document.get('price').toString(),
                                     quantity:
                                         document.get('quantity').toString(),

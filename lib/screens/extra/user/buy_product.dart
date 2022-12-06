@@ -8,6 +8,7 @@ class BuyProduct extends StatefulWidget {
   String? id;
   String? name;
   String? description;
+  String? category;
   String? price;
   String? quantity;
   String? imageURL;
@@ -18,6 +19,7 @@ class BuyProduct extends StatefulWidget {
     @required this.id,
     @required this.name,
     @required this.description,
+    @required this.category,
     @required this.price,
     @required this.quantity,
     @required this.imageURL,
@@ -28,6 +30,7 @@ class BuyProduct extends StatefulWidget {
         id: id,
         name: name,
         description: description,
+        category: category,
         price: price,
         quantity: quantity,
         imageURL: imageURL,
@@ -38,6 +41,7 @@ class BuyProductBuilder extends State<BuyProduct> {
   String? id;
   String? name;
   String? description;
+  String? category;
   String? price;
   String? quantity;
   String? imageURL;
@@ -49,6 +53,7 @@ class BuyProductBuilder extends State<BuyProduct> {
     @required this.id,
     @required this.name,
     @required this.description,
+    @required this.category,
     @required this.price,
     @required this.quantity,
     @required this.imageURL,
@@ -213,7 +218,8 @@ class BuyProductBuilder extends State<BuyProduct> {
                                   'product_id': id,
                                   'buy_quantity':
                                       int.parse(buyQuantity.toStringAsFixed(0)),
-                                  'price': int.parse(price!)
+                                  'price': int.parse(price!),
+                                  'category': category!,
                                 };
                                 myShoppingCart!.push(product);
                                 showDialog(

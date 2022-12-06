@@ -156,6 +156,7 @@ class ProductsSectionBuilder extends State<ProductsSection> {
                                         name: document.get('name'),
                                         description:
                                             document.get('description'),
+                                        category: document.get('type'),
                                         price: document.get('price').toString(),
                                         quantity:
                                             document.get('quantity').toString(),

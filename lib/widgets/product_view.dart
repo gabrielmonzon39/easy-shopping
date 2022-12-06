@@ -4,11 +4,13 @@ import 'package:easy_shopping/model/firebase.dart';
 import 'package:easy_shopping/screens/extra/user/buy_product.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/products_section.dart';
 import 'package:flutter/material.dart';
+import 'dart:developer' as dev;
 
 class ProductView extends StatelessWidget {
   String? id;
   String? name;
   String? description;
+  String? category;
   String? originalDescription;
   String? price;
   String? quantity;
@@ -30,6 +32,7 @@ class ProductView extends StatelessWidget {
     @required this.id,
     @required this.name,
     @required this.description,
+    @required this.category,
     @required this.price,
     @required this.quantity,
     @required this.imageURL,
@@ -53,6 +56,7 @@ class ProductView extends StatelessWidget {
     if (isUser!) {
       return ElevatedButton(
         onPressed: () {
+          dev.log(category ?? "nulldasdffasdsdfafsad");
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -60,6 +64,7 @@ class ProductView extends StatelessWidget {
                   id: id,
                   name: name,
                   description: originalDescription,
+                  category: category,
                   price: price_.toString(),
                   quantity: quantity,
                   imageURL: imageURL,
