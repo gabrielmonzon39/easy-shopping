@@ -76,6 +76,7 @@ class UserBuilder extends State<UserMainScreen> {
           id: document.id,
           name: document.get('name'),
           description: document.get('description'),
+          category: document.get('type'),
           price: document.get('price').toString(),
           quantity: document.get('quantity').toString(),
           imageURL: document.get('image'),
@@ -92,20 +93,20 @@ class UserBuilder extends State<UserMainScreen> {
   List<Widget> listPublicity = [];
 
   Future<bool> getPublicity() async {
-    QuerySnapshot snap =
-        await FirebaseFirestore.instance.collection('publicity').get();
-    int i = 0;
-    for (var document in snap.docs) {
-      listPublicity.add(StoreServiceView(
-        name: document.get('name'),
-        description: document.get('description'),
-        imageURL: document.get('image'),
-        storeId: document.id,
-        color: 0xFF2697FF,
-      ));
-      listPublicity.add(Text(i.toString()));
-      i++;
-    }
+    //   QuerySnapshot snap =
+    //       await FirebaseFirestore.instance.collection('publicity').get();
+    //   int i = 0;
+    //   for (var document in snap.docs) {
+    //     listPublicity.add(StoreServiceView(
+    //       name: document.get('name'),
+    //       description: document.get('description'),
+    //       imageURL: document.get('image'),
+    //       storeId: document.id,
+    //       color: 0xFF2697FF,
+    //     ));
+    //     listPublicity.add(Text(i.toString()));
+    //     i++;
+    //   }
     return true;
   }
 
@@ -133,6 +134,7 @@ class UserBuilder extends State<UserMainScreen> {
             id: document.id,
             name: document.get('name'),
             description: document.get('description'),
+            category: document.get('type'),
             price: document.get('price').toString(),
             quantity: document.get('quantity').toString(),
             imageURL: document.get('image'),
@@ -245,9 +247,9 @@ class UserBuilder extends State<UserMainScreen> {
                       (BuildContext context, AsyncSnapshot<bool> snapshot) {
                     if (!snapshot.hasData) {
                       // not loaded
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
+                      return const Center(child: Text('')
+                          // child: CircularProgressIndicator(),
+                          );
                     } else if (snapshot.hasError) {
                       // some error
                       return Column(children: const [
