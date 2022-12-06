@@ -128,17 +128,19 @@ class UserBuilder extends State<UserMainScreen> {
             .collection('products')
             .doc(productId)
             .get();
-        listOfferedProducts.add(ProductView(
-          id: document.id,
-          name: document.get('name'),
-          description: document.get('description'),
-          price: document.get('price').toString(),
-          quantity: document.get('quantity').toString(),
-          imageURL: document.get('image'),
-          isUser: true,
-          hasOffer: document.get('has_offer'),
-          offerPrice: document.get('new_price').toString(),
-        ));
+        if (document.get('visible')) {
+          listOfferedProducts.add(ProductView(
+            id: document.id,
+            name: document.get('name'),
+            description: document.get('description'),
+            price: document.get('price').toString(),
+            quantity: document.get('quantity').toString(),
+            imageURL: document.get('image'),
+            isUser: true,
+            hasOffer: document.get('has_offer'),
+            offerPrice: document.get('new_price').toString(),
+          ));
+        }
       }
     }
     return true;

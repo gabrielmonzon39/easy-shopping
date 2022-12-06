@@ -134,7 +134,8 @@ class AddProductsBuilder extends State<AddProductsSection> {
               actions: <Widget>[
                 TextButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    // MODALERT
+                    Navigator.of(ctx).pop();
                   },
                   child: Container(
                     color: Colors.white,

@@ -123,10 +123,7 @@ class _MainscreenState extends State<Mainscreen> {
           photo: photo,
         ),
         backgroundColor: Colors.white,
-        body: IndexedStack(
-          index: currentIndex,
-          children: screens,
-        ),
+        body: screens[currentIndex],
       );
     }
     return Scaffold(

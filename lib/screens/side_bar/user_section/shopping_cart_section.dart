@@ -27,8 +27,11 @@ class ShoppingCartBuilder extends State<ShoppingCartSection> {
           .collection('products')
           .doc(productId)
           .get();
-      total = (int.parse(buyQuantity) * productDetails.get('price')) as int?;
-      this.total += total!;
+      int price_ = productDetails.get('has_offer')
+          ? productDetails.get('new_price')
+          : productDetails.get('price');
+      total = (int.parse(buyQuantity) * price_);
+      this.total += total;
       listTemp.add(Container(
         width: double.infinity,
         margin: const EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
@@ -87,14 +90,24 @@ class ShoppingCartBuilder extends State<ShoppingCartSection> {
                         const SizedBox(
                           height: 15,
                         ),
-                        Text(
-                          'Q${productDetails.get('price').toString()}',
-                          textAlign: TextAlign.left,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 20,
-                              color: Colors.white),
-                        ),
+                        if (productDetails.get('has_offer'))
+                          Text(
+                            'Q${productDetails.get('new_price').toString()}',
+                            textAlign: TextAlign.left,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 20,
+                                color: Colors.white),
+                          ),
+                        if (!productDetails.get('has_offer'))
+                          Text(
+                            'Q${productDetails.get('price').toString()}',
+                            textAlign: TextAlign.left,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 20,
+                                color: Colors.white),
+                          ),
                         const SizedBox(
                           height: 15,
                         ),
@@ -244,9 +257,11 @@ class ShoppingCartBuilder extends State<ShoppingCartSection> {
                                   .collection('products')
                                   .doc(id)
                                   .get();
-                          int? totalProduct = (int.parse(quantity) *
-                              productDetails.get('price')) as int?;
-                          total += totalProduct!;
+                          int price_ = productDetails.get('has_offer')
+                              ? productDetails.get('new_price')
+                              : productDetails.get('price');
+                          int? totalProduct = (int.parse(quantity) * price_);
+                          total += totalProduct;
                         }
                         if (total < minBuy) {
                           showDialog(

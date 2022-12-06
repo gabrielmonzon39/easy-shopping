@@ -217,8 +217,8 @@ class OrdersToDeliverViewBuilder extends State<OrdersToDeliverView> {
                               }
                               await FirebaseFS.changeState(
                                   deliveryProcessId!, state!);
-                              Navigator.of(context, rootNavigator: true)
-                                  .pop(true);
+                              // MODALERT
+                              Navigator.of(context).pop();
                               if (state == SERVED) {
                                 Navigator.pop(context, true);
                                 return;

@@ -160,9 +160,8 @@ class ActiveOrderView extends StatelessWidget {
                                   imageNotification!);
                               await FirebaseFS.assingDeliverMan(
                                   deliveryProcessId!, deliveryManId!);
-                              Navigator.of(context, rootNavigator: true)
-                                  .pop(true);
-                              Navigator.pop(context, true);
+                              // MODALERT
+                              Navigator.of(context).pop();
                             },
                             child: Container(
                               color: Colors.white,

@@ -33,8 +33,8 @@ class PublicitySectionBuilder extends State<PublicitySection> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context, rootNavigator: true).pop(true);
-                Navigator.pop(context, true);
+                // MODALERT
+                Navigator.of(ctx).pop();
               },
               child: Container(
                 color: Colors.white,
@@ -55,7 +55,8 @@ class PublicitySectionBuilder extends State<PublicitySection> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context, rootNavigator: true).pop(true);
+                // MODALERT
+                Navigator.of(ctx).pop();
               },
               child: Container(
                 color: Colors.white,
