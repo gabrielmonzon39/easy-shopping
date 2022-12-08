@@ -18,6 +18,7 @@ class UserMainScreen extends StatefulWidget {
 class UserBuilder extends State<UserMainScreen> {
   final nameController = TextEditingController();
   bool valid = true;
+  String? myProjectId;
 
   String selectedOption = types[types.length - 1];
 
@@ -45,7 +46,6 @@ class UserBuilder extends State<UserMainScreen> {
     if (document == null) return false;
     if (document.id == "8NSZ1ielRBQyriNRwXdx") return false;
     if (document.get('quantity') <= 0) return false;
-
     return true;
   }
 
@@ -66,25 +66,44 @@ class UserBuilder extends State<UserMainScreen> {
 
   ///////////////////////   Productos Recomendados    ///////////////////////
   List<Widget> listRecommendedProducts = [];
+  List<Widget> defaultRecommendedProducts = [];
+  List<String> already = [];
+  final limit = 5;
 
   Future<bool> getRecommendedProducts() async {
+    myProjectId = await FirebaseFS.getProjectId(uid!);
     QuerySnapshot snap =
         await FirebaseFirestore.instance.collection('products').get();
+    int i = 0;
     for (var document in snap.docs) {
-      if (evalConditions(document) && topProducts.contains(document.id)) {
-        listRecommendedProducts.add(ProductView(
-          id: document.id,
-          name: document.get('name'),
-          description: document.get('description'),
-          category: document.get('type'),
-          price: document.get('price').toString(),
-          quantity: document.get('quantity').toString(),
-          imageURL: document.get('image'),
-          isUser: true,
-          hasOffer: document.get('has_offer'),
-          offerPrice: document.get('new_price').toString(),
-        ));
+      String projectId =
+          await FirebaseFS.getProjectIdFromStore(document.get('store_id'));
+      if (projectId != myProjectId) continue;
+      Widget productView = ProductView(
+        id: document.id,
+        name: document.get('name'),
+        description: document.get('description'),
+        category: document.get('type'),
+        price: document.get('price').toString(),
+        quantity: document.get('quantity').toString(),
+        imageURL: document.get('image'),
+        isUser: true,
+        hasOffer: document.get('has_offer'),
+        offerPrice: document.get('new_price').toString(),
+      );
+      if (!already.contains(document.id) &&
+          evalConditions(document) &&
+          topProducts.contains(document.id)) {
+        already.add(document.id);
+        //print("SE AGREGO A LA RECOMENDADA: ${document.id}");
+        listRecommendedProducts.add(productView);
       }
+      if (i < limit && !already.contains(document.id)) {
+        already.add(document.id);
+        //print("SE AGREGO A LA DEFAULT: ${document.id} - $i");
+        defaultRecommendedProducts.add(productView);
+      }
+      i++;
     }
     return true;
   }
@@ -93,20 +112,22 @@ class UserBuilder extends State<UserMainScreen> {
   List<Widget> listPublicity = [];
 
   Future<bool> getPublicity() async {
-    //   QuerySnapshot snap =
-    //       await FirebaseFirestore.instance.collection('publicity').get();
-    //   int i = 0;
-    //   for (var document in snap.docs) {
-    //     listPublicity.add(StoreServiceView(
-    //       name: document.get('name'),
-    //       description: document.get('description'),
-    //       imageURL: document.get('image'),
-    //       storeId: document.id,
-    //       color: 0xFF2697FF,
-    //     ));
-    //     listPublicity.add(Text(i.toString()));
-    //     i++;
-    //   }
+    QuerySnapshot snap =
+        await FirebaseFirestore.instance.collection('publicity').get();
+    for (var doc in snap.docs) {
+      DocumentSnapshot document = await FirebaseFirestore.instance
+          .collection('stores')
+          .doc(doc.id)
+          .get();
+      if (document.get('project_id') != myProjectId) continue;
+      listPublicity.add(StoreServiceView(
+        name: document.get('name'),
+        description: document.get('description'),
+        imageURL: document.get('image'),
+        storeId: document.id,
+        color: 0xFF2697FF,
+      ));
+    }
     return true;
   }
 
@@ -117,6 +138,9 @@ class UserBuilder extends State<UserMainScreen> {
     QuerySnapshot snap =
         await FirebaseFirestore.instance.collection('store_offers').get();
     for (var doc in snap.docs) {
+      String projectId =
+          await FirebaseFS.getProjectIdFromStore(doc.get('store_id'));
+      if (projectId != myProjectId) continue;
       Timestamp startTS = doc.get('start');
       DateTime start = startTS.toDate();
       Timestamp endTS = doc.get('end');
@@ -159,17 +183,9 @@ class UserBuilder extends State<UserMainScreen> {
           height: 30,
         ),
         ///////////////////////   Productos Recomendados    ///////////////////////
-        const Text("PRODUCTOS RECOMENDADOS",
-            style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: Colors.black)),
-        const SizedBox(
-          height: 20,
-        ),
         ////////////////////////////////////////////////////////////////
         SizedBox(
-          height: 150,
+          height: 170,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -198,23 +214,71 @@ class UserBuilder extends State<UserMainScreen> {
                       // loaded
                       bool? valid = snapshot.data;
                       if (valid!) {
-                        return SizedBox(
-                          height: 100,
-                          width: double.infinity,
-                          child: Swiper(
-                            itemBuilder: (BuildContext context, int index) {
-                              return SizedBox(
-                                  child: listRecommendedProducts[index]);
-                            },
-                            itemCount: listRecommendedProducts.length,
-                            itemWidth: double.infinity,
-                            layout: SwiperLayout.DEFAULT,
-                            scrollDirection: Axis.horizontal,
-                            loop: true,
-                            index: 0,
-                            autoplay: true,
-                            duration: 5000,
-                          ),
+                        if (listRecommendedProducts.isEmpty) {
+                          return Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              const Text("PRODUCTOS QUE PODRÍAN GUSTARTE",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black)),
+                              const SizedBox(
+                                height: 40,
+                              ),
+                              SizedBox(
+                                height: 100,
+                                width: double.infinity,
+                                child: Swiper(
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return SizedBox(
+                                        child:
+                                            defaultRecommendedProducts[index]);
+                                  },
+                                  itemCount: defaultRecommendedProducts.length,
+                                  itemWidth: double.infinity,
+                                  layout: SwiperLayout.DEFAULT,
+                                  scrollDirection: Axis.horizontal,
+                                  loop: true,
+                                  index: 0,
+                                  autoplay: true,
+                                  duration: 6000,
+                                ),
+                              )
+                            ],
+                          );
+                        }
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            const Text("PRODUCTOS RECOMENDADOS",
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.black)),
+                            const SizedBox(
+                              height: 40,
+                            ),
+                            SizedBox(
+                              height: 100,
+                              width: double.infinity,
+                              child: Swiper(
+                                itemBuilder: (BuildContext context, int index) {
+                                  return SizedBox(
+                                      child: listRecommendedProducts[index]);
+                                },
+                                itemCount: listRecommendedProducts.length,
+                                itemWidth: double.infinity,
+                                layout: SwiperLayout.DEFAULT,
+                                scrollDirection: Axis.horizontal,
+                                loop: true,
+                                index: 0,
+                                autoplay: true,
+                                duration: 6000,
+                              ),
+                            )
+                          ],
                         );
                       }
                     }
@@ -232,6 +296,10 @@ class UserBuilder extends State<UserMainScreen> {
                   }),
             ],
           ),
+        ),
+
+        const SizedBox(
+          height: 70,
         ),
 
         ///////////////////////   Publicidad       ///////////////////////
@@ -273,8 +341,13 @@ class UserBuilder extends State<UserMainScreen> {
                       // loaded
                       bool? valid = snapshot.data;
                       if (valid!) {
+                        if (listPublicity.isEmpty) {
+                          return const SizedBox(
+                            height: 0,
+                          );
+                        }
                         return SizedBox(
-                          height: 100,
+                          height: 150,
                           width: double.infinity,
                           child: Swiper(
                             itemBuilder: (BuildContext context, int index) {
@@ -282,12 +355,14 @@ class UserBuilder extends State<UserMainScreen> {
                             },
                             itemCount: listPublicity.length,
                             itemWidth: double.infinity,
+                            itemHeight: double.infinity,
                             layout: SwiperLayout.DEFAULT,
                             scrollDirection: Axis.horizontal,
                             loop: true,
                             index: 0,
                             autoplay: true,
-                            duration: 5000,
+                            duration: 10000,
+                            viewportFraction: 0.9,
                           ),
                         );
                       }
@@ -318,14 +393,19 @@ class UserBuilder extends State<UserMainScreen> {
           ),
         ),
 
+        if (listPublicity.isNotEmpty)
+          const SizedBox(
+            height: 40,
+          ),
+
         ///////////////////////   Ofertas       ///////////////////////
         const Text("OFERTAS",
             style: TextStyle(
-                fontSize: 18,
+                fontSize: 22,
                 fontWeight: FontWeight.w700,
                 color: Colors.black)),
         const SizedBox(
-          height: 20,
+          height: 40,
         ),
         ////////////////////////////////////////////////////////////////
         SizedBox(
@@ -365,6 +445,11 @@ class UserBuilder extends State<UserMainScreen> {
                       // loaded
                       bool? valid = snapshot.data;
                       if (valid!) {
+                        if (listOfferedProducts.isEmpty) {
+                          return const SizedBox(
+                            height: 0,
+                          );
+                        }
                         return SizedBox(
                           height: 100,
                           width: double.infinity,
@@ -380,7 +465,7 @@ class UserBuilder extends State<UserMainScreen> {
                             loop: true,
                             index: 0,
                             autoplay: true,
-                            duration: 5000,
+                            duration: 6000,
                           ),
                         );
                       }

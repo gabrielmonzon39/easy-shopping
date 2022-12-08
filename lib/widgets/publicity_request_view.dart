@@ -123,6 +123,11 @@ class PublicityRequestView extends StatelessWidget {
                                       "Solicitud de publicidad",
                                       "Su solicitud de publicidad ha sido aprobada. Su tienda le aparecerá a los usuarios por $count días.",
                                       "");
+                                  sendNotifications(
+                                      STORE_MANAGER,
+                                      "Solicitud de publicidad",
+                                      "Su solicitud de publicidad ha sido aprobada. Su tienda le aparecerá a los usuarios por $count días.",
+                                      "");
                                   Navigator.pop(dialogContext);
                                   Navigator.pop(context);
                                   Navigator.push(
