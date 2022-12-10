@@ -55,7 +55,7 @@ class CreateDeliveryManBuilder extends State<CreateDeliveryManSection> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: secondaryColor,
-          title: const Text("Generar Delivery Man"),
+          title: const Text("Generar Repartidor"),
         ),
         body: SafeArea(
             child: Container(
@@ -63,7 +63,7 @@ class CreateDeliveryManBuilder extends State<CreateDeliveryManSection> {
                 margin: const EdgeInsets.only(
                     top: 20, bottom: 20, left: 20, right: 20),
                 padding: const EdgeInsets.all(defaultPadding),
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
