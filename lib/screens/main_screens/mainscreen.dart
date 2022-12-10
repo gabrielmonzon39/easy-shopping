@@ -69,6 +69,12 @@ class _MainscreenState extends State<Mainscreen> {
     }
     bool valid = await FirebaseFS.isAssociatedUser(uid);
     FirebaseFS.saveHomeId();
+
+    if (currentRoll == DELIVERY_MAN) {
+      currentRoll =
+          await FirebaseFS.getDeliveryManStatus(uid) ? DELIVERY_MAN : BLOCKED;
+    }
+
     return valid;
   }
 
@@ -225,6 +231,28 @@ class _MainscreenState extends State<Mainscreen> {
                               return SuperAdminMainScreen();
                             case NONE:
                               return const Text("Ha ocurrido un error.");
+                            case BLOCKED:
+                              return Center(
+                                  child: Column(children: const [
+                                SizedBox(
+                                  height: 100,
+                                ),
+                                Text(
+                                  "¡Ups! Parece que su cuenta ha sido bloqueada. Contacte al administrador del lugar para mayor información.",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 100,
+                                ),
+                                Icon(
+                                  Icons.sentiment_very_dissatisfied,
+                                  size: 100,
+                                ),
+                              ]));
                           }
                         }
                       }

@@ -13,6 +13,7 @@ const String STORE_MANAGER = "store_manager";
 const String PROJECT_MANAGER = "project_manager";
 const String DELIVERY_MAN = "delivery_man";
 const String SUPER_ADMIN = "super_admin";
+const String BLOCKED = "blocked";
 
 // order delivery status
 const String DELIVERY_PENDING = "pending";
@@ -297,6 +298,17 @@ class FirebaseFS {
       print(e.toString());
     }
     return NONE;
+  }
+
+  static Future<bool> getDeliveryManStatus(uid) async {
+    DocumentSnapshot? documentDetails =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
+    String deliveryId = documentDetails.get('delivery_man_id');
+    DocumentSnapshot? deliveryDetails = await FirebaseFirestore.instance
+        .collection('delivery_mans')
+        .doc(deliveryId)
+        .get();
+    return deliveryDetails.get('active');
   }
 
   static Future<void> changeDeliveryManStatus(String id, bool status) async {
