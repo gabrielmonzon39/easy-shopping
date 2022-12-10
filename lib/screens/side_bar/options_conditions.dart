@@ -85,6 +85,10 @@ class OptionConditions {
     return currentRoll == PROJECT_MANAGER;
   }
 
+  static bool manageDeliveryMans() {
+    return currentRoll == PROJECT_MANAGER;
+  }
+
   static bool emitNews() {
     return currentRoll == PROJECT_MANAGER;
   }

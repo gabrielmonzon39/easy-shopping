@@ -299,6 +299,13 @@ class FirebaseFS {
     return NONE;
   }
 
+  static Future<void> changeDeliveryManStatus(String id, bool status) async {
+    await FirebaseFirestore.instance
+        .collection('delivery_mans')
+        .doc(id)
+        .update({'active': status});
+  }
+
   static Future<String> getProjectIdForDeliveryMan(String uid) async {
     FirebaseFirestore instance = FirebaseFirestore.instance;
     DocumentSnapshot? documentDetails;
@@ -1314,7 +1321,8 @@ class FirebaseFS {
             .set({
           'name': name,
           'email': email,
-          'project_id': tokenDetail.get('project_id')
+          'project_id': tokenDetail.get('project_id'),
+          'active': true
         });
 
         // update the actual correlative id for delivery mans

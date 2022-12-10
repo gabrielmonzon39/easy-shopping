@@ -10,6 +10,7 @@ import 'package:easy_shopping/screens/side_bar/delivery_man_section/orders_to_de
 import 'package:easy_shopping/screens/side_bar/general_section/news.dart';
 import 'package:easy_shopping/screens/side_bar/project_manager_section/emit_news.dart';
 import 'package:easy_shopping/screens/side_bar/project_manager_section/information.dart';
+import 'package:easy_shopping/screens/side_bar/project_manager_section/manage_delivery_mans.dart';
 import 'package:easy_shopping/screens/side_bar/project_manager_section/manage_publicity.dart';
 import 'package:easy_shopping/screens/side_bar/project_manager_section/settings_project_manager.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/add_products.dart';
@@ -367,6 +368,21 @@ class _NavBar extends State<NavBar> {
               ),
             if (OptionConditions.managePublicity()) const Divider(),
 
+            /// **************  Administrar repartidores  **************
+            if (OptionConditions.manageDeliveryMans())
+              ListTile(
+                leading: const Icon(Icons.groups),
+                title: const Text('Administrar repartidores'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ManageDeliverMansSection()),
+                  );
+                },
+              ),
+            if (OptionConditions.manageDeliveryMans()) const Divider(),
+
             /// **************  Emitir Noticias  **************
             if (OptionConditions.emitNews())
               ListTile(
@@ -473,6 +489,8 @@ class _NavBar extends State<NavBar> {
                 onTap: () async {
                   SharedPreferences prefs =
                       await SharedPreferences.getInstance();
+                  projectName = prefs.getString('project_name')!;
+                  projectImage = prefs.getString('project_image')!;
                   prefs.setBool('isAlreadyLogged', false);
                   GoogleSignInProvider.provider =
                       Provider.of<GoogleSignInProvider>(context, listen: false);
