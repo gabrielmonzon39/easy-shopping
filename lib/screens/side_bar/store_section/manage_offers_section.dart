@@ -1,12 +1,8 @@
-import 'dart:io';
 import 'package:easy_shopping/model/category_items.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_shopping/constants.dart';
 import 'package:easy_shopping/model/firebase.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:easy_shopping/screens/side_bar/store_section/edit_offers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter/services.dart';
 import 'package:easy_shopping/widgets/category_item_dart_widget.dart';
 import 'package:easy_shopping/screens/side_bar/store_section/add_offers.dart';
 
@@ -86,7 +82,7 @@ class ManageOffersBuilder extends State<ManageOffersSection> {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => AddOffersSection(
+              builder: (context) => EditOffersSection(
                     storeId: storeId,
                   )),
         );

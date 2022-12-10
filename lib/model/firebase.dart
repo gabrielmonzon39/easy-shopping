@@ -384,6 +384,20 @@ class FirebaseFS {
     }
   }
 
+  static void modifyStoreOffer(DateTime end, String offerId, String productId,
+      int? newPrice, bool active) {
+    FirebaseFirestore.instance.collection('store_offers').doc(offerId).update({
+      'end': end,
+      'new_price': newPrice!,
+      'active': active,
+    });
+
+    FirebaseFirestore.instance
+        .collection('products')
+        .doc(productId)
+        .update({'has_offer': true, 'new_price': newPrice});
+  }
+
   static Future<int> getOfferPrice(String productId) async {
     QuerySnapshot<Map<String, dynamic>> offers = await FirebaseFirestore
         .instance

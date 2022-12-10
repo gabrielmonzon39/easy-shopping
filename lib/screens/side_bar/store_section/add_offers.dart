@@ -105,7 +105,7 @@ class AddOffersBuilder extends State<AddOffersSection> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: secondaryColor,
-          title: const Text("Ingresar productos"),
+          title: const Text("Agregar ofertas"),
         ),
         body: SafeArea(
             child: Container(
@@ -113,7 +113,7 @@ class AddOffersBuilder extends State<AddOffersSection> {
                 margin: const EdgeInsets.only(
                     top: 20, bottom: 20, left: 20, right: 20),
                 padding: const EdgeInsets.all(defaultPadding),
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
