@@ -220,7 +220,7 @@ class OrdersToDeliverViewBuilder extends State<OrdersToDeliverView> {
                               // MODALERT
                               Navigator.of(context).pop();
                               if (state == SERVED) {
-                                Navigator.pop(context, true);
+                                Navigator.of(context).pop();
                                 return;
                               }
                               setState(() {

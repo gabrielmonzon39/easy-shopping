@@ -839,13 +839,13 @@ class FirebaseFS {
 
   static Future<String> generateUsersToken(
       String address, int quantity, String projectId) async {
-    var homeId = await FirebaseFirestore.instance.collection('homes').add({
+    await FirebaseFirestore.instance.collection('homes').doc(address).set({
       'address': address,
       'project_id': projectId,
     });
 
     var token = await FirebaseFirestore.instance.collection('tokens').add({
-      'home_id': homeId.id,
+      'home_id': address,
       'role': 'user',
       'remaining': quantity,
     });
